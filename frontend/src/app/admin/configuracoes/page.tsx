@@ -79,7 +79,7 @@ export default function ConfiguracoesPage() {
                 <button
                     onClick={handleSave}
                     disabled={loading}
-                    className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-black shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50"
+                    className="px-8 py-3 bg-primary text-white rounded-2xl text-sm font-black shadow-xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 border border-white/20"
                 >
                     {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                     SALVAR ALTERAÇÕES
@@ -190,6 +190,18 @@ export default function ConfiguracoesPage() {
                             Horário de Funcionamento (Configurável via Admin)
                         </h3>
                         <p className="text-sm font-medium">Os horários serão usados para validar agendamentos automáticos em breve.</p>
+                    </div>
+
+                    {/* Bottom Save Button */}
+                    <div className="flex justify-end pt-4">
+                        <button
+                            onClick={handleSave}
+                            disabled={loading}
+                            className="px-12 py-4 bg-primary text-white rounded-[2rem] text-lg font-black shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
+                        >
+                            {loading ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}
+                            SALVAR TUDO AGORA
+                        </button>
                     </div>
                 </div>
             </div>
