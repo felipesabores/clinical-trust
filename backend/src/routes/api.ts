@@ -6,9 +6,12 @@ import { CustomerController } from '../controllers/CustomerController';
 import { TenantController } from '../controllers/TenantController';
 import { StaffController } from '../controllers/StaffController';
 import { TransactionController } from '../controllers/TransactionController';
-import { ProductController } from '../controllers/ProductController'; // Added ProductController import
+import { ProductController } from '../controllers/ProductController';
+import { UploadController } from '../controllers/UploadController';
+import multer from 'multer';
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Config / White Label
 router.get('/config', TenantController.getConfig);
@@ -57,6 +60,9 @@ router.get('/cameras', CameraController.list);
 router.post('/cameras', CameraController.create);
 router.patch('/cameras/:id', CameraController.update);
 router.delete('/cameras/:id', CameraController.delete);
+
+// Uploads
+router.post('/upload/avatar', upload.single('file'), UploadController.uploadAvatar);
 
 // Health Check
 router.get('/health', (req, res) => res.json({ status: 'ok', service: 'Banho e Tosa Backend' }));

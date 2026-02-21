@@ -38,6 +38,7 @@ const petTypes = [
 
 export default function PetModal({ isOpen, onClose, onSuccess, customerId, customerName, initialData }: PetModalProps) {
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         type: 'DOG',
@@ -59,6 +60,27 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
             setFormData({ name: '', type: 'DOG', breed: '', avatar_url: '', notes: '' });
         }
     }, [initialData, isOpen]);
+
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files?.[0]) return;
+
+        const file = e.target.files[0];
+        const fd = new FormData();
+        fd.append('file', file);
+
+        try {
+            setUploading(true);
+            const res = await axios.post(`${API}/api/upload/avatar`, fd, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setFormData(prev => ({ ...prev, avatar_url: res.data.url }));
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('Erro ao fazer upload do avatar');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const handleSubmit = async () => {
         if (!formData.name) return;
@@ -113,20 +135,25 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
                         {/* Avatar Picker Mock */}
                         <div className="flex justify-center">
                             <div className="relative group cursor-pointer">
-                                <div className="w-24 h-24 rounded-[2rem] bg-muted flex items-center justify-center border-2 border-dashed border-border group-hover:border-primary transition-all overflow-hidden">
+                                <div className="w-24 h-24 rounded-[2rem] bg-muted flex items-center justify-center border-2 border-dashed border-border group-hover:border-primary transition-all overflow-hidden relative">
+                                    <input
+                                        type="file"
+                                        onChange={handleUpload}
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                        accept="image/*"
+                                    />
                                     {formData.avatar_url ? (
                                         <img src={formData.avatar_url} className="w-full h-full object-cover" />
                                     ) : (
-                                        <Camera className="text-muted-foreground group-hover:text-primary transition-colors" size={32} />
+                                        <div className="flex flex-col items-center gap-1 opacity-40">
+                                            {uploading ? <Loader2 className="animate-spin text-primary" /> : <Camera size={32} />}
+                                            <span className="text-[8px] font-black uppercase">Upload</span>
+                                        </div>
                                     )}
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <p className="text-[8px] font-black uppercase text-white tracking-widest">{uploading ? 'UPLOADING...' : 'CHANGE_PHOTO'}</p>
+                                    </div>
                                 </div>
-                                <input
-                                    type="text"
-                                    placeholder="URL da Foto"
-                                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-border rounded-lg text-[8px] px-2 py-1 outline-none focus:border-primary w-20 text-center font-bold"
-                                    value={formData.avatar_url}
-                                    onChange={e => setFormData(prev => ({ ...prev, avatar_url: e.target.value }))}
-                                />
                             </div>
                         </div>
 

@@ -29,6 +29,7 @@ export default function EquipePage() {
     const [loading, setLoading] = useState(true);
     const [staff, setStaff] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [newMember, setNewMember] = useState({
         name: '',
         role: 'GROOMER',
@@ -53,6 +54,27 @@ export default function EquipePage() {
     useEffect(() => {
         if (tenantId) fetchStaff();
     }, [tenantId]);
+
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files?.[0]) return;
+
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            setUploading(true);
+            const res = await axios.post(`${API}/api/upload/avatar`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setNewMember({ ...newMember, avatar_url: res.data.url });
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('Erro ao fazer upload do avatar');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const handleCreate = async () => {
         try {
@@ -161,6 +183,28 @@ export default function EquipePage() {
                         </h2>
 
                         <div className="space-y-6">
+                            <div className="flex flex-col items-center mb-8">
+                                <div className="w-24 h-24 rounded-sm border border-primary/30 p-1 relative mb-4 group cursor-pointer overflow-hidden">
+                                    <input
+                                        type="file"
+                                        onChange={handleUpload}
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                        accept="image/*"
+                                    />
+                                    {newMember.avatar_url ? (
+                                        <img src={newMember.avatar_url} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                                    ) : (
+                                        <div className="w-full h-full bg-muted/20 flex items-center justify-center opacity-30">
+                                            {uploading ? <Loader2 className="animate-spin" /> : <Plus size={24} />}
+                                        </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all bg-black/40">
+                                        <p className="text-[8px] font-black uppercase text-white tracking-widest">{uploading ? 'UPLOADING...' : 'CHANGE_PHOTO'}</p>
+                                    </div>
+                                </div>
+                                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40 italic">ASSET_PHOTO_SCAN // MINIO_STORAGE</p>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="col-span-2 space-y-2">
                                     <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">Full Legal Name</label>
