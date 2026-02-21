@@ -122,7 +122,7 @@ export default function KanbanPage() {
 
     const handleWhatsAppShare = (app: any) => {
         const url = `${window.location.host}/live/${app.access_token}`;
-        const clinicName = config?.name || 'Clínica';
+        const clinicName = config?.name || 'Estética Pet';
         const message = `Olá! Aqui é da ${clinicName}. O banho do ${app.pet?.name} começou. Você pode acompanhar tudo ao vivo pelo link: https://${url}`;
         window.open(`https://wa.me/${app.pet?.customer?.phone}?text=${encodeURIComponent(message)}`, '_blank');
     };

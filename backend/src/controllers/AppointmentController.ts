@@ -68,7 +68,7 @@ export class AppointmentController {
                     tenantExists = await prisma.tenant.create({
                         data: {
                             id: tenant_id,
-                            name: 'Clínica Principal',
+                            name: 'Pet Shop / Estética Pet',
                             document: 'TEMP-' + uuidv4().substring(0, 8), // Garantir unicidade
                         }
                     });

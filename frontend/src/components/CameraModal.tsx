@@ -85,7 +85,7 @@ export default function CameraModal({ isOpen, onClose, onSuccess, initialData }:
                                 {initialData ? 'Editar Câmera' : 'Nova Câmera'}
                             </h2>
                             <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mt-1">
-                                Configuração de streaming clínico
+                                Configuração de monitoramento de banho e tosa
                             </p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-muted rounded-sm transition-colors text-muted-foreground">
@@ -120,7 +120,7 @@ export default function CameraModal({ isOpen, onClose, onSuccess, initialData }:
                                 />
                             </div>
                             <p className="text-[9px] text-muted-foreground italic ml-1">
-                                * A URL RTSP nunca é exposta ao cliente final.
+                                * A URL RTSP nunca é exposta ao tutor.
                             </p>
                         </div>
 
