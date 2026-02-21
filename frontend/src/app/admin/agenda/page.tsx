@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
     ChevronLeft,
     ChevronRight,
@@ -10,13 +11,14 @@ import {
     List,
     Calendar as CalendarIcon,
     Clock,
+    User,
+    ArrowRight,
+    Activity,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useTenant } from '@/context/TenantContext';
 
-const professionals = [
-    { name: 'Dr. Silva', color: 'bg-blue-500', border: 'border-blue-300', light: 'bg-blue-500/10' },
-    { name: 'Mariana', color: 'bg-pink-500', border: 'border-pink-300', light: 'bg-pink-500/10' },
-    { name: 'Ricardo', color: 'bg-indigo-500', border: 'border-indigo-300', light: 'bg-indigo-500/10' },
-];
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
@@ -26,232 +28,306 @@ const appointments = [
     { id: 3, pet: 'Luna', breed: 'Persa', owner: 'Regina Silva', professional: 'Mariana', time: '09:00', duration: 1.5, status: 'Concluído' },
 ];
 
+const COLORS = [
+    { color: 'bg-primary', border: 'border-primary/30', light: 'bg-primary/5' },
+    { color: 'bg-emerald-500', border: 'border-emerald-500/30', light: 'bg-emerald-500/5' },
+    { color: 'bg-amber-500', border: 'border-amber-500/30', light: 'bg-amber-500/5' },
+    { color: 'bg-rose-500', border: 'border-rose-500/30', light: 'bg-rose-500/5' },
+    { color: 'bg-indigo-500', border: 'border-indigo-500/30', light: 'bg-indigo-500/5' },
+];
+
 const statusBadgeClass: Record<string, string> = {
-    CheckedIn: 'bg-blue-100 text-blue-700',
-    Confirmado: 'bg-emerald-100 text-emerald-700',
-    Concluído: 'bg-slate-100 text-slate-500',
+    CheckedIn: 'bg-primary/10 text-primary border-primary/20',
+    Confirmado: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+    Concluído: 'bg-muted/50 text-muted-foreground border-border',
 };
 
 export default function AgendaPage() {
+    const { config } = useTenant();
+    const tenantId = config?.id;
     const [view, setView] = useState<'grid' | 'list'>('grid');
+    const [professionals, setProfessionals] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (tenantId) fetchStaff();
+    }, [tenantId]);
+
+    const fetchStaff = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get(`${API}/api/staff?tenantId=${tenantId}`);
+            const mapped = res.data.map((s: any, i: number) => ({
+                ...s,
+                ...COLORS[i % COLORS.length]
+            }));
+            setProfessionals(mapped);
+        } catch (error) {
+            console.error('Error fetching staff for agenda:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading && professionals.length === 0) return (
+        <div className="p-10 flex flex-col items-center justify-center min-h-[50vh] gap-4 text-muted-foreground">
+            <Activity className="animate-pulse text-primary" size={48} />
+            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Synchronizing Agenda Nodes...</span>
+        </div>
+    );
 
     return (
-        <div className="p-8 space-y-8">
+        <div className="p-8 space-y-8 bg-background min-h-screen flex flex-col">
             {/* Header */}
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Agenda Global</h1>
-                    <p className="text-muted-foreground mt-1 text-sm font-medium italic">
-                        Controle total dos serviços de hoje.
+                    <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 uppercase">
+                        <CalendarIcon className="text-primary" size={28} />
+                        Agenda Global
+                    </h1>
+                    <p className="text-muted-foreground mt-1 text-[10px] font-black uppercase tracking-widest italic opacity-70">
+                        Sincronização de Nodes e Procedimentos em Tempo Real.
                     </p>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                    <div className="flex bg-card border rounded-2xl p-1 shrink-0 gap-1">
+                <div className="flex flex-wrap gap-3">
+                    <div className="flex bg-muted/20 border border-border p-1 rounded-sm gap-1">
                         <button
                             onClick={() => setView('grid')}
-                            className={`p-2 rounded-xl transition-all ${view === 'grid' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                            className={cn(
+                                "p-2 rounded-sm transition-all",
+                                view === 'grid' ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
+                            )}
                         >
                             <LayoutGrid size={18} />
                         </button>
                         <button
                             onClick={() => setView('list')}
-                            className={`p-2 rounded-xl transition-all ${view === 'list' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                            className={cn(
+                                "p-2 rounded-sm transition-all",
+                                view === 'list' ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
+                            )}
                         >
                             <List size={18} />
                         </button>
                     </div>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-card border rounded-2xl text-sm font-semibold hover:bg-accent transition-colors shadow-sm">
-                        <Filter size={18} />
-                        Filtros
+                    <button className="flex items-center gap-2 px-6 py-2 bg-muted/20 border border-border rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-muted/30 transition-colors">
+                        <Filter size={16} /> FILTROS
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
-                        <Plus size={18} />
-                        Novo Agendamento
+                    <button className="flex items-center gap-2 px-8 py-2 bg-primary text-primary-foreground rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                        <Plus size={18} /> NOVO AGENDAMENTO
                     </button>
                 </div>
             </header>
 
-            {view === 'grid' ? (
-                <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-                    {/* Calendar Grid */}
-                    <div className="xl:col-span-3 bg-card border rounded-[2.5rem] shadow-sm overflow-hidden flex flex-col">
-                        {/* Toolbar */}
-                        <div className="p-6 border-b flex items-center justify-between flex-wrap gap-4">
-                            <div className="flex items-center gap-4">
-                                <h3 className="text-xl font-bold">20 de Fevereiro, 2026</h3>
-                                <div className="flex items-center gap-1 bg-muted p-1 rounded-xl">
-                                    <button className="p-1.5 hover:bg-card rounded-lg transition-colors">
-                                        <ChevronLeft size={16} />
-                                    </button>
-                                    <button className="p-1.5 hover:bg-card rounded-lg transition-colors">
-                                        <ChevronRight size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex gap-4">
-                                {professionals.map(p => (
-                                    <div key={p.name} className="flex items-center gap-2">
-                                        <div className={`w-2.5 h-2.5 rounded-full ${p.color}`} />
-                                        <span className="text-xs font-bold text-muted-foreground">{p.name}</span>
+            <div className="flex-1 min-h-0">
+                {view === 'grid' ? (
+                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 h-full">
+                        {/* Calendar Grid */}
+                        <div className="xl:col-span-3 hud-card overflow-hidden flex flex-col">
+                            {/* Toolbar */}
+                            <div className="p-6 border-b border-border/50 flex items-center justify-between flex-wrap gap-4 bg-muted/5">
+                                <div className="flex items-center gap-4">
+                                    <h3 className="text-lg font-black uppercase tracking-tight">20 de Fevereiro, 2026</h3>
+                                    <div className="flex items-center gap-1 bg-muted/30 border border-border/50 p-1 rounded-sm">
+                                        <button className="p-1.5 hover:bg-primary/20 rounded-sm transition-colors text-muted-foreground hover:text-primary">
+                                            <ChevronLeft size={16} />
+                                        </button>
+                                        <button className="p-1.5 hover:bg-primary/20 rounded-sm transition-colors text-muted-foreground hover:text-primary">
+                                            <ChevronRight size={16} />
+                                        </button>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Time Grid */}
-                        <div className="flex-1 overflow-auto p-6">
-                            <div className="relative border rounded-3xl overflow-hidden bg-slate-50/30">
-                                {/* Header row */}
-                                <div className="grid grid-cols-[80px_1fr_1fr_1fr] border-b bg-card font-bold text-[10px] uppercase tracking-wider text-muted-foreground">
-                                    <div className="p-4 border-r">Horário</div>
+                                </div>
+                                <div className="flex gap-6">
                                     {professionals.map(p => (
-                                        <div key={p.name} className="p-4 border-r last:border-r-0 text-center">
-                                            {p.name}
+                                        <div key={p.name} className="flex items-center gap-2">
+                                            <div className={cn("w-2 h-2 rounded-full", p.color)} />
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{p.name}</span>
                                         </div>
                                     ))}
                                 </div>
+                            </div>
 
-                                {/* Time Slots */}
-                                {timeSlots.map(time => (
-                                    <div key={time} className="grid grid-cols-[80px_1fr_1fr_1fr] border-b last:border-b-0 min-h-[100px]">
-                                        <div className="p-4 border-r bg-card text-xs font-bold text-slate-400 flex items-start justify-center pt-4">
-                                            {time}
-                                        </div>
-                                        {professionals.map(p => {
-                                            const appts = appointments.filter(
-                                                a => a.time === time && a.professional === p.name
-                                            );
-                                            return (
-                                                <div key={p.name} className="p-1 border-r last:border-r-0 relative group min-h-[100px]">
-                                                    {appts.map(a => (
-                                                        <div
-                                                            key={a.id}
-                                                            style={{ height: `${a.duration * 100}px` }}
-                                                            className={`absolute top-1 left-1 right-1 z-10 p-4 rounded-2xl border ${p.border} ${p.light} shadow-sm hover:shadow-md transition-all cursor-pointer`}
-                                                        >
-                                                            <div className="flex justify-between items-start gap-1 flex-wrap">
-                                                                <h4 className="font-bold text-sm">{a.pet}</h4>
-                                                                <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full ${statusBadgeClass[a.status] ?? 'bg-muted text-muted-foreground'}`}>
-                                                                    {a.status}
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-xs font-medium text-muted-foreground mt-1">{a.owner}</p>
-                                                            <div className="flex items-center gap-1.5 mt-3 text-[10px] font-bold text-muted-foreground uppercase">
-                                                                <CalendarIcon size={12} />
-                                                                {a.breed}
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    {/* Hover: add appointment */}
-                                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                                                        <div className="w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center shadow-lg border">
-                                                            <Plus size={16} className="text-primary" />
-                                                        </div>
-                                                    </div>
+                            {/* Time Grid Scrollable Area */}
+                            <div className="flex-1 overflow-auto custom-scrollbar">
+                                <div className="min-w-[800px]">
+                                    {/* Header row */}
+                                    <div className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-border/50 bg-muted/10 font-black text-[10px] uppercase tracking-widest text-muted-foreground sticky top-0 z-20">
+                                        <div className="p-4 border-r border-border/50 text-center bg-muted/10">Horário</div>
+                                        {professionals.map(p => (
+                                            <div key={p.name} className="p-4 border-r border-border/50 last:border-r-0 text-center bg-muted/10">
+                                                {p.name}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Time Slots */}
+                                    <div className="relative">
+                                        {timeSlots.map(time => (
+                                            <div key={time} className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-border/30 last:border-b-0 min-h-[120px]">
+                                                <div className="p-4 border-r border-border/50 bg-muted/5 text-[11px] font-black text-muted-foreground flex items-start justify-center pt-4 tabular-nums">
+                                                    {time}
                                                 </div>
-                                            );
-                                        })}
+                                                {professionals.map(p => {
+                                                    const appts = appointments.filter(
+                                                        a => a.time === time && a.professional === p.name
+                                                    );
+                                                    return (
+                                                        <div key={p.name} className="p-2 border-r border-border/30 last:border-r-0 relative group transition-colors hover:bg-primary/[0.01]">
+                                                            {appts.map(a => (
+                                                                <div
+                                                                    key={a.id}
+                                                                    style={{ height: `calc(${a.duration * 120}px - 16px)` }}
+                                                                    className={cn(
+                                                                        "absolute top-2 left-2 right-2 z-10 p-4 rounded-sm border shadow-xl transition-all cursor-pointer group/item",
+                                                                        p.border, p.light
+                                                                    )}
+                                                                >
+                                                                    <div className="flex justify-between items-start gap-2 mb-2">
+                                                                        <h4 className="font-black text-xs uppercase tracking-tight group-hover/item:text-primary transition-colors">{a.pet}</h4>
+                                                                        <span className={cn(
+                                                                            "text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm border whitespace-nowrap",
+                                                                            statusBadgeClass[a.status] || "bg-muted text-muted-foreground"
+                                                                        )}>
+                                                                            {a.status}
+                                                                        </span>
+                                                                    </div>
+                                                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60 mb-3 truncate">{a.owner}</p>
+                                                                    <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] border-t border-border/30 pt-3">
+                                                                        <ArrowRight size={10} className="text-primary" />
+                                                                        {a.breed}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                            {/* Hover: add appointment */}
+                                                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
+                                                                <button className="w-8 h-8 rounded-sm bg-primary/20 backdrop-blur-sm flex items-center justify-center border border-primary/30 shadow-2xl">
+                                                                    <Plus size={16} className="text-primary" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Sidebar panel */}
-                    <div className="space-y-6">
-                        <div className="bg-card border rounded-[2rem] p-6 shadow-sm">
-                            <h4 className="font-bold mb-4 flex items-center justify-between">
-                                Resumo do Dia
-                                <span className="text-[10px] text-muted-foreground underline decoration-primary underline-offset-4 cursor-pointer hover:text-primary transition-colors">
-                                    Ver Detalhes
-                                </span>
-                            </h4>
-                            <div className="space-y-3">
-                                {[
-                                    { label: 'Confirmados', value: '12', className: 'bg-slate-50 border-slate-100 text-foreground' },
-                                    { label: 'Finalizados', value: '08', className: 'bg-emerald-50 border-emerald-100 text-emerald-700' },
-                                    { label: 'Em Atraso', value: '02', className: 'bg-orange-50 border-orange-100 text-orange-600' },
-                                ].map(item => (
-                                    <div key={item.label} className={`flex justify-between items-center p-3 rounded-2xl border ${item.className}`}>
-                                        <span className="text-sm font-medium">{item.label}</span>
-                                        <span className="font-black text-lg">{item.value}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="bg-primary/5 border border-primary/10 rounded-[2rem] p-6">
-                            <h4 className="font-bold text-primary mb-2 flex items-center gap-2">
-                                <Clock size={16} />
-                                Dica Operacional
-                            </h4>
-                            <p className="text-sm text-primary/70 leading-relaxed italic">
-                                &quot;Lembre-se de confirmar os agendamentos de amanhã via WhatsApp até às 18h.&quot;
-                            </p>
-                        </div>
-
-                        {/* Next appointments */}
-                        <div className="bg-card border rounded-[2rem] p-6 shadow-sm space-y-4">
-                            <h4 className="font-bold">Próximos</h4>
-                            {appointments.map(a => (
-                                <div key={a.id} className="flex items-center gap-3 group cursor-pointer">
-                                    <div className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center shrink-0 text-xs font-black text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                                        {a.time.split(':')[0]}h
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="font-bold text-sm truncate">{a.pet}</p>
-                                        <p className="text-[10px] text-muted-foreground truncate">{a.owner} · {a.professional}</p>
-                                    </div>
-                                    <span className={`ml-auto text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full shrink-0 ${statusBadgeClass[a.status] ?? 'bg-muted text-muted-foreground'}`}>
-                                        {a.status}
-                                    </span>
                                 </div>
-                            ))}
+                            </div>
+                        </div>
+
+                        {/* Sidebar panel */}
+                        <div className="space-y-6 flex flex-col min-h-0 overflow-y-auto custom-scrollbar pr-2">
+                            <div className="hud-card p-6 border-l-4 border-primary">
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-center justify-between">
+                                    Resumo da Operação
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                </h4>
+                                <div className="space-y-4">
+                                    {[
+                                        { label: 'Confirmados', value: '12', color: 'text-foreground' },
+                                        { label: 'Finalizados', value: '08', color: 'text-emerald-500' },
+                                        { label: 'Em Atraso', value: '02', color: 'text-red-500' },
+                                    ].map(item => (
+                                        <div key={item.label} className="bg-muted/10 border border-border/50 p-4 rounded-sm flex justify-between items-center group hover:bg-muted/20 transition-all">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.label}</span>
+                                            <span className={cn("font-black text-xl tabular-nums", item.color)}>{item.value}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="hud-card p-6 bg-primary/[0.03] border-border/50 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+                                <h4 className="text-[10px] font-black text-primary mb-4 flex items-center gap-2 uppercase tracking-[0.2em]">
+                                    <Clock size={14} />
+                                    Node de Lembrete
+                                </h4>
+                                <p className="text-[11px] font-black text-muted-foreground leading-relaxed uppercase tracking-widest opacity-80 italic">
+                                    "Confirmar agendamentos de amanhã via canal WhatsApp até o fechamento."
+                                </p>
+                            </div>
+
+                            {/* Next appointments */}
+                            <div className="hud-card p-6 border-border/50 flex-1 min-h-[300px]">
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">Fila de Entrada</h4>
+                                <div className="space-y-4">
+                                    {appointments.map(a => (
+                                        <div key={a.id} className="flex items-center gap-4 group cursor-pointer border-b border-border/30 pb-4 last:border-0 hover:border-primary/50 transition-colors">
+                                            <div className="w-12 h-12 rounded-sm bg-muted/20 border border-border flex items-center justify-center shrink-0 text-[11px] font-black text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary group-hover:border-primary/50 transition-all tabular-nums">
+                                                {a.time.split(':')[0]}H
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-black text-xs uppercase tracking-tight truncate group-hover:text-primary transition-colors">{a.pet}</p>
+                                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest truncate opacity-60 mt-1">
+                                                    {a.owner} · {a.professional}
+                                                </p>
+                                            </div>
+                                            <div className={cn(
+                                                "w-1.5 h-6 rounded-full shrink-0",
+                                                a.status === 'CheckedIn' ? 'bg-primary' : a.status === 'Confirmado' ? 'bg-emerald-500' : 'bg-muted'
+                                            )} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            ) : (
-                /* List view */
-                <div className="bg-card border rounded-[2.5rem] shadow-sm overflow-hidden">
-                    <table className="w-full text-sm">
-                        <thead className="border-b bg-muted/30">
-                            <tr className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                                <th className="text-left p-5">Horário</th>
-                                <th className="text-left p-5">Pet</th>
-                                <th className="text-left p-5">Raça</th>
-                                <th className="text-left p-5">Tutor</th>
-                                <th className="text-left p-5">Profissional</th>
-                                <th className="text-left p-5">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border">
-                            {appointments.map(a => {
-                                const prof = professionals.find(p => p.name === a.professional);
-                                return (
-                                    <tr key={a.id} className="hover:bg-muted/30 transition-colors group cursor-pointer">
-                                        <td className="p-5 font-bold tabular-nums">{a.time}</td>
-                                        <td className="p-5 font-bold group-hover:text-primary transition-colors">{a.pet}</td>
-                                        <td className="p-5 text-muted-foreground italic">{a.breed}</td>
-                                        <td className="p-5 font-medium">{a.owner}</td>
-                                        <td className="p-5">
-                                            <span className={`flex items-center gap-1.5 text-xs font-bold`}>
-                                                <span className={`w-2 h-2 rounded-full ${prof?.color ?? 'bg-slate-400'}`} />
-                                                {a.professional}
-                                            </span>
-                                        </td>
-                                        <td className="p-5">
-                                            <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full ${statusBadgeClass[a.status] ?? 'bg-muted text-muted-foreground'}`}>
-                                                {a.status}
-                                            </span>
-                                        </td>
+                ) : (
+                    /* List view */
+                    <div className="hud-card overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead className="border-b border-border/50 bg-muted/10">
+                                    <tr className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">
+                                        <th className="p-5">HORÁRIO</th>
+                                        <th className="p-5">PET / RAÇA</th>
+                                        <th className="p-5">TUTOR RESPONSÁVEL</th>
+                                        <th className="p-5">PROFISSIONAL / NODE</th>
+                                        <th className="p-5 text-center">STATUS ATUAL</th>
+                                        <th className="p-5" />
                                     </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+                                </thead>
+                                <tbody className="divide-y divide-border/30">
+                                    {appointments.map(a => {
+                                        const prof = professionals.find(p => p.name === a.professional);
+                                        return (
+                                            <tr key={a.id} className="hover:bg-primary/[0.02] transition-colors group cursor-pointer border-l-2 border-transparent hover:border-primary">
+                                                <td className="p-5 font-black text-xs tabular-nums text-muted-foreground">{a.time}</td>
+                                                <td className="p-5">
+                                                    <p className="font-black text-xs uppercase tracking-tight group-hover:text-primary transition-colors">{a.pet}</p>
+                                                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-0.5 opacity-60 italic">{a.breed}</p>
+                                                </td>
+                                                <td className="p-5 font-black text-[10px] uppercase tracking-wide">{a.owner}</td>
+                                                <td className="p-5">
+                                                    <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                                                        <div className={cn("w-2 h-2 rounded-full", prof?.color || "bg-muted")} />
+                                                        {a.professional}
+                                                    </span>
+                                                </td>
+                                                <td className="p-5">
+                                                    <div className="flex justify-center">
+                                                        <span className={cn(
+                                                            "text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm border whitespace-nowrap",
+                                                            statusBadgeClass[a.status] || "bg-muted text-muted-foreground"
+                                                        )}>
+                                                            {a.status}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="p-5 text-right">
+                                                    <button className="p-2 text-muted-foreground/30 hover:text-primary transition-colors">
+                                                        <User size={14} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

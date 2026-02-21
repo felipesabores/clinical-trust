@@ -20,6 +20,9 @@ model Tenant {
   customers     Customer[]
   cameras       Camera[]
   appointments  Appointment[]
+  staff         Staff[]
+  transactions  Transaction[]
+  products      Product[]
 }
 
 model Customer {
@@ -78,4 +81,53 @@ model Appointment {
   access_token      String?           @unique // UUID for magic link
   token_expires_at DateTime?
   created_at        DateTime          @default(now())
+}
+
+model Staff {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  tenant      Tenant   @relation(fields: [tenant_id], references: [id])
+  name        String
+  role        String   // VETERINARIAN, GROOMER, RECEPTIONIST, ADMIN
+  phone       String?
+  email       String?
+  avatar_url  String?
+  commission  Float?   @default(0)
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model Transaction {
+  id          String         @id @default(uuid())
+  tenant_id   String
+  tenant      Tenant         @relation(fields: [tenant_id], references: [id])
+  type        TransactionType
+  category    String         // SERVICE, PRODUCT, RENT, SALARY, TAX, etc.
+  description String
+  amount      Float
+  date        DateTime       @default(now())
+  created_at  DateTime       @default(now())
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  tenant_id   String
+  tenant      Tenant   @relation(fields: [tenant_id], references: [id])
+  name        String
+  category    String
+  stock       Float    @default(0)
+  min_stock   Float    @default(0)
+  unit        String   // UN, L, KG, etc.
+  price       Float
+  sku         String?
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@index([tenant_id])
 }

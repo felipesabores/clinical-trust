@@ -35,7 +35,6 @@ const statuses = [
 ] as const;
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
 
 export default function KanbanPage() {
     const [board, setBoard] = useState<Record<string, any[]>>({});
@@ -47,8 +46,9 @@ export default function KanbanPage() {
     const { config } = useTenant();
 
     const fetchKanban = async () => {
+        if (!config?.id) return;
         try {
-            const res = await axios.get(`${API}/api/appointments/kanban?tenantId=${TENANT_ID}`);
+            const res = await axios.get(`${API}/api/appointments/kanban?tenantId=${config.id}`);
             setBoard(res.data || {});
         } catch (e) {
             console.error('Erro ao carregar kanban', e);
@@ -58,8 +58,9 @@ export default function KanbanPage() {
     };
 
     const fetchCameras = async () => {
+        if (!config?.id) return;
         try {
-            const res = await axios.get(`${API}/api/cameras?tenantId=${TENANT_ID}`);
+            const res = await axios.get(`${API}/api/cameras?tenantId=${config.id}`);
             setCameras(res.data || []);
         } catch (e) {
             console.error('Erro ao carregar câmeras', e);

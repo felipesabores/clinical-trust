@@ -4,6 +4,9 @@ import { LiveController } from '../controllers/LiveController';
 import { CameraController } from '../controllers/CameraController';
 import { CustomerController } from '../controllers/CustomerController';
 import { TenantController } from '../controllers/TenantController';
+import { StaffController } from '../controllers/StaffController';
+import { TransactionController } from '../controllers/TransactionController';
+import { ProductController } from '../controllers/ProductController'; // Added ProductController import
 
 const router = Router();
 
@@ -28,11 +31,32 @@ router.post('/customers/:customer_id/pets', CustomerController.addPet);
 router.patch('/pets/:petId', CustomerController.updatePet);
 router.delete('/pets/:petId', CustomerController.deletePet);
 
+// Staff / Team Routes
+router.get('/staff', StaffController.list);
+router.post('/staff', StaffController.create);
+router.patch('/staff/:id', StaffController.update);
+router.delete('/staff/:id', StaffController.delete);
+
+// Financial / Transaction Routes
+router.get('/transactions', TransactionController.list);
+router.get('/transactions/stats', TransactionController.getStats);
+router.post('/transactions', TransactionController.create);
+router.delete('/transactions/:id', TransactionController.delete);
+
+// Products
+router.get('/products', ProductController.list);
+router.post('/products', ProductController.create);
+router.patch('/products/:id', ProductController.update);
+router.delete('/products/:id', ProductController.delete);
+
 // Public Live Routes
 router.get('/live/:token', LiveController.getLiveSession);
 
 // Camera Routes
 router.get('/cameras', CameraController.list);
+router.post('/cameras', CameraController.create);
+router.patch('/cameras/:id', CameraController.update);
+router.delete('/cameras/:id', CameraController.delete);
 
 // Health Check
 router.get('/health', (req, res) => res.json({ status: 'ok', service: 'Banho e Tosa Backend' }));

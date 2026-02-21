@@ -18,20 +18,17 @@ import {
     Calendar,
     Dog,
     Cat,
-    Rabbit
+    Rabbit,
+    ShieldCheck,
+    Dna,
 } from 'lucide-react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/lib/utils';
 
 import CustomerModal from '@/components/CustomerModal';
 import PetModal from '@/components/PetModal';
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+import { useTenant } from '@/context/TenantContext';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
 
 const petIconMap: Record<string, any> = {
     DOG: Dog,
@@ -41,6 +38,8 @@ const petIconMap: Record<string, any> = {
 };
 
 export default function ClientesPage() {
+    const { config } = useTenant();
+    const tenantId = config?.id;
     const [customers, setCustomers] = useState<any[]>([]);
     const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -53,11 +52,11 @@ export default function ClientesPage() {
     const [editingPet, setEditingPet] = useState<any>(null);
 
     const fetchCustomers = async (q = '') => {
+        if (!tenantId) return;
         try {
             setLoading(true);
-            const res = await axios.get(`${API}/api/customers?tenantId=${TENANT_ID}&q=${q}`);
+            const res = await axios.get(`${API}/api/customers?tenantId=${tenantId}&q=${q}`);
             setCustomers(res.data || []);
-            // Auto-select first if none selected
             if (res.data.length > 0 && !selectedCustomer) {
                 fetchDetail(res.data[0].id);
             }
@@ -101,15 +100,13 @@ export default function ClientesPage() {
 
     useEffect(() => {
         setIsMounted(true);
-        fetchCustomers();
     }, []);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (isMounted) fetchCustomers(searchQuery);
-        }, 400);
-        return () => clearTimeout(timer);
-    }, [searchQuery]);
+        if (isMounted && tenantId) {
+            fetchCustomers(searchQuery);
+        }
+    }, [tenantId, searchQuery, isMounted]);
 
     if (!isMounted) return null;
 
@@ -144,17 +141,17 @@ export default function ClientesPage() {
 
             <header className="flex justify-between items-center mb-8 shrink-0">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
-                        <UserPlus className="text-primary" size={28} />
-                        Base de Clientes
+                    <h1 className="text-4xl font-black tracking-tighter flex items-center gap-3 uppercase">
+                        <UserPlus className="text-primary" size={32} />
+                        Diretório <span className="text-primary">Tutores</span>
                     </h1>
-                    <p className="text-muted-foreground font-medium italic">Gerencie tutores e seus pets</p>
+                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60 italic">SISTEMA DE GESTÃO CLÍNICA v1.0.5 // NODE 04</p>
                 </div>
                 <button
                     onClick={() => setIsCustomerModalOpen(true)}
-                    className="bg-primary text-primary-foreground px-8 py-3 rounded-2xl font-black hover:scale-105 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+                    className="bg-primary text-primary-foreground px-8 py-3 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 flex items-center gap-3 border border-primary/50"
                 >
-                    <Plus size={18} /> CADASTRAR NOVO TUTOR
+                    <Plus size={18} /> NOVO REGISTRO CLÍNICO
                 </button>
             </header>
 
@@ -162,19 +159,20 @@ export default function ClientesPage() {
                 {/* List Side */}
                 <div className="flex-[1.5] flex flex-col min-w-0">
                     <div className="relative mb-6">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" size={20} />
+                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-primary opacity-30" size={18} />
                         <input
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Buscar por nome ou telefone..."
-                            className="w-full pl-12 pr-4 py-4 bg-card border border-border rounded-2xl focus:border-primary transition-all outline-none font-bold shadow-sm"
+                            placeholder="PESQUISAR POR NOME OU ID..."
+                            className="w-full pl-14 pr-5 py-5 bg-muted/10 border border-border/50 rounded-sm focus:border-primary/50 transition-all outline-none font-black uppercase text-[10px] tracking-widest shadow-sm placeholder:opacity-30"
                         />
                     </div>
 
                     <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
                         {loading && customers.length === 0 ? (
-                            <div className="flex items-center justify-center py-20 text-muted-foreground">
-                                <Loader2 className="animate-spin mr-2" /> Carregando base...
+                            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-4">
+                                <Loader2 className="animate-spin text-primary" size={40} />
+                                <span className="text-[10px] font-black uppercase tracking-widest">Sincronizando base de dados...</span>
                             </div>
                         ) : (
                             customers.map(customer => (
@@ -182,38 +180,40 @@ export default function ClientesPage() {
                                     key={customer.id}
                                     onClick={() => fetchDetail(customer.id)}
                                     className={cn(
-                                        "bg-card border p-5 rounded-[2rem] cursor-pointer transition-all hover:shadow-md flex items-center justify-between group",
-                                        selectedCustomer?.id === customer.id ? "border-primary ring-1 ring-primary/20 bg-primary/[0.02]" : "border-border hover:border-primary/30"
+                                        "hud-card p-5 cursor-pointer transition-all flex items-center justify-between group",
+                                        selectedCustomer?.id === customer.id ? "border-primary bg-primary/[0.03] ring-1 ring-primary/20 shadow-lg shadow-primary/5" : "hover:border-primary/30"
                                     )}
                                 >
-                                    <div className="flex gap-4 items-center min-w-0">
+                                    <div className="flex gap-5 items-center min-w-0">
                                         <div className={cn(
-                                            "w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-colors shrink-0 overflow-hidden text-white",
-                                            selectedCustomer?.id === customer.id ? "bg-primary" : "bg-muted text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
+                                            "w-12 h-12 rounded-sm flex items-center justify-center text-lg font-black transition-all shrink-0 overflow-hidden border border-border/50",
+                                            selectedCustomer?.id === customer.id ? "bg-primary text-white border-primary" : "bg-muted/30 text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary group-hover:border-primary/30"
                                         )}>
                                             {customer.avatar_url ? (
                                                 <img src={customer.avatar_url} className="w-full h-full object-cover" alt={customer.name} />
                                             ) : (
-                                                customer.name[0]
+                                                customer.name[0]?.toUpperCase()
                                             )}
                                         </div>
-                                        <div className="min-w-0 flex-1">
-                                            <h4 className="font-bold text-sm truncate uppercase tracking-tight">{customer.name}</h4>
-                                            <p className="text-[11px] text-muted-foreground font-medium flex items-center gap-2">
-                                                <Phone size={10} /> {customer.phone}
+                                        <div className="min-w-0">
+                                            <h4 className="font-black text-[11px] truncate uppercase tracking-[0.1em] group-hover:text-primary transition-colors">{customer.name}</h4>
+                                            <div className="flex items-center gap-3 mt-1.5">
+                                                <p className="text-[9px] text-muted-foreground font-black flex items-center gap-1.5 uppercase tracking-widest opacity-60">
+                                                    <Phone size={10} className="text-primary/50" /> {customer.phone}
+                                                </p>
                                                 <span className="w-1 h-1 bg-border rounded-full" />
-                                                <span className="font-black text-primary/70">{customer.pets?.length || 0} PETS</span>
-                                            </p>
+                                                <span className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20">{customer.pets?.length || 0} PACIENTES</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setEditingCustomer(customer);
                                                 setIsCustomerModalOpen(true);
                                             }}
-                                            className="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors"
+                                            className="p-2.5 bg-muted/10 hover:bg-primary/20 rounded-sm text-primary transition-colors border border-border/50 hover:border-primary/30"
                                         >
                                             <Edit3 size={16} />
                                         </button>
@@ -222,7 +222,7 @@ export default function ClientesPage() {
                                                 e.stopPropagation();
                                                 handleDeleteCustomer(customer.id, customer.name);
                                             }}
-                                            className="p-2 hover:bg-red-50 rounded-lg text-red-400 hover:text-red-500 transition-colors"
+                                            className="p-2.5 bg-red-500/5 hover:bg-red-500/20 rounded-sm text-red-400 hover:text-red-500 transition-colors border border-red-500/10 hover:border-red-500/30"
                                         >
                                             <Trash2 size={16} />
                                         </button>
@@ -231,125 +231,156 @@ export default function ClientesPage() {
                             ))
                         )}
                         {customers.length === 0 && !loading && (
-                            <div className="text-center py-20 text-muted-foreground border-2 border-dashed border-border rounded-[2rem]">
-                                Nenhum cliente encontrado com "{searchQuery}"
+                            <div className="text-center py-24 text-muted-foreground border border-dashed border-border/20 rounded-sm bg-muted/5">
+                                <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Nenhum registro encontrado no sistema</p>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Detail Side */}
-                <div className="flex-[1.2] min-w-0">
+                <div className="flex-[1.2] min-w-0 h-full">
                     {selectedCustomer ? (
-                        <div className="h-full bg-card border border-border rounded-[2.5rem] flex flex-col overflow-hidden shadow-2xl shadow-primary/5">
-                            <div className="p-8 pb-4 text-center">
-                                <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/5 rounded-[2rem] mx-auto flex items-center justify-center mb-4 border border-primary/10 overflow-hidden">
-                                    {selectedCustomer.avatar_url ? (
-                                        <img src={selectedCustomer.avatar_url} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <UserPlus className="text-primary" size={32} />
-                                    )}
-                                </div>
-                                <h3 className="text-2xl font-black uppercase tracking-tighter leading-none mb-1">{selectedCustomer.name}</h3>
-                                <p className="text-xs font-bold text-muted-foreground flex items-center justify-center gap-2">
-                                    <Phone size={12} /> {selectedCustomer.phone}
-                                </p>
+                        <div className="h-full bg-card border border-border/50 rounded-sm flex flex-col overflow-hidden shadow-2xl shadow-primary/5 border-t-2 border-primary relative">
+                            {/* Technical Overlay */}
+                            <div className="absolute top-0 right-0 p-4 pointer-events-none opacity-10">
+                                <Dna size={80} className="text-primary" />
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-8 pt-4 space-y-6 custom-scrollbar">
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                        <h5 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Pets Vinculados</h5>
+                            <div className="p-8 pb-8 border-b border-border/30 bg-muted/5 relative">
+                                <div className="flex items-start gap-7">
+                                    <div className="w-24 h-24 bg-gradient-to-br from-muted/50 to-muted/20 rounded-sm flex items-center justify-center border-2 border-border/50 overflow-hidden shrink-0 shadow-inner group relative">
+                                        {selectedCustomer.avatar_url ? (
+                                            <img src={selectedCustomer.avatar_url} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <span className="text-3xl font-black text-muted-foreground opacity-30">{selectedCustomer.name[0]?.toUpperCase()}</span>
+                                        )}
+                                        <div className="absolute inset-0 border-2 border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <span className="text-[8px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20 uppercase tracking-widest">REGISTRADO</span>
+                                            <span className="text-[8px] font-black text-muted-foreground opacity-40 uppercase tracking-widest">ID {selectedCustomer.id.slice(0, 8)}</span>
+                                        </div>
+                                        <h3 className="text-3xl font-black uppercase tracking-tighter leading-none mb-4 truncate text-foreground/90">{selectedCustomer.name}</h3>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center gap-4">
+                                                <p className="text-[10px] font-black text-primary flex items-center gap-2 uppercase tracking-widest bg-primary/5 px-3 py-1.5 border border-primary/10 rounded-sm">
+                                                    <Phone size={14} className="opacity-50" /> {selectedCustomer.phone}
+                                                </p>
+                                                <ShieldCheck size={18} className="text-primary/30" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar-thin">
+                                <section className="space-y-6">
+                                    <div className="flex justify-between items-center border-b border-border/30 pb-3">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                                            <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Pacientes Vinculados</h5>
+                                        </div>
                                         <button
                                             onClick={() => setIsPetModalOpen(true)}
-                                            className="text-[10px] font-black uppercase text-primary hover:underline flex items-center gap-1"
+                                            className="px-4 py-2 bg-muted/20 text-primary text-[9px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-primary hover:text-white transition-all flex items-center gap-2 border border-border/50 hover:border-primary"
                                         >
-                                            <Plus size={12} /> Adicionar Pet
+                                            <Plus size={12} /> Novo Paciente
                                         </button>
                                     </div>
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-4">
                                         {selectedCustomer.pets?.map((pet: any) => {
                                             const PetIcon = petIconMap[pet.type] || Info;
                                             return (
-                                                <div key={pet.id} className="p-5 bg-muted/30 rounded-3xl border border-border group hover:border-primary/20 transition-all">
-                                                    <div className="flex justify-between items-start mb-4">
-                                                        <div className="flex gap-3 items-center">
-                                                            <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center overflow-hidden border border-border">
+                                                <div key={pet.id} className="hud-card p-6 group relative overflow-hidden bg-gradient-to-br from-white to-muted/5">
+                                                    <div className="flex justify-between items-center mb-5">
+                                                        <div className="flex gap-5 items-center min-w-0">
+                                                            <div className="w-14 h-14 bg-muted/20 rounded-sm flex items-center justify-center overflow-hidden border border-border/50 shrink-0 group-hover:border-primary/40 transition-colors">
                                                                 {pet.avatar_url ? (
                                                                     <img src={pet.avatar_url} className="w-full h-full object-cover" />
                                                                 ) : (
-                                                                    <PetIcon size={22} className="text-primary" />
+                                                                    <PetIcon size={24} className="text-primary/30 group-hover:text-primary transition-colors" />
                                                                 )}
                                                             </div>
-                                                            <div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <p className="font-black text-sm uppercase leading-none">{pet.name}</p>
-                                                                    <span className="text-[8px] px-2 py-0.5 bg-background border border-border rounded-full font-black text-muted-foreground">{pet.type}</span>
+                                                            <div className="min-w-0">
+                                                                <div className="flex items-center gap-3">
+                                                                    <p className="font-black text-sm uppercase tracking-tight group-hover:text-primary transition-colors truncate">{pet.name}</p>
+                                                                    <span className="text-[8px] px-2 py-0.5 bg-muted/50 border border-border rounded-sm font-black text-muted-foreground uppercase opacity-60">{pet.type}</span>
                                                                 </div>
-                                                                <p className="text-[10px] font-bold text-muted-foreground mt-1">{pet.breed || 'SRD'}</p>
+                                                                <p className="text-[9px] font-black text-muted-foreground tracking-[0.2em] uppercase mt-2 italic opacity-40 border-l border-primary/20 pl-2">{pet.breed || 'SRD'}</p>
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center gap-1">
+                                                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
                                                             <button
                                                                 onClick={() => {
                                                                     setEditingPet(pet);
                                                                     setIsPetModalOpen(true);
                                                                 }}
-                                                                className="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors"
+                                                                className="p-2.5 bg-muted/30 hover:bg-primary/20 rounded-sm text-primary transition-colors border border-border/50"
                                                             >
                                                                 <Edit3 size={14} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDeletePet(pet.id, pet.name)}
-                                                                className="p-2 hover:bg-red-50 rounded-lg text-red-400 hover:text-red-500 transition-colors"
+                                                                className="p-2.5 bg-red-500/5 hover:bg-red-500/20 rounded-sm text-red-400 border border-red-500/10 transition-colors"
                                                             >
                                                                 <Trash2 size={14} />
                                                             </button>
-                                                            {pet.appointments?.[0] && (
-                                                                <div className="text-right ml-2 border-l pl-3 border-border">
-                                                                    <p className="text-[8px] font-black text-muted-foreground uppercase mb-1">Última Visita</p>
-                                                                    <p className="text-[10px] font-bold">{new Date(pet.appointments[0].scheduled_at).toLocaleDateString()}</p>
-                                                                </div>
-                                                            )}
                                                         </div>
                                                     </div>
 
-                                                    {pet.notes && (
-                                                        <div className="flex gap-2 p-3 bg-primary/5 rounded-2xl border border-primary/10">
-                                                            <AlertCircle size={14} className="text-primary shrink-0" />
-                                                            <p className="text-[10px] font-medium leading-relaxed italic">{pet.notes}</p>
+                                                    {pet.notes ? (
+                                                        <div className="p-4 bg-primary/[0.02] border-l-3 border-primary/30 rounded-r-sm relative group/notes">
+                                                            <p className="text-[10px] font-bold leading-relaxed italic text-muted-foreground opacity-80">"{pet.notes}"</p>
+                                                            <AlertCircle size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-primary/20 group-hover/notes:text-primary/40 transition-colors" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-2 opacity-20 text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground border-t border-border/50 pt-4">
+                                                            <HistoryIcon size={12} /> Nenhuma observação registrada
                                                         </div>
                                                     )}
                                                 </div>
                                             );
                                         })}
                                         {selectedCustomer.pets?.length === 0 && (
-                                            <div className="p-8 text-center border-2 border-dashed border-border rounded-3xl opacity-50">
-                                                <Dog className="mx-auto mb-2 opacity-20" size={32} />
-                                                <p className="text-xs font-black uppercase text-muted-foreground">Nenhum pet cadastrado</p>
+                                            <div className="py-16 text-center border border-dashed border-border/30 rounded-sm bg-muted/5">
+                                                <Dog className="mx-auto mb-3 opacity-10" size={40} />
+                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/30">Aguardando Pacientes</p>
                                             </div>
                                         )}
                                     </div>
-                                </div>
+                                </section>
 
-                                <div className="p-6 bg-accent/30 rounded-3xl border border-border text-center">
-                                    <HistoryIcon size={24} className="mx-auto text-muted-foreground mb-3" />
-                                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Histórico de Agendamentos</p>
-                                    <p className="text-[10px] text-muted-foreground/60 mt-2">Em breve: Visão completa de todas as visitas e serviços realizados.</p>
-                                </div>
+                                <section className="p-6 bg-muted/5 border border-border/30 rounded-sm border-dashed relative group">
+                                    <div className="absolute top-0 right-0 p-3 opacity-5">
+                                        <HistoryIcon size={40} />
+                                    </div>
+                                    <div className="flex items-center gap-3 mb-5">
+                                        <div className="w-8 h-8 rounded-sm bg-muted/10 flex items-center justify-center border border-border/50">
+                                            <HistoryIcon size={16} className="text-primary/50" />
+                                        </div>
+                                        <h6 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-70">Logs de Atividade</h6>
+                                    </div>
+                                    <p className="text-[10px] text-muted-foreground font-medium leading-relaxed opacity-60 italic">
+                                        O histórico completo de agendamentos, transações financeiras e registros clínicos aparecerá aqui conforme o sistema opera em tempo real.
+                                    </p>
+                                </section>
                             </div>
 
-                            <div className="p-8 pt-0 mt-auto">
-                                <button className="w-full py-4 bg-primary text-primary-foreground rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2">
-                                    <Calendar size={18} /> NOVO AGENDAMENTO
+                            <div className="p-8 pt-0 mt-auto shrink-0">
+                                <button className="w-full py-5 bg-foreground text-background rounded-sm font-black text-[11px] uppercase tracking-[0.3em] shadow-2xl hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-4 group border border-transparent hover:border-primary-foreground/20">
+                                    <Calendar size={20} className="group-hover:rotate-12 group-hover:scale-110 transition-transform text-primary" />
+                                    AGENDAR NOVO PROCEDIMENTO
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <div className="h-full border border-border border-dashed rounded-[2.5rem] flex flex-col items-center justify-center p-12 text-center text-muted-foreground">
-                            <UserPlus size={48} className="mb-4 opacity-10" />
-                            <p className="font-bold text-sm">Selecione um cliente para ver os detalhes e seus pets.</p>
+                        <div className="h-full border-2 border-border/30 border-dashed rounded-sm flex flex-col items-center justify-center p-12 text-center text-muted-foreground/20 bg-muted/[0.02]">
+                            <UserPlus size={80} className="mb-6 opacity-5 rotate-12" />
+                            <p className="font-black text-[11px] uppercase tracking-[0.4em]">Aguardando Seleção de Node</p>
+                            <div className="w-20 h-[1px] bg-border/50 mt-4" />
                         </div>
                     )}
                 </div>
