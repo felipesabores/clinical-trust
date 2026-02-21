@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id           String        @id @default(uuid())
+  name         String
+  document     String        @unique
+  created_at   DateTime      @default(now())
+  customers    Customer[]
+  cameras      Camera[]
+  appointments Appointment[]
+}
+
+model Customer {
+  id         String   @id @default(uuid())
+  tenant_id  String
+  tenant     Tenant   @relation(fields: [tenant_id], references: [id])
+  name       String
+  phone      String   // WhatsApp format
+  created_at DateTime @default(now())
+  pets       Pet[]
+}
+
+model Pet {
+  id           String        @id @default(uuid())
+  customer_id  String
+  customer     Customer      @relation(fields: [customer_id], references: [id])
+  name         String
+  breed        String?
+  notes        String?
+  created_at   DateTime      @default(now())
+  appointments Appointment[]
+}
+
+model Camera {
+  id           String        @id @default(uuid())
+  tenant_id    String
+  tenant       Tenant        @relation(fields: [tenant_id], references: [id])
+  name         String
+  rtsp_url     String
+  is_active    Boolean       @default(true)
+  appointments Appointment[]
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  RECEPTION
+  BATHING
+  GROOMING
+  DRYING
+  READY
+}
+
+model Appointment {
+  id                String            @id @default(uuid())
+  tenant_id         String
+  tenant            Tenant            @relation(fields: [tenant_id], references: [id])
+  pet_id            String
+  pet               Pet               @relation(fields: [pet_id], references: [id])
+  camera_id         String?
+  camera            Camera?           @relation(fields: [camera_id], references: [id])
+  status            AppointmentStatus @default(SCHEDULED)
+  scheduled_at      DateTime
+  access_token      String?           @unique // UUID for magic link
+  token_expires_at DateTime?
+  created_at        DateTime          @default(now())
+}
