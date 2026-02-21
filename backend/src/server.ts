@@ -9,9 +9,13 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: '*', // In production, we can replace this with a list of allowed domains
+    origin: (origin, callback) => {
+        // Permitir todas as origens (dinâmico) para resolver problemas com Traefik/Subdomínios
+        callback(null, true);
+    },
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id']
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id', 'Accept', 'Origin'],
+    credentials: true,
 }));
 app.use(express.json());
 
