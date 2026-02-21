@@ -39,11 +39,14 @@ export function Sidebar() {
     const { config, loading } = useTenant();
 
     return (
-        <aside className="w-64 h-screen bg-white dark:bg-[#020617] text-slate-600 dark:text-slate-300 border-r border-border dark:border-white/5 flex flex-col fixed left-0 top-0 z-50 transition-colors duration-300">
-            <div className="p-8">
+        <aside className="w-64 h-screen bg-[#F8FAFC] dark:bg-[hsl(180,50%,2%)] text-slate-600 dark:text-[hsl(180,10%,70%)] border-r border-slate-200 dark:border-[hsl(180,30%,10%)] flex flex-col fixed left-0 top-0 z-50 transition-all duration-500 ease-in-out">
+            {/* HUD Accent Line */}
+            <div className="absolute right-0 top-0 w-[1px] h-full bg-gradient-to-b from-transparent via-primary/20 to-transparent hidden dark:block" />
+
+            <div className="p-8 relative">
                 <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between">
-                        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-xl shadow-primary/20 shrink-0 overflow-hidden ring-1 ring-white/20">
+                        <div className="w-12 h-12 bg-primary rounded-sm flex items-center justify-center text-white shadow-[0_0_20px_hsl(var(--primary)/0.3)] shrink-0 overflow-hidden ring-1 ring-white/10 dark:ring-primary/40">
                             {config?.logo_url ? (
                                 <img src={config.logo_url} alt={config.name} className="w-full h-full object-cover" />
                             ) : (
@@ -53,10 +56,10 @@ export function Sidebar() {
                         <ThemeToggle />
                     </div>
                     <div className="min-w-0">
-                        <h1 className="font-black text-lg leading-tight truncate text-slate-900 dark:text-white tracking-tighter">
+                        <h1 className="font-black text-xs leading-none truncate text-slate-900 dark:text-primary tracking-[-0.05em] uppercase">
                             {loading ? '...' : (config?.name || 'Clinical Trust')}
                         </h1>
-                        <p className="text-[10px] text-slate-500 truncate uppercase font-bold tracking-widest mt-0.5">
+                        <p className="text-[10px] text-slate-500 dark:text-[hsl(180,10%,50%)] truncate uppercase font-bold tracking-[0.2em] mt-1">
                             {loading ? '...' : (config?.description || 'Pet Boutique')}
                         </p>
                     </div>

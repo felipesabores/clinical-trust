@@ -123,24 +123,24 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 {statusColumns.map((column, i) => (
                     <div key={i} className="space-y-4">
-                        <div className="flex items-center justify-between px-2">
-                            <h4 className="font-bold text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${column.indicatorColor}`} />
-                                {column.title}
-                                <span className="bg-muted text-[10px] px-1.5 py-0.5 rounded-full">
+                        <div className="flex items-center justify-between px-2 mb-2">
+                            <div className="flex items-center gap-2">
+                                <div className={`w-1 h-4 rounded-full ${column.indicatorColor} opacity-80`} />
+                                <h4 className="font-black text-xs uppercase tracking-tighter text-muted-foreground">{column.title}</h4>
+                                <span className="text-[10px] font-black text-primary/60">
                                     {column.pets.length}
                                 </span>
-                            </h4>
-                            <button className="text-muted-foreground hover:text-foreground transition-colors">
-                                <ChevronRight size={16} />
+                            </div>
+                            <button className="text-muted-foreground hover:text-foreground transition-all">
+                                <ChevronRight size={14} />
                             </button>
                         </div>
 
-                        <div className="space-y-4 min-h-[420px] bg-muted/30 p-3 rounded-[2rem] border border-dashed border-border">
+                        <div className="space-y-4 min-h-[420px] bg-muted/20 dark:bg-card/30 p-3 rounded-sm border border-dashed border-border dark:border-primary/10">
                             {column.pets.map((pet, j) => (
                                 <div
                                     key={j}
-                                    className="bg-card p-5 rounded-2xl border shadow-sm cursor-grab active:scale-95 transition-all group hover:border-primary/50 hover:shadow-md"
+                                    className="hud-card p-5 cursor-grab active:scale-95 group"
                                 >
                                     <div className="flex justify-between items-start mb-3">
                                         <div>

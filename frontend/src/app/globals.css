@@ -27,43 +27,73 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 180 50% 2%;
+    --foreground: 180 10% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 180 50% 3%;
+    --card-foreground: 180 10% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 180 100% 45%;
+    --primary-foreground: 180 50% 2%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 45 100% 50%;
+    --secondary-foreground: 180 50% 2%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 180 30% 8%;
+    --muted-foreground: 180 10% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 180 100% 45%;
+    --accent-foreground: 180 50% 2%;
 
-    --border: 217.2 32.6% 17.5%;
+    --border: 180 30% 12%;
+    --radius: 0.25rem;
+    /* Sharp geometry for Obsidian Lab */
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  body {
+    @apply bg-background text-foreground selection:bg-primary selection:text-primary-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    position: relative;
+    min-height: 100vh;
   }
 
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+  /* Obsidian Lab Noise Texture Layer */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.015;
+    z-index: 9999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  .dark body::before {
+    opacity: 0.06;
   }
 }
 
 .glass {
-  @apply bg-white/70 dark:bg-slate-950/70 backdrop-blur-md border border-white/20 dark:border-white/5 shadow-xl;
+  @apply bg-white/70 dark:bg-card/40 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-xl;
 }
 
-.glass-dark {
-  @apply bg-slate-900/80 backdrop-blur-md border border-slate-700/30 shadow-2xl;
+/* Sharp HUD Cards - Obsidian Style */
+.hud-card {
+  @apply bg-card border border-border relative overflow-hidden transition-all duration-300;
+  box-shadow: 0 0 0 1px inset rgba(255, 255, 255, 0.01);
+}
+
+.dark .hud-card {
+  background-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.02), transparent);
+}
+
+.dark .hud-card:hover {
+  border-color: hsl(var(--primary) / 0.4);
+  box-shadow: 0 0 30px -10px hsl(var(--primary) / 0.2), 0 0 0 1px inset rgba(255, 255, 255, 0.03);
 }
