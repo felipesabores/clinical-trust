@@ -34,9 +34,6 @@ const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
 
 export default function KanbanPage() {
-    useEffect(() => {
-        console.log('Fronend API Config:', { API, TENANT_ID });
-    }, []);
     const [board, setBoard] = useState<Record<string, any[]>>({});
     const [cameras, setCameras] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
