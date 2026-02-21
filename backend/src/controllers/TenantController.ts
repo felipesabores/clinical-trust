@@ -21,7 +21,7 @@ export class TenantController {
                         name: 'Clinical Trust',
                         document: `DOC-${tenantId}`, // More unique than a static string
                         description: 'Pet Boutique',
-                        primary_color: '#7c3aed'
+                        primary_color: '#3b82f6'
                     }
                 });
             }
@@ -55,7 +55,7 @@ export class TenantController {
                     document: `DOC-${tenantId}`,
                     logo_url,
                     description,
-                    primary_color,
+                    primary_color: primary_color || '#3b82f6',
                     whatsapp
                 }
             });

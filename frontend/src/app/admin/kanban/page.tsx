@@ -27,10 +27,10 @@ function cn(...inputs: ClassValue[]) {
 
 const statuses = [
     { id: 'SCHEDULED', label: 'Agendados', color: 'bg-slate-500' },
-    { id: 'RECEPTION', label: 'Recepção', color: 'bg-blue-500' },
-    { id: 'BATHING', label: 'Banho', color: 'bg-indigo-500' },
-    { id: 'GROOMING', label: 'Tosa', color: 'bg-violet-500' },
-    { id: 'DRYING', label: 'Secagem', color: 'bg-amber-500' },
+    { id: 'RECEPTION', label: 'Recepção', color: 'bg-sky-500' },
+    { id: 'BATHING', label: 'Banho', color: 'bg-blue-600' },
+    { id: 'GROOMING', label: 'Tosa', color: 'bg-emerald-600' },
+    { id: 'DRYING', label: 'Secagem', color: 'bg-teal-500' },
     { id: 'READY', label: 'Pronto', color: 'bg-green-500' },
 ] as const;
 

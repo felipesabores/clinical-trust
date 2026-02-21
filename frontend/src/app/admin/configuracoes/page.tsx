@@ -29,7 +29,7 @@ export default function ConfiguracoesPage() {
         description: '',
         whatsapp: '',
         logo_url: '',
-        primary_color: '#7c3aed'
+        primary_color: '#3b82f6'
     });
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export default function ConfiguracoesPage() {
                 description: config.description || '',
                 whatsapp: config.whatsapp || '',
                 logo_url: config.logo_url || '',
-                primary_color: config.primary_color || '#7c3aed'
+                primary_color: config.primary_color || '#3b82f6'
             });
         }
     }, [config]);

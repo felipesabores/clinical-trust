@@ -105,7 +105,7 @@ export default function LiveView() {
                 <div className="flex justify-between items-start mb-8">
                     <div>
                         <h2 className="text-3xl font-black text-slate-900 tracking-tight">{data.pet.name}</h2>
-                        <p className="text-slate-400 font-medium italic">{data.pet.breed}</p>
+                        <p className="text-slate-600 font-medium italic">{data.pet.breed}</p>
                     </div>
                     <div className="bg-primary/10 px-4 py-2 rounded-2xl">
                         <span className="text-primary font-bold text-sm">Status Atual</span>
@@ -127,7 +127,7 @@ export default function LiveView() {
                                     {isCompleted ? <ShieldCheck size={20} /> : <step.icon size={20} className={isActive ? 'animate-bounce' : ''} />}
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className={`font-black tracking-tight transition-all duration-500 ${isActive ? 'text-slate-900 text-xl' : 'text-slate-300 uppercase text-xs tracking-widest'}`}>
+                                    <span className={`font-black tracking-tight transition-all duration-500 ${isActive ? 'text-slate-900 text-xl' : 'text-slate-500 uppercase text-xs tracking-widest'}`}>
                                         {step.label}
                                     </span>
                                     {isActive && (

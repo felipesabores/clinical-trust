@@ -12,10 +12,10 @@ import {
 } from 'lucide-react';
 
 const stats = [
-    { label: 'Faturamento Hoje', value: 'R$ 1.240,00', change: '+12%', icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-    { label: 'Pets Atendidos', value: '24', change: '+4', icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-50' },
-    { label: 'Novos Clientes', value: '3', icon: Users, color: 'text-indigo-500', bg: 'bg-indigo-50' },
-    { label: 'Média de Espera', value: '15 min', icon: Clock, color: 'text-orange-500', bg: 'bg-orange-50' },
+    { label: 'Faturamento Hoje', value: 'R$ 1.240,00', change: '+12%', icon: TrendingUp, color: 'text-emerald-700', bg: 'bg-emerald-50' },
+    { label: 'Pets Atendidos', value: '24', change: '+4', icon: CheckCircle2, color: 'text-blue-700', bg: 'bg-blue-50' },
+    { label: 'Novos Clientes', value: '3', icon: Users, color: 'text-sky-700', bg: 'bg-sky-50' },
+    { label: 'Média de Espera', value: '15 min', icon: Clock, color: 'text-teal-700', bg: 'bg-teal-50' },
 ];
 
 interface PetCardData {
@@ -40,14 +40,14 @@ const statusColumns: { title: string; pets: PetCardData[]; indicatorColor: strin
     },
     {
         title: 'Na Recepção',
-        indicatorColor: 'bg-blue-400',
+        indicatorColor: 'bg-sky-400',
         pets: [
             { name: 'Thor', owner: 'Carla Dias', time: '14:00', service: 'Check-up', breed: 'Beagle' },
         ],
     },
     {
         title: 'No Banho',
-        indicatorColor: 'bg-indigo-400',
+        indicatorColor: 'bg-blue-500',
         pets: [
             { name: 'Biscuit', owner: 'Ana Paula', status: 'Secando', iconType: 'droplets', iconColor: 'text-blue-500', breed: 'SRD' },
             { name: 'Max', owner: 'Pedro H.', status: 'Limpando orelhas', iconType: 'droplets', iconColor: 'text-blue-500', breed: 'Poodle' },
@@ -55,14 +55,14 @@ const statusColumns: { title: string; pets: PetCardData[]; indicatorColor: strin
     },
     {
         title: 'Na Tosa',
-        indicatorColor: 'bg-amber-400',
+        indicatorColor: 'bg-emerald-600',
         pets: [
-            { name: 'Mel', owner: 'Luiza M.', status: 'Finalizando', iconType: 'scissors', iconColor: 'text-amber-500', breed: 'Yorkshire' },
+            { name: 'Mel', owner: 'Luiza M.', status: 'Finalizando', iconType: 'scissors', iconColor: 'text-emerald-600', breed: 'Yorkshire' },
         ],
     },
     {
         title: 'Prontos',
-        indicatorColor: 'bg-emerald-500',
+        indicatorColor: 'bg-green-500',
         pets: [],
     },
 ];
@@ -136,7 +136,7 @@ export default function DashboardPage() {
                             </button>
                         </div>
 
-                        <div className="space-y-4 min-h-[420px] bg-slate-50/50 p-3 rounded-[2rem] border border-dashed border-slate-200">
+                        <div className="space-y-4 min-h-[420px] bg-muted/30 p-3 rounded-[2rem] border border-dashed border-border">
                             {column.pets.map((pet, j) => (
                                 <div
                                     key={j}
@@ -153,14 +153,14 @@ export default function DashboardPage() {
                                     </div>
 
                                     <div className="flex items-center gap-2 mb-4">
-                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 border border-white shrink-0">
+                                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground border border-border shrink-0">
                                             {pet.owner[0]}
                                         </div>
                                         <span className="text-xs font-semibold truncate">{pet.owner}</span>
                                     </div>
 
-                                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                                        <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-lg border border-slate-100">
+                                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                                        <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-lg border border-border">
                                             <PetIcon type={pet.iconType} color={pet.iconColor} />
                                             <span className="text-[10px] font-bold uppercase tracking-tight">
                                                 {pet.time ?? pet.status ?? pet.service}

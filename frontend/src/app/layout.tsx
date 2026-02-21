@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 import { TenantProvider } from "@/context/TenantContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -17,11 +18,13 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="pt-br">
+        <html lang="pt-br" suppressHydrationWarning>
             <body className={jakarta.className}>
-                <TenantProvider>
-                    {children}
-                </TenantProvider>
+                <ThemeProvider>
+                    <TenantProvider>
+                        {children}
+                    </TenantProvider>
+                </ThemeProvider>
             </body>
         </html>
     );
