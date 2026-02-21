@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X, Dog, Cat, Rabbit, Loader2, Save, Info, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,6 +19,14 @@ interface PetModalProps {
     onSuccess: () => void;
     customerId: string;
     customerName: string;
+    initialData?: {
+        id: string;
+        name: string;
+        type: string;
+        breed?: string;
+        avatar_url?: string;
+        notes?: string;
+    } | null;
 }
 
 const petTypes = [
@@ -28,7 +36,7 @@ const petTypes = [
     { id: 'OTHER', label: 'Outro', icon: Info },
 ];
 
-export default function PetModal({ isOpen, onClose, onSuccess, customerId, customerName }: PetModalProps) {
+export default function PetModal({ isOpen, onClose, onSuccess, customerId, customerName, initialData }: PetModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -38,16 +46,33 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
         notes: ''
     });
 
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                name: initialData.name,
+                type: initialData.type,
+                breed: initialData.breed || '',
+                avatar_url: initialData.avatar_url || '',
+                notes: initialData.notes || ''
+            });
+        } else {
+            setFormData({ name: '', type: 'DOG', breed: '', avatar_url: '', notes: '' });
+        }
+    }, [initialData, isOpen]);
+
     const handleSubmit = async () => {
         if (!formData.name) return;
         setLoading(true);
         try {
-            await axios.post(`${API}/api/customers/${customerId}/pets`, formData);
+            if (initialData) {
+                await axios.patch(`${API}/api/pets/${initialData.id}`, formData);
+            } else {
+                await axios.post(`${API}/api/customers/${customerId}/pets`, formData);
+            }
             onSuccess();
             onClose();
-            setFormData({ name: '', type: 'DOG', breed: '', avatar_url: '', notes: '' });
         } catch (e) {
-            alert('Erro ao cadastrar pet');
+            alert('Erro ao salvar pet');
         } finally {
             setLoading(false);
         }
@@ -74,7 +99,9 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
                 >
                     <div className="p-8 pb-4 flex justify-between items-center">
                         <div>
-                            <h2 className="text-2xl font-black uppercase tracking-tighter">Novo Pet</h2>
+                            <h2 className="text-2xl font-black uppercase tracking-tighter">
+                                {initialData ? 'Editar Pet' : 'Novo Pet'}
+                            </h2>
                             <p className="text-muted-foreground text-sm font-medium">Para: <span className="text-primary">{customerName}</span></p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
@@ -160,7 +187,7 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
                             disabled={loading || !formData.name}
                             className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
-                            {loading ? <Loader2 className="animate-spin" size={20} /> : <><Save size={18} /> Cadastrar Pet</>}
+                            {loading ? <Loader2 className="animate-spin" size={20} /> : <><Save size={18} /> {initialData ? 'Atualizar' : 'Salvar'} Pet</>}
                         </button>
                     </div>
                 </motion.div>

@@ -5,17 +5,20 @@ import axios from 'axios';
 import {
     UserPlus,
     Search,
-    Dog,
-    Cat,
-    Rabbit,
-    Info,
-    Phone,
-    History,
-    AlertCircle,
     Plus,
     ChevronRight,
     Loader2,
-    Calendar
+    Info,
+    Phone,
+    History as HistoryIcon,
+    AlertCircle,
+    MoreVertical,
+    Trash2,
+    Edit3,
+    Calendar,
+    Dog,
+    Cat,
+    Rabbit
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -46,6 +49,8 @@ export default function ClientesPage() {
 
     const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
     const [isPetModalOpen, setIsPetModalOpen] = useState(false);
+    const [editingCustomer, setEditingCustomer] = useState<any>(null);
+    const [editingPet, setEditingPet] = useState<any>(null);
 
     const fetchCustomers = async (q = '') => {
         try {
@@ -72,6 +77,28 @@ export default function ClientesPage() {
         }
     };
 
+    const handleDeleteCustomer = async (id: string, name: string) => {
+        if (!confirm(`Tem certeza que deseja excluir o tutor ${name}? Isso removerá todos os seus pets e agendamentos.`)) return;
+        try {
+            await axios.delete(`${API}/api/customers/${id}`);
+            if (selectedCustomer?.id === id) setSelectedCustomer(null);
+            fetchCustomers(searchQuery);
+        } catch (e: any) {
+            alert(e.response?.data?.error || 'Erro ao excluir tutor');
+        }
+    };
+
+    const handleDeletePet = async (petId: string, petName: string) => {
+        if (!confirm(`Excluir o pet ${petName}?`)) return;
+        try {
+            await axios.delete(`${API}/api/pets/${petId}`);
+            if (selectedCustomer) fetchDetail(selectedCustomer.id);
+            fetchCustomers(searchQuery);
+        } catch (e: any) {
+            alert(e.response?.data?.error || 'Erro ao excluir pet');
+        }
+    };
+
     useEffect(() => {
         setIsMounted(true);
         fetchCustomers();
@@ -87,10 +114,14 @@ export default function ClientesPage() {
     if (!isMounted) return null;
 
     return (
-        <div className="p-8 h-screen flex flex-col bg-background overflow-hidden">
+        <div className="p-8 h-screen flex flex-col bg-background overflow-hidden text-foreground">
             <CustomerModal
                 isOpen={isCustomerModalOpen}
-                onClose={() => setIsCustomerModalOpen(false)}
+                onClose={() => {
+                    setIsCustomerModalOpen(false);
+                    setEditingCustomer(null);
+                }}
+                initialData={editingCustomer}
                 onSuccess={(id) => {
                     fetchCustomers();
                     if (id) fetchDetail(id);
@@ -100,7 +131,11 @@ export default function ClientesPage() {
             {selectedCustomer && (
                 <PetModal
                     isOpen={isPetModalOpen}
-                    onClose={() => setIsPetModalOpen(false)}
+                    onClose={() => {
+                        setIsPetModalOpen(false);
+                        setEditingPet(null);
+                    }}
+                    initialData={editingPet}
                     onSuccess={() => fetchDetail(selectedCustomer.id)}
                     customerId={selectedCustomer.id}
                     customerName={selectedCustomer.name}
@@ -153,8 +188,8 @@ export default function ClientesPage() {
                                 >
                                     <div className="flex gap-4 items-center min-w-0">
                                         <div className={cn(
-                                            "w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-colors shrink-0 overflow-hidden",
-                                            selectedCustomer?.id === customer.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+                                            "w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-colors shrink-0 overflow-hidden text-white",
+                                            selectedCustomer?.id === customer.id ? "bg-primary" : "bg-muted text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
                                         )}>
                                             {customer.avatar_url ? (
                                                 <img src={customer.avatar_url} className="w-full h-full object-cover" alt={customer.name} />
@@ -162,22 +197,42 @@ export default function ClientesPage() {
                                                 customer.name[0]
                                             )}
                                         </div>
-                                        <div className="min-w-0">
+                                        <div className="min-w-0 flex-1">
                                             <h4 className="font-bold text-sm truncate uppercase tracking-tight">{customer.name}</h4>
                                             <p className="text-[11px] text-muted-foreground font-medium flex items-center gap-2">
                                                 <Phone size={10} /> {customer.phone}
                                                 <span className="w-1 h-1 bg-border rounded-full" />
-                                                <span className="font-black text-primary/70">{customer._count?.pets || 0} PETS</span>
+                                                <span className="font-black text-primary/70">{customer.pets?.length || 0} PETS</span>
                                             </p>
                                         </div>
                                     </div>
-                                    <ChevronRight className={cn("text-muted-foreground/30 transition-all", selectedCustomer?.id === customer.id && "text-primary translate-x-1")} size={18} />
+                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setEditingCustomer(customer);
+                                                setIsCustomerModalOpen(true);
+                                            }}
+                                            className="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors"
+                                        >
+                                            <Edit3 size={16} />
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteCustomer(customer.id, customer.name);
+                                            }}
+                                            className="p-2 hover:bg-red-50 rounded-lg text-red-400 hover:text-red-500 transition-colors"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             ))
                         )}
                         {customers.length === 0 && !loading && (
                             <div className="text-center py-20 text-muted-foreground border-2 border-dashed border-border rounded-[2rem]">
-                                Nengum cliente encontrado com "{searchQuery}"
+                                Nenhum cliente encontrado com "{searchQuery}"
                             </div>
                         )}
                     </div>
@@ -235,12 +290,29 @@ export default function ClientesPage() {
                                                                 <p className="text-[10px] font-bold text-muted-foreground mt-1">{pet.breed || 'SRD'}</p>
                                                             </div>
                                                         </div>
-                                                        {pet.appointments?.[0] && (
-                                                            <div className="text-right">
-                                                                <p className="text-[8px] font-black text-muted-foreground uppercase mb-1">Última Visita</p>
-                                                                <p className="text-[10px] font-bold">{new Date(pet.appointments[0].scheduled_at).toLocaleDateString()}</p>
-                                                            </div>
-                                                        )}
+                                                        <div className="flex items-center gap-1">
+                                                            <button
+                                                                onClick={() => {
+                                                                    setEditingPet(pet);
+                                                                    setIsPetModalOpen(true);
+                                                                }}
+                                                                className="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors"
+                                                            >
+                                                                <Edit3 size={14} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeletePet(pet.id, pet.name)}
+                                                                className="p-2 hover:bg-red-50 rounded-lg text-red-400 hover:text-red-500 transition-colors"
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                            {pet.appointments?.[0] && (
+                                                                <div className="text-right ml-2 border-l pl-3 border-border">
+                                                                    <p className="text-[8px] font-black text-muted-foreground uppercase mb-1">Última Visita</p>
+                                                                    <p className="text-[10px] font-bold">{new Date(pet.appointments[0].scheduled_at).toLocaleDateString()}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </div>
 
                                                     {pet.notes && (
@@ -262,7 +334,7 @@ export default function ClientesPage() {
                                 </div>
 
                                 <div className="p-6 bg-accent/30 rounded-3xl border border-border text-center">
-                                    <History size={24} className="mx-auto text-muted-foreground mb-3" />
+                                    <HistoryIcon size={24} className="mx-auto text-muted-foreground mb-3" />
                                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-tighter">Histórico de Agendamentos</p>
                                     <p className="text-[10px] text-muted-foreground/60 mt-2">Em breve: Visão completa de todas as visitas e serviços realizados.</p>
                                 </div>

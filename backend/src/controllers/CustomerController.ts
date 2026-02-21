@@ -72,6 +72,33 @@ export class CustomerController {
         }
     }
 
+    static async update(req: Request, res: Response) {
+        try {
+            const id = req.params.id as string;
+            const { name, phone, avatar_url } = req.body;
+            const customer = await prisma.customer.update({
+                where: { id },
+                data: { name, phone, avatar_url }
+            });
+            res.json(customer);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to update customer' });
+        }
+    }
+
+    static async delete(req: Request, res: Response) {
+        try {
+            const id = req.params.id as string;
+            // Note: Prisma will fail if there are dependent records (pets, appointments) unless cascade is configured.
+            // In our schema, we should handle deletions carefully.
+            await prisma.customer.delete({ where: { id } });
+            res.json({ message: 'Customer deleted successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Failed to delete customer. Ensure all pets and appointments are removed first.' });
+        }
+    }
+
     static async addPet(req: Request, res: Response) {
         try {
             const customer_id = req.params.customer_id as string;
@@ -89,6 +116,30 @@ export class CustomerController {
             res.status(201).json(pet);
         } catch (error) {
             res.status(500).json({ error: 'Failed to add pet' });
+        }
+    }
+
+    static async updatePet(req: Request, res: Response) {
+        try {
+            const petId = req.params.petId as string;
+            const { name, breed, type, avatar_url, notes } = req.body;
+            const pet = await prisma.pet.update({
+                where: { id: petId },
+                data: { name, breed, type, avatar_url, notes }
+            });
+            res.json(pet);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to update pet' });
+        }
+    }
+
+    static async deletePet(req: Request, res: Response) {
+        try {
+            const petId = req.params.petId as string;
+            await prisma.pet.delete({ where: { id: petId } });
+            res.json({ message: 'Pet deleted successfully' });
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to delete pet. Ensure all appointments are removed first.' });
         }
     }
 }

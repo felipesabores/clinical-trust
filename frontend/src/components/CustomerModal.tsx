@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X, UserPlus, Phone, Loader2, Save, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,9 +12,15 @@ interface CustomerModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: (customerId?: string) => void;
+    initialData?: {
+        id: string;
+        name: string;
+        phone: string;
+        avatar_url?: string;
+    } | null;
 }
 
-export default function CustomerModal({ isOpen, onClose, onSuccess }: CustomerModalProps) {
+export default function CustomerModal({ isOpen, onClose, onSuccess, initialData }: CustomerModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -22,19 +28,35 @@ export default function CustomerModal({ isOpen, onClose, onSuccess }: CustomerMo
         avatar_url: ''
     });
 
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                name: initialData.name,
+                phone: initialData.phone,
+                avatar_url: initialData.avatar_url || ''
+            });
+        } else {
+            setFormData({ name: '', phone: '', avatar_url: '' });
+        }
+    }, [initialData, isOpen]);
+
     const handleSubmit = async () => {
         if (!formData.name || !formData.phone) return;
         setLoading(true);
         try {
-            const res = await axios.post(`${API}/api/customers`, {
-                ...formData,
-                tenant_id: TENANT_ID
-            });
-            onSuccess(res.data.id);
+            if (initialData) {
+                await axios.patch(`${API}/api/customers/${initialData.id}`, formData);
+                onSuccess(initialData.id);
+            } else {
+                const res = await axios.post(`${API}/api/customers`, {
+                    ...formData,
+                    tenant_id: TENANT_ID
+                });
+                onSuccess(res.data.id);
+            }
             onClose();
-            setFormData({ name: '', phone: '', avatar_url: '' });
         } catch (e) {
-            alert('Erro ao cadastrar tutor');
+            alert('Erro ao salvar tutor');
         } finally {
             setLoading(false);
         }
@@ -61,8 +83,12 @@ export default function CustomerModal({ isOpen, onClose, onSuccess }: CustomerMo
                 >
                     <div className="p-8 pb-4 flex justify-between items-center">
                         <div>
-                            <h2 className="text-2xl font-black uppercase tracking-tighter">Novo Tutor</h2>
-                            <p className="text-muted-foreground text-sm font-medium">Cadastre o tutor para vincular pets</p>
+                            <h2 className="text-2xl font-black uppercase tracking-tighter">
+                                {initialData ? 'Editar Tutor' : 'Novo Tutor'}
+                            </h2>
+                            <p className="text-muted-foreground text-sm font-medium">
+                                {initialData ? 'Atualize as informações do tutor' : 'Cadastre o tutor para vincular pets'}
+                            </p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
                             <X size={24} />
@@ -119,7 +145,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess }: CustomerMo
                             disabled={loading || !formData.name || !formData.phone}
                             className="w-full bg-primary text-primary-foreground py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
-                            {loading ? <Loader2 className="animate-spin" size={20} /> : <><Save size={18} /> Salvar Tutor</>}
+                            {loading ? <Loader2 className="animate-spin" size={20} /> : <><Save size={18} /> {initialData ? 'Atualizar' : 'Salvar'} Tutor</>}
                         </button>
                     </div>
                 </motion.div>

@@ -17,7 +17,11 @@ router.get('/pets/search', AppointmentController.searchPets);
 router.get('/customers', CustomerController.list);
 router.get('/customers/:id', CustomerController.getDetail);
 router.post('/customers', CustomerController.create);
+router.patch('/customers/:id', CustomerController.update);
+router.delete('/customers/:id', CustomerController.delete);
 router.post('/customers/:customer_id/pets', CustomerController.addPet);
+router.patch('/pets/:petId', CustomerController.updatePet);
+router.delete('/pets/:petId', CustomerController.deletePet);
 
 // Public Live Routes
 router.get('/live/:token', LiveController.getLiveSession);
