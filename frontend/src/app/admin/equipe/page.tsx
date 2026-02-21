@@ -103,16 +103,16 @@ export default function EquipePage() {
                 <div>
                     <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 uppercase">
                         <Users className="text-primary" size={32} />
-                        Team <span className="text-primary">Ops Center</span>
+                        Equipe <span className="text-primary">Grooming Squad</span>
                     </h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-muted-foreground mt-2 opacity-60 italic">HUMAN_ASSETS // PERFORMANCE_MATRIX</p>
+                    <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-muted-foreground mt-2 opacity-60 italic">HUMAN_RESOURCES // PERFORMANCE_MATRIX</p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
                     className="bg-primary text-primary-foreground px-10 py-4 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 flex items-center gap-3 border border-primary/50"
                 >
                     <UserPlus size={18} />
-                    PROVISION_ASSET
+                    ADICIONAR COLABORADOR
                 </button>
             </header>
 
@@ -179,7 +179,7 @@ export default function EquipePage() {
 
                         <h2 className="text-2xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
                             <UserPlus className="text-primary" />
-                            ASSET_INITIALIZATION_PROTOCOL
+                            CADASTRO DE COLABORADOR
                         </h2>
 
                         <div className="space-y-6">
@@ -223,10 +223,10 @@ export default function EquipePage() {
                                         onChange={e => setNewMember({ ...newMember, role: e.target.value })}
                                         className="w-full bg-muted border-border/50 rounded-sm px-6 py-4 text-[10px] font-black uppercase tracking-widest focus:border-primary/50 outline-none transition-all border appearance-none"
                                     >
-                                        <option value="GROOMER">HEAD_GROOMER</option>
-                                        <option value="VETERINARIAN">MEDICAL_CORPS</option>
-                                        <option value="RECEPTIONIST">COMM_CENTER</option>
-                                        <option value="ADMIN">COMMAND_LEVEL_S</option>
+                                        <option value="GROOMER">ESTETICISTA / TOSADOR</option>
+                                        <option value="BANHISTA">BANHISTA</option>
+                                        <option value="RECEPTIONIST">RECEPCIONISTA</option>
+                                        <option value="ADMIN">ADMINISTRADOR</option>
                                     </select>
                                 </div>
 
@@ -272,7 +272,7 @@ export default function EquipePage() {
                                     onClick={handleCreate}
                                     className="px-10 py-4 bg-primary text-primary-foreground rounded-sm font-black text-[10px] uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 border border-primary/50"
                                 >
-                                    INITIALIZE_ASSET
+                                    FINALIZAR CADASTRO
                                 </button>
                             </div>
                         </div>
