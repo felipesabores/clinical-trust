@@ -59,7 +59,7 @@ export default function CamerasPage() {
                 {/* Main viewer */}
                 <div className="xl:col-span-3 flex flex-col gap-4">
                     <div className="relative bg-slate-900 rounded-[2.5rem] overflow-hidden flex-1 min-h-[300px] group shadow-2xl">
-                        {selected.status === 'online' ? (
+                        {selected?.status === 'online' ? (
                             <>
                                 {/* Simulated live feed */}
                                 <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-950 flex items-center justify-center">
@@ -75,13 +75,13 @@ export default function CamerasPage() {
                                 </div>
 
                                 <div className="absolute top-5 right-5 flex items-center gap-2 px-3 py-1.5 bg-black/50 backdrop-blur-md rounded-xl text-white text-xs font-bold border border-white/10">
-                                    <Eye size={14} /> {selected.watching} assistindo
+                                    <Eye size={14} /> {selected?.watching} assistindo
                                 </div>
 
                                 <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between">
                                     <div className="bg-black/60 backdrop-blur-md rounded-xl px-4 py-2 border border-white/10">
-                                        <p className="text-white font-bold text-sm">{selected.name}</p>
-                                        <p className="text-white/60 text-xs">{selected.location}</p>
+                                        <p className="text-white font-bold text-sm">{selected?.name}</p>
+                                        <p className="text-white/60 text-xs">{selected?.location}</p>
                                     </div>
                                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button className="p-2.5 bg-black/60 backdrop-blur-md rounded-xl text-white border border-white/10 hover:bg-white/20 transition-colors">
@@ -117,13 +117,13 @@ export default function CamerasPage() {
                         <button
                             key={cam.id}
                             onClick={() => setSelected(cam)}
-                            className={`w-full text-left p-4 rounded-2xl border transition-all ${selected.id === cam.id
+                            className={`w-full text-left p-4 rounded-2xl border transition-all ${selected?.id === cam.id
                                 ? 'bg-primary/10 border-primary/30 shadow-md'
                                 : 'bg-card hover:bg-accent hover:border-primary/20'
                                 }`}
                         >
                             <div className="flex items-start justify-between gap-2 mb-2">
-                                <p className={`font-bold text-sm leading-tight ${selected.id === cam.id ? 'text-primary' : ''}`}>
+                                <p className={`font-bold text-sm leading-tight ${selected?.id === cam.id ? 'text-primary' : ''}`}>
                                     {cam.name}
                                 </p>
                                 <div className={`flex items-center gap-1 shrink-0 ${cam.status === 'online' ? 'text-emerald-600' : 'text-slate-400'}`}>
