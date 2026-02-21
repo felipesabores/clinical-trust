@@ -1,3 +1,7 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
     Settings,
     User,
@@ -9,139 +13,179 @@ import {
     Building2,
     Clock,
     Phone,
+    Loader2,
+    Save,
+    Camera
 } from 'lucide-react';
+import { useTenant } from '@/context/TenantContext';
 
-const sections = [
-    {
-        title: 'Perfil da Empresa',
-        icon: Building2,
-        fields: [
-            { label: 'Nome da Empresa', value: 'Banho e Tosa - Unidade Principal', type: 'text' },
-            { label: 'CNPJ', value: '12.345.678/0001-99', type: 'text' },
-            { label: 'Telefone', value: '(11) 3456-7890', type: 'tel' },
-            { label: 'E-mail', value: 'contato@petspa.com.br', type: 'email' },
-        ],
-    },
-    {
-        title: 'Horário de Funcionamento',
-        icon: Clock,
-        fields: [
-            { label: 'Segunda a Sexta', value: '08:00 – 18:00', type: 'text' },
-            { label: 'Sábado', value: '08:00 – 14:00', type: 'text' },
-            { label: 'Domingo', value: 'Fechado', type: 'text' },
-        ],
-    },
-];
-
-const toggles = [
-    { label: 'Notificações por WhatsApp', desc: 'Enviar confirmações automáticas para clientes', enabled: true },
-    { label: 'Lembretes de Vacinação', desc: 'Alertar tutores sobre vencimento de vacinas', enabled: true },
-    { label: 'Streaming Automático', desc: 'Iniciar transmissão ao mover pet para Banho', enabled: false },
-    { label: 'Relatório Diário', desc: 'Enviar resumo por e-mail ao fechar o dia', enabled: true },
-];
-
-const navItems = [
-    { icon: User, label: 'Perfil da Empresa' },
-    { icon: Bell, label: 'Notificações' },
-    { icon: Palette, label: 'Aparência' },
-    { icon: Shield, label: 'Segurança' },
-    { icon: Wifi, label: 'Integrações' },
-    { icon: Phone, label: 'Suporte' },
-];
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export default function ConfiguracoesPage() {
+    const { config, loading: contextLoading } = useTenant();
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        whatsapp: '',
+        logo_url: '',
+        primary_color: '#7c3aed'
+    });
+
+    useEffect(() => {
+        if (config) {
+            setFormData({
+                name: config.name || '',
+                description: config.description || '',
+                whatsapp: config.whatsapp || '',
+                logo_url: config.logo_url || '',
+                primary_color: config.primary_color || '#7c3aed'
+            });
+        }
+    }, [config]);
+
+    const handleSave = async () => {
+        try {
+            setLoading(true);
+            await axios.patch(`${API}/api/config`, formData);
+            alert('Configurações salvas com sucesso!');
+            window.location.reload(); // Quick way to refresh context
+        } catch (error) {
+            console.error(error);
+            alert('Erro ao salvar configurações');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (contextLoading) return <div className="p-10 flex justify-center"><Loader2 className="animate-spin text-primary" /></div>;
+
     return (
-        <div className="p-8 space-y-8">
-            <header>
-                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                    <Settings className="text-primary" size={28} />
-                    Configurações
-                </h1>
-                <p className="text-muted-foreground mt-1 text-sm font-medium italic">
-                    Personalize a plataforma para o seu negócio.
-                </p>
+        <div className="p-8 space-y-8 max-w-5xl mx-auto">
+            <header className="flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
+                        <Settings className="text-primary" size={28} />
+                        Configurações White Label
+                    </h1>
+                    <p className="text-muted-foreground mt-1 text-sm font-medium italic">
+                        Personalize a identidade da sua clínica e as regras de negócio.
+                    </p>
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={loading}
+                    className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-black shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50"
+                >
+                    {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                    SALVAR ALTERAÇÕES
+                </button>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Nav */}
                 <div className="lg:col-span-1">
                     <nav className="bg-card border rounded-[2rem] p-3 shadow-sm space-y-1">
-                        {navItems.map((item, i) => (
-                            <button
-                                key={item.label}
-                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${i === 0
-                                    ? 'bg-primary text-primary-foreground shadow-md'
-                                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                                    }`}
-                            >
-                                <item.icon size={18} className={i === 0 ? '' : 'group-hover:text-primary transition-colors'} />
-                                {item.label}
-                                {i !== 0 && <ChevronRight size={14} className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />}
-                            </button>
-                        ))}
+                        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all bg-primary text-primary-foreground shadow-md">
+                            <Building2 size={18} /> Perfil da Clínica
+                        </button>
+                        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:bg-accent transition-all opacity-50 cursor-not-allowed">
+                            <Palette size={18} /> Aparência (Em breve)
+                        </button>
+                        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:bg-accent transition-all opacity-50 cursor-not-allowed">
+                            <Shield size={18} /> Segurança
+                        </button>
                     </nav>
                 </div>
 
                 {/* Content */}
                 <div className="lg:col-span-3 space-y-6">
-                    {sections.map(section => (
-                        <div key={section.title} className="bg-card border rounded-[2.5rem] p-8 shadow-sm">
-                            <h3 className="font-bold text-lg flex items-center gap-3 mb-6">
-                                <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
-                                    <section.icon size={18} className="text-primary" />
-                                </div>
-                                {section.title}
-                            </h3>
-                            <div className="space-y-5">
-                                {section.fields.map(field => (
-                                    <div key={field.label}>
-                                        <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">
-                                            {field.label}
-                                        </label>
-                                        <input
-                                            type={field.type}
-                                            defaultValue={field.value}
-                                            className="w-full px-4 py-3 bg-muted/50 border border-transparent rounded-2xl text-sm font-medium focus:border-primary/30 focus:bg-card focus:ring-2 focus:ring-primary/10 outline-none transition-all"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-
-                    {/* Toggles */}
                     <div className="bg-card border rounded-[2.5rem] p-8 shadow-sm">
-                        <h3 className="font-bold text-lg flex items-center gap-3 mb-6">
+                        <h3 className="font-black text-lg flex items-center gap-3 mb-8 uppercase tracking-tighter">
                             <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
-                                <Bell size={18} className="text-primary" />
+                                <Building2 size={18} className="text-primary" />
                             </div>
-                            Notificações e Automações
+                            Identidade Visual e Contato
                         </h3>
-                        <div className="space-y-4">
-                            {toggles.map(toggle => (
-                                <div key={toggle.label} className="flex items-center justify-between p-4 bg-muted/30 rounded-2xl border border-transparent hover:border-border transition-colors">
-                                    <div>
-                                        <p className="font-bold text-sm">{toggle.label}</p>
-                                        <p className="text-xs text-muted-foreground mt-0.5">{toggle.desc}</p>
+
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="col-span-2 flex items-center gap-6 mb-4">
+                                <div className="w-24 h-24 bg-muted rounded-[2rem] flex items-center justify-center relative overflow-hidden group border border-dashed border-border hover:border-primary/50 transition-colors">
+                                    {formData.logo_url ? (
+                                        <img src={formData.logo_url} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <Camera className="text-muted-foreground" size={32} />
+                                    )}
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                        <label className="cursor-pointer text-white text-[10px] font-bold">TROCAR</label>
                                     </div>
-                                    <button
-                                        className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ml-4 ${toggle.enabled ? 'bg-primary' : 'bg-muted border'}`}
-                                    >
-                                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${toggle.enabled ? 'left-7' : 'left-1'}`} />
-                                    </button>
                                 </div>
-                            ))}
+                                <div className="flex-1 space-y-2">
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground">URL do Logotipo</label>
+                                    <input
+                                        value={formData.logo_url}
+                                        onChange={e => setFormData({ ...formData, logo_url: e.target.value })}
+                                        placeholder="https://suaclinica.com/logo.png"
+                                        className="w-full px-4 py-3 bg-muted/50 border border-transparent rounded-2xl text-sm font-medium focus:border-primary/30 outline-none"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="col-span-2">
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Nome Comercial da Clínica</label>
+                                <input
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    className="w-full px-4 py-3 bg-muted/50 border border-transparent rounded-2xl text-sm font-bold focus:border-primary/30 outline-none"
+                                />
+                            </div>
+
+                            <div className="col-span-2">
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Slogan / Descrição Curta</label>
+                                <input
+                                    value={formData.description}
+                                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                    className="w-full px-4 py-3 bg-muted/50 border border-transparent rounded-2xl text-sm font-medium focus:border-primary/30 outline-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">WhatsApp de Contato (DDI+DDD+N)</label>
+                                <input
+                                    value={formData.whatsapp}
+                                    onChange={e => setFormData({ ...formData, whatsapp: e.target.value })}
+                                    placeholder="5511999999999"
+                                    className="w-full px-4 py-3 bg-muted/50 border border-transparent rounded-2xl text-sm font-medium focus:border-primary/30 outline-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Cor Principal (Hex)</label>
+                                <div className="flex gap-3">
+                                    <input
+                                        type="color"
+                                        value={formData.primary_color}
+                                        onChange={e => setFormData({ ...formData, primary_color: e.target.value })}
+                                        className="w-12 h-12 rounded-xl overflow-hidden cursor-pointer"
+                                    />
+                                    <input
+                                        value={formData.primary_color}
+                                        onChange={e => setFormData({ ...formData, primary_color: e.target.value })}
+                                        className="flex-1 px-4 py-3 bg-muted/50 border border-transparent rounded-2xl text-sm font-mono focus:border-primary/30 outline-none uppercase"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Save button */}
-                    <div className="flex justify-end gap-3">
-                        <button className="px-6 py-3 bg-card border rounded-2xl text-sm font-bold hover:bg-accent transition-colors">
-                            Descartar
-                        </button>
-                        <button className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
-                            Salvar Alterações
-                        </button>
+                    <div className="bg-card border rounded-[2.5rem] p-8 shadow-sm opacity-60">
+                        <h3 className="font-black text-lg flex items-center gap-3 mb-6 uppercase tracking-tighter">
+                            <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                                <Clock size={18} />
+                            </div>
+                            Horário de Funcionamento (Configurável via Admin)
+                        </h3>
+                        <p className="text-sm font-medium">Os horários serão usados para validar agendamentos automáticos em breve.</p>
                     </div>
                 </div>
             </div>

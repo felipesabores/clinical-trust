@@ -3,8 +3,13 @@ import { AppointmentController } from '../controllers/AppointmentController';
 import { LiveController } from '../controllers/LiveController';
 import { CameraController } from '../controllers/CameraController';
 import { CustomerController } from '../controllers/CustomerController';
+import { TenantController } from '../controllers/TenantController';
 
 const router = Router();
+
+// Config / White Label
+router.get('/config', TenantController.getConfig);
+router.patch('/config', TenantController.updateConfig);
 
 // Appointment / Kanban Routes
 router.get('/appointments/kanban', AppointmentController.getKanban);

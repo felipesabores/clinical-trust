@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
+import { TenantProvider } from "@/context/TenantContext";
+
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,7 +18,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="pt-br">
-            <body className={jakarta.className}>{children}</body>
+            <body className={jakarta.className}>
+                <TenantProvider>
+                    {children}
+                </TenantProvider>
+            </body>
         </html>
     );
 }

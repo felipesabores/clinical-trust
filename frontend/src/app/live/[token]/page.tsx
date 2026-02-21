@@ -83,6 +83,21 @@ export default function LiveView() {
                     <div className="w-3 h-3 bg-red-500 rounded-full animate-ping" />
                     <span className="text-white font-bold text-sm tracking-tight drop-shadow-md">AO VIVO</span>
                 </div>
+
+                <div className="absolute top-6 right-6 z-20 flex items-center gap-2 bg-black/20 backdrop-blur-md p-1.5 pr-4 rounded-full border border-white/10">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 bg-white/10">
+                        {data.tenant?.logo_url ? (
+                            <img src={data.tenant.logo_url} className="w-full h-full object-cover" />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center text-white text-[10px] font-bold">
+                                {data.tenant?.name?.[0] || 'C'}
+                            </div>
+                        )}
+                    </div>
+                    <span className="text-white font-bold text-[10px] uppercase tracking-tighter truncate max-w-[100px]">
+                        {data.tenant?.name || 'Clinical Trust'}
+                    </span>
+                </div>
             </div>
 
             {/* CONTENT */}
@@ -122,7 +137,7 @@ export default function LiveView() {
                                                 <div className="w-1 h-1 bg-green-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
                                                 <div className="w-1 h-1 bg-green-500 rounded-full animate-bounce" />
                                             </div>
-                                            <span className="text-[10px] text-green-600 font-bold uppercase tracking-wider italic">Em andamento na {data.tenant_name}</span>
+                                            <span className="text-[10px] text-green-600 font-bold uppercase tracking-wider italic">Em andamento na {data.tenant?.name || 'Clínica'}</span>
                                         </div>
                                     )}
                                 </div>
@@ -134,7 +149,14 @@ export default function LiveView() {
 
             {/* FOOTER CTA */}
             <div className="fixed bottom-0 w-full max-w-md bg-white p-6 border-t border-slate-100 z-30">
-                <button className="w-full bg-green-500 hover:bg-green-600 text-white font-black py-5 rounded-[22px] flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-green-200 uppercase tracking-widest text-sm">
+                <button
+                    onClick={() => {
+                        const whatsapp = data.tenant?.whatsapp || '5500000000000';
+                        const message = encodeURIComponent(`Olá! Estou acompanhando o banho do ${data.pet.name} pelo Clinical Trust e gostaria de falar com a recepção.`);
+                        window.open(`https://wa.me/${whatsapp}?text=${message}`, '_blank');
+                    }}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-black py-5 rounded-[22px] flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-green-200 uppercase tracking-widest text-sm"
+                >
                     <MessageCircle size={22} fill="white" />
                     Falar com a Recepção
                 </button>

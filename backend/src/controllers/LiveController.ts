@@ -15,7 +15,7 @@ export class LiveController {
                 include: {
                     pet: { select: { name: true, breed: true, notes: true } },
                     camera: true,
-                    tenant: { select: { name: true } }
+                    tenant: { select: { name: true, logo_url: true, primary_color: true } }
                 }
             }) as any;
 
@@ -33,7 +33,7 @@ export class LiveController {
                 pet: appointment.pet,
                 status: appointment.status,
                 streamUrl,
-                tenant_name: appointment.tenant.name
+                tenant: appointment.tenant
             });
 
         } catch (error) {

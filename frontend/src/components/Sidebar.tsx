@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useTenant } from '@/context/TenantContext';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -34,17 +35,26 @@ const menuItems = [
 
 export function Sidebar() {
     const pathname = usePathname();
+    const { config, loading } = useTenant();
 
     return (
         <aside className="w-64 h-screen glass border-r flex flex-col fixed left-0 top-0 z-50">
             <div className="p-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
-                        <LayoutDashboard size={24} />
+                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 shrink-0 overflow-hidden">
+                        {config?.logo_url ? (
+                            <img src={config.logo_url} alt={config.name} className="w-full h-full object-cover" />
+                        ) : (
+                            <LayoutDashboard size={24} />
+                        )}
                     </div>
-                    <div>
-                        <h1 className="font-bold text-lg leading-tight">Clinical Trust</h1>
-                        <p className="text-xs text-muted-foreground">Pet Boutique</p>
+                    <div className="min-w-0">
+                        <h1 className="font-bold text-lg leading-tight truncate">
+                            {loading ? '...' : (config?.name || 'Clinical Trust')}
+                        </h1>
+                        <p className="text-xs text-muted-foreground truncate italic">
+                            {loading ? '...' : (config?.description || 'Pet Boutique')}
+                        </p>
                     </div>
                 </div>
             </div>

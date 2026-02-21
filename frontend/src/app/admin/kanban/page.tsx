@@ -17,6 +17,7 @@ import {
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
+import { useTenant } from '@/context/TenantContext';
 
 import AppointmentModal from '@/components/AppointmentModal';
 
@@ -43,6 +44,7 @@ export default function KanbanPage() {
     const [isMounted, setIsMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [copiedId, setCopiedId] = useState<string | null>(null);
+    const { config } = useTenant();
 
     const fetchKanban = async () => {
         try {
@@ -118,8 +120,9 @@ export default function KanbanPage() {
     };
 
     const handleWhatsAppShare = (app: any) => {
-        const url = `${window.location.origin}/live/${app.access_token}`;
-        const message = `Olá! O banho do ${app.pet?.name} começou. Você pode acompanhar tudo ao vivo pelo link: ${url}`;
+        const url = `${window.location.host}/live/${app.access_token}`;
+        const clinicName = config?.name || 'Clínica';
+        const message = `Olá! Aqui é da ${clinicName}. O banho do ${app.pet?.name} começou. Você pode acompanhar tudo ao vivo pelo link: https://${url}`;
         window.open(`https://wa.me/${app.pet?.customer?.phone}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
