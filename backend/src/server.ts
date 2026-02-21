@@ -39,7 +39,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`
     🚀 Banho e Tosa - Backend Operacional iniciado!
     📡 Porta: ${PORT}
