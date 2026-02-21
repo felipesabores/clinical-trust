@@ -5,8 +5,9 @@ import axios from 'axios';
 import { X, Video, Link, Loader2, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useTenant } from '@/context/TenantContext';
+
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
 
 interface CameraModalProps {
     isOpen: boolean;
@@ -20,6 +21,7 @@ interface CameraModalProps {
 }
 
 export default function CameraModal({ isOpen, onClose, onSuccess, initialData }: CameraModalProps) {
+    const { config } = useTenant();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -46,7 +48,7 @@ export default function CameraModal({ isOpen, onClose, onSuccess, initialData }:
             } else {
                 await axios.post(`${API}/api/cameras`, {
                     ...formData,
-                    tenant_id: TENANT_ID
+                    tenant_id: config?.id
                 });
             }
             onSuccess();

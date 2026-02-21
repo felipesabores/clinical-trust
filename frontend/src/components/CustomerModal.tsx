@@ -5,8 +5,9 @@ import axios from 'axios';
 import { X, UserPlus, Phone, Loader2, Save, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useTenant } from '@/context/TenantContext';
+
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
 
 interface CustomerModalProps {
     isOpen: boolean;
@@ -21,6 +22,7 @@ interface CustomerModalProps {
 }
 
 export default function CustomerModal({ isOpen, onClose, onSuccess, initialData }: CustomerModalProps) {
+    const { config } = useTenant();
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({
@@ -72,7 +74,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, initialData 
             } else {
                 const res = await axios.post(`${API}/api/customers`, {
                     ...formData,
-                    tenant_id: TENANT_ID
+                    tenant_id: config?.id
                 });
                 onSuccess(res.data.id);
             }
