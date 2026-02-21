@@ -12,10 +12,10 @@ import {
 } from 'lucide-react';
 
 const stats = [
-    { label: 'Faturamento Hoje', value: 'R$ 1.240,00', change: '+12%', icon: TrendingUp, color: 'text-emerald-700', bg: 'bg-emerald-50' },
-    { label: 'Pets Atendidos', value: '24', change: '+4', icon: CheckCircle2, color: 'text-blue-700', bg: 'bg-blue-50' },
-    { label: 'Novos Clientes', value: '3', icon: Users, color: 'text-sky-700', bg: 'bg-sky-50' },
-    { label: 'Média de Espera', value: '15 min', icon: Clock, color: 'text-teal-700', bg: 'bg-teal-50' },
+    { label: 'Faturamento Hoje', value: 'R$ 1.240,00', change: '+12%', icon: TrendingUp },
+    { label: 'Pets Atendidos', value: '24', change: '+4', icon: CheckCircle2 },
+    { label: 'Novos Clientes', value: '3', icon: Users },
+    { label: 'Média de Espera', value: '15 min', icon: Clock },
 ];
 
 interface PetCardData {
@@ -82,17 +82,17 @@ export default function DashboardPage() {
             {/* Header */}
             <header className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Dashboard Operacional</h1>
-                    <p className="text-muted-foreground mt-1">Bem-vindo de volta! Status atual da boutique.</p>
+                    <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">Dashboard <span className="text-primary">Operacional</span></h1>
+                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60">SISTEMA DE GESTÃO CLÍNICA v1.0.4</p>
                 </div>
-                <div className="flex gap-3">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-card border rounded-xl text-sm font-medium shadow-sm">
-                        <CalendarDays size={18} className="text-muted-foreground" />
-                        Hoje, {today}
+                <div className="flex gap-2">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-card border rounded-sm text-[10px] font-black uppercase tracking-widest shadow-sm">
+                        <CalendarDays size={14} className="text-primary" />
+                        HOJE // {today}
                     </div>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
-                        <Video size={18} />
-                        Ao Vivo
+                    <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+                        <Video size={14} />
+                        AO VIVO
                     </button>
                 </div>
             </header>
@@ -100,20 +100,20 @@ export default function DashboardPage() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, i) => (
-                    <div key={i} className="bg-card p-6 rounded-3xl border shadow-sm hover:shadow-md transition-shadow group">
+                    <div key={i} className="hud-card p-6 rounded-sm group overflow-visible">
                         <div className="flex justify-between items-start">
-                            <div className={`${stat.bg} p-3 rounded-2xl ${stat.color}`}>
-                                <stat.icon size={24} />
+                            <div className="bg-primary/10 p-3 rounded-sm text-primary ring-1 ring-primary/20 shadow-[0_0_15px_rgba(var(--primary),0.1)]">
+                                <stat.icon size={20} />
                             </div>
                             {stat.change && (
-                                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100">
-                                    {stat.change}
+                                <span className="text-[8px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20 uppercase tracking-tighter">
+                                    {stat.change} ↑
                                 </span>
                             )}
                         </div>
-                        <div className="mt-4">
-                            <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-                            <h3 className="text-2xl font-black mt-1 tracking-tight">{stat.value}</h3>
+                        <div className="mt-6">
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{stat.label}</p>
+                            <h3 className="text-3xl font-black mt-2 tracking-tighter">{stat.value}</h3>
                         </div>
                     </div>
                 ))}

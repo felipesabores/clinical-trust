@@ -4,26 +4,31 @@
 
 @layer base {
   :root {
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 142.1 70.6% 45.3%;
-    --secondary-foreground: 210 40% 98%;
-
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 180 15% 98.5%;
+    /* Alabaster */
+    --foreground: 180 50% 2%;
+    /* Deep Charcoal/Obsidian */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 180 50% 2%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 25% 40%;
+    --primary: 180 80% 35%;
+    /* Sage Teal - Clinical & Trustworthy */
+    --primary-foreground: 180 15% 98.5%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --secondary: 45 100% 45%;
+    /* Soft Gold accent */
+    --secondary-foreground: 180 50% 2%;
 
-    --border: 214.3 31.8% 91.4%;
-    --radius: 1rem;
+    --muted: 180 10% 93%;
+    --muted-foreground: 180 10% 45%;
+
+    --accent: 180 10% 93%;
+    --accent-foreground: 180 50% 2%;
+
+    --border: 180 10% 88%;
+    --radius: 0.25rem;
+    /* Sharp clinical precision */
   }
 
   .dark {
