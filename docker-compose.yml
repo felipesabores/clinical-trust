@@ -14,8 +14,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    ports:
-      - "5432:5432"
 
   backend:
     build:
@@ -23,8 +21,6 @@ services:
       dockerfile: Dockerfile
     container_name: ct-backend
     restart: always
-    ports:
-      - "3001:3001"
     environment:
       DATABASE_URL: "postgresql://${DB_USER:-user}:${DB_PASSWORD:-password}@db:5432/${DB_NAME:-clinical_trust}"
       PORT: 3001
@@ -44,8 +40,6 @@ services:
         NEXT_PUBLIC_TENANT_ID: ${NEXT_PUBLIC_TENANT_ID:-test-tenant-123}
     container_name: ct-frontend
     restart: always
-    ports:
-      - "3000:3000"
     depends_on:
       - backend
 
