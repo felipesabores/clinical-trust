@@ -29,7 +29,7 @@ const StatusIcon = ({ status }: { status: string }) => {
     return <XCircle size={12} />;
 };
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export default function VendasPage() {
     const { config } = useTenant();

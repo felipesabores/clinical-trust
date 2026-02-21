@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CameraModal from '@/components/CameraModal';
 import { useTenant } from '@/context/TenantContext';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export default function CamerasPage() {
     const { config } = useTenant();

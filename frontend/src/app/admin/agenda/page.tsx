@@ -18,7 +18,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 

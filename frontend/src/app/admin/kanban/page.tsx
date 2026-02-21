@@ -34,7 +34,7 @@ const statuses = [
     { id: 'READY', label: 'Pronto', color: 'bg-green-500' },
 ] as const;
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export default function KanbanPage() {
     const [board, setBoard] = useState<Record<string, any[]>>({});

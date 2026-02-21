@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { useTenant } from '@/context/TenantContext';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 interface CustomerModalProps {
     isOpen: boolean;

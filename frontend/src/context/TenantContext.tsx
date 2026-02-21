@@ -19,7 +19,7 @@ interface TenantContextType {
 
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export function TenantProvider({ children }: { children: React.ReactNode }) {
     const [config, setConfig] = useState<TenantConfig | null>(null);

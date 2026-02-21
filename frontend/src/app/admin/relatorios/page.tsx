@@ -19,7 +19,7 @@ import { useTenant } from '@/context/TenantContext';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export default function RelatoriosPage() {
     const { config } = useTenant();

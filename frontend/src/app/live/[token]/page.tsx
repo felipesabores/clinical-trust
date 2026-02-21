@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import { Play, Pause, MessageCircle, Clock, ShieldCheck } from 'lucide-react';
+import { API } from '@/config';
 
 export default function LiveView() {
     const { token } = useParams();
@@ -13,7 +14,6 @@ export default function LiveView() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
                 const response = await axios.get(`${API}/api/live/${token}`);
                 setData(response.data);
             } catch (err: any) {

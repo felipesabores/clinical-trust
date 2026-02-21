@@ -12,12 +12,15 @@ import {
     Boxes,
     BarChart2,
     Zap,
+    Edit3,
+    Trash2,
 } from 'lucide-react';
+import ProductModal from '@/components/ProductModal';
 import { useTenant } from '@/context/TenantContext';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 import { cn } from '@/lib/utils';
 
 function StockBadge({ stock, min }: { stock: number; min: number }) {
@@ -44,6 +47,8 @@ export default function EstoquePage() {
     const { config } = useTenant();
     const [items, setItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingItem, setEditingItem] = useState<any>(null);
 
     const fetchItems = async () => {
         if (!config?.id) return;
@@ -61,6 +66,16 @@ export default function EstoquePage() {
     useEffect(() => {
         fetchItems();
     }, [config?.id]);
+
+    const handleDelete = async (id: string, name: string) => {
+        if (!confirm(`Tem certeza que deseja remover ${name} do estoque?`)) return;
+        try {
+            await axios.delete(`${API}/api/products/${id}`);
+            fetchItems();
+        } catch (e) {
+            alert('Erro ao excluir produto');
+        }
+    };
     const lowStock = items.filter(i => i.stock <= i.min).length;
 
     return (
@@ -73,7 +88,13 @@ export default function EstoquePage() {
                     </h1>
                     <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-muted-foreground mt-2 opacity-60 italic">LOGÍSTICA DE MATERIAIS // TERMINAL INVENTORY-09</p>
                 </div>
-                <button className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-sm text-xs font-black uppercase tracking-widest shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all border border-primary/50">
+                <button
+                    onClick={() => {
+                        setEditingItem(null);
+                        setIsModalOpen(true);
+                    }}
+                    className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-sm text-xs font-black uppercase tracking-widest shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all border border-primary/50"
+                >
                     <Plus size={18} /> CADASTRAR ITEM
                 </button>
             </header>
@@ -186,9 +207,23 @@ export default function EstoquePage() {
 
                             <div className="mt-6 flex items-center justify-between">
                                 <p className="text-[9px] font-bold text-muted-foreground/40 uppercase tracking-widest italic">Estoque Mínimo: {item.min} {item.unit}</p>
-                                <button className="p-2.5 bg-muted/10 hover:bg-primary/20 rounded-sm text-primary transition-all border border-border/50 hover:border-primary/30">
-                                    <MoreVertical size={16} />
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => {
+                                            setEditingItem(item);
+                                            setIsModalOpen(true);
+                                        }}
+                                        className="p-2.5 bg-muted/10 hover:bg-primary/20 rounded-sm text-primary transition-all border border-border/50 hover:border-primary/30"
+                                    >
+                                        <Edit3 size={16} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(item.id, item.name)}
+                                        className="p-2.5 bg-muted/10 hover:bg-red-500/20 rounded-sm text-red-400 transition-all border border-border/50 hover:border-red-500/30"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         {/* Status bar at bottom */}
@@ -196,6 +231,13 @@ export default function EstoquePage() {
                     </div>
                 ))}
             </div>
+
+            <ProductModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSuccess={fetchItems}
+                initialData={editingItem}
+            />
         </div>
     );
 }

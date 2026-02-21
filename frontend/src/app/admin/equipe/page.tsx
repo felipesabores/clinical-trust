@@ -17,11 +17,12 @@ import {
     Award,
     Zap,
     Loader2,
+    Trash2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export default function EquipePage() {
     const { config } = useTenant();
@@ -30,14 +31,29 @@ export default function EquipePage() {
     const [staff, setStaff] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [editingMember, setEditingMember] = useState<any>(null);
     const [newMember, setNewMember] = useState({
         name: '',
         role: 'GROOMER',
         phone: '',
         email: '',
         commission: 0,
-        avatar_url: ''
+        avatar_url: '',
+        is_active: true
     });
+
+    const resetForm = () => {
+        setNewMember({
+            name: '',
+            role: 'GROOMER',
+            phone: '',
+            email: '',
+            commission: 0,
+            avatar_url: '',
+            is_active: true
+        });
+        setEditingMember(null);
+    };
 
     const fetchStaff = async () => {
         try {
@@ -76,17 +92,35 @@ export default function EquipePage() {
         }
     };
 
-    const handleCreate = async () => {
+    const handleSave = async () => {
         try {
-            await axios.post(`${API}/api/staff`, {
-                ...newMember,
-                tenant_id: tenantId,
-                commission: parseFloat(newMember.commission as any)
-            });
+            if (editingMember) {
+                await axios.patch(`${API}/api/staff/${editingMember.id}`, {
+                    ...newMember,
+                    commission: parseFloat(newMember.commission as any)
+                });
+            } else {
+                await axios.post(`${API}/api/staff`, {
+                    ...newMember,
+                    tenant_id: tenantId,
+                    commission: parseFloat(newMember.commission as any)
+                });
+            }
             setShowModal(false);
+            resetForm();
             fetchStaff();
         } catch (error) {
-            alert('Erro ao cadastrar membro da equipe');
+            alert('Erro ao salvar membro da equipe');
+        }
+    };
+
+    const handleDelete = async (id: string, name: string) => {
+        if (!confirm(`Tem certeza que deseja remover ${name} da equipe?`)) return;
+        try {
+            await axios.delete(`${API}/api/staff/${id}`);
+            fetchStaff();
+        } catch (error) {
+            alert('Erro ao excluir membro da equipe');
         }
     };
 
@@ -153,17 +187,30 @@ export default function EquipePage() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-2 mt-8 w-full">
-                                <button className="flex-1 p-3 bg-muted/10 border border-border/50 rounded-sm hover:bg-muted/20 transition-all text-muted-foreground hover:text-foreground">
-                                    <Mail size={14} className="mx-auto" />
-                                </button>
-                                <button className="flex-1 p-3 bg-muted/10 border border-border/50 rounded-sm hover:bg-muted/20 transition-all text-muted-foreground hover:text-foreground">
-                                    <Phone size={14} className="mx-auto" />
-                                </button>
-                                <button className="flex-1 p-3 bg-muted/10 border border-border/50 rounded-sm hover:bg-muted/20 transition-all text-muted-foreground hover:text-foreground">
-                                    <MoreVertical size={14} className="mx-auto" />
-                                </button>
-                            </div>
+                            <button
+                                onClick={() => {
+                                    setEditingMember(member);
+                                    setNewMember({
+                                        name: member.name,
+                                        role: member.role,
+                                        phone: member.phone || '',
+                                        email: member.email || '',
+                                        commission: member.commission,
+                                        avatar_url: member.avatar_url || '',
+                                        is_active: member.is_active
+                                    });
+                                    setShowModal(true);
+                                }}
+                                className="flex-1 p-3 bg-muted/10 border border-border/50 rounded-sm hover:bg-primary/20 transition-all text-muted-foreground hover:text-primary"
+                            >
+                                <MoreVertical size={14} className="mx-auto" />
+                            </button>
+                            <button
+                                onClick={() => handleDelete(member.id, member.name)}
+                                className="flex-1 p-3 bg-muted/10 border border-border/50 rounded-sm hover:bg-red-500/20 transition-all text-muted-foreground hover:text-red-500"
+                            >
+                                <Trash2 size={14} className="mx-auto" />
+                            </button>
                         </div>
                     </div>
                 ))}
@@ -179,7 +226,7 @@ export default function EquipePage() {
 
                         <h2 className="text-2xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
                             <UserPlus className="text-primary" />
-                            CADASTRO DE COLABORADOR
+                            {editingMember ? 'EDIÇÃO DE COLABORADOR' : 'CADASTRO DE COLABORADOR'}
                         </h2>
 
                         <div className="space-y-6">
@@ -263,16 +310,19 @@ export default function EquipePage() {
 
                             <div className="flex justify-end gap-4 pt-4">
                                 <button
-                                    onClick={() => setShowModal(false)}
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        resetForm();
+                                    }}
                                     className="px-8 py-4 rounded-sm text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/20 transition-all border border-transparent"
                                 >
                                     ABORT_PROVISION
                                 </button>
                                 <button
-                                    onClick={handleCreate}
+                                    onClick={handleSave}
                                     className="px-10 py-4 bg-primary text-primary-foreground rounded-sm font-black text-[10px] uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 border border-primary/50"
                                 >
-                                    FINALIZAR CADASTRO
+                                    {editingMember ? 'SALVAR ALTERAÇÕES' : 'FINALIZAR CADASTRO'}
                                 </button>
                             </div>
                         </div>

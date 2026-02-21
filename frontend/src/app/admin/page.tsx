@@ -25,7 +25,7 @@ import axios from 'axios';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 interface Appointment {
     id: string;

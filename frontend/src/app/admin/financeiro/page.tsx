@@ -20,7 +20,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export default function FinanceiroPage() {
     const { config } = useTenant();

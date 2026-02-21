@@ -20,7 +20,7 @@ import {
 import { useTenant } from '@/context/TenantContext';
 import { cn } from '@/lib/utils';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+import { API } from '@/config';
 
 export default function ConfiguracoesPage() {
     const { config, loading: contextLoading } = useTenant();
