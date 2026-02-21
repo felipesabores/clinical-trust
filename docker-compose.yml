@@ -30,19 +30,6 @@ services:
         condition: service_healthy
     command: >
       sh -c "npx prisma generate && npx prisma db push --accept-data-loss && node dist/server.js"
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=dokploy-network
-      # Http configuration
-      - traefik.http.routers.ct-backend.rule=Host(`core.carvalhodev.com.br`)
-      - traefik.http.routers.ct-backend.entrypoints=web
-      - traefik.http.routers.ct-backend.middlewares=redirect-to-https@file
-      # Https configuration
-      - traefik.http.routers.ct-backend-secure.rule=Host(`core.carvalhodev.com.br`)
-      - traefik.http.routers.ct-backend-secure.entrypoints=websecure
-      - traefik.http.routers.ct-backend-secure.tls.certresolver=letsencrypt
-      # Service definition - A URL BATE NA PORTA DE DENTRO DO NODEJS (3001)
-      - traefik.http.services.ct-backend.loadbalancer.server.port=3001
     networks:
       - dokploy-network
       - default
@@ -58,19 +45,6 @@ services:
     restart: always
     depends_on:
       - backend
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=dokploy-network
-      # Http configuration
-      - traefik.http.routers.ct-frontend.rule=Host(`pet.carvalhodev.com.br`)
-      - traefik.http.routers.ct-frontend.entrypoints=web
-      - traefik.http.routers.ct-frontend.middlewares=redirect-to-https@file
-      # Https configuration
-      - traefik.http.routers.ct-frontend-secure.rule=Host(`pet.carvalhodev.com.br`)
-      - traefik.http.routers.ct-frontend-secure.entrypoints=websecure
-      - traefik.http.routers.ct-frontend-secure.tls.certresolver=letsencrypt
-      # Next JS usa a porta 3000 por padrao!
-      - traefik.http.services.ct-frontend.loadbalancer.server.port=3000
     networks:
       - dokploy-network
       - default
