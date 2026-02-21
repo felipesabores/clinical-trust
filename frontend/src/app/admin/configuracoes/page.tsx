@@ -52,8 +52,11 @@ export default function ConfiguracoesPage() {
             window.location.reload(); // Quick way to refresh context
         } catch (error: any) {
             console.error(error);
-            const msg = error.response?.data?.error || error.message || 'Erro ao salvar configurações';
-            alert(`Erro: ${msg}`);
+            const data = error.response?.data;
+            const msg = data?.error || error.message || 'Erro ao salvar configurações';
+            const details = data?.details ? `\n\nDetalhes: ${data.details}` : '';
+            const code = data?.code ? `\nCódigo: ${data.code}` : '';
+            alert(`Erro: ${msg}${details}${code}`);
         } finally {
             setLoading(false);
         }
