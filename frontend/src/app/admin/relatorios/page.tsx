@@ -58,7 +58,7 @@ export default function RelatoriosPage() {
         { name: 'BANHO + TOSA PROF.', count: 148, pct: 38, revenue: 'R$ 7.400' },
         { name: 'BANHO HIGIÊNICO', count: 112, pct: 29, revenue: 'R$ 4.480' },
         { name: 'TOSA HIGIÊNICA', count: 73, pct: 19, revenue: 'R$ 2.920' },
-        { name: 'CONSULTA CLÍNICA', count: 31, pct: 8, revenue: 'R$ 2.480' },
+        { name: 'HIDRATAÇÃO / OZÔNIO', count: 31, pct: 8, revenue: 'R$ 2.480' },
         { name: 'OUTROS PROCEDIMENTOS', count: 23, pct: 6, revenue: 'R$ 1.140' },
     ];
     return (
