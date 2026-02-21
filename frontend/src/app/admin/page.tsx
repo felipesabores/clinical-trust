@@ -189,7 +189,7 @@ export default function DashboardPage() {
             <header className="flex justify-between items-end flex-wrap gap-4 shrink-0">
                 <div>
                     <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">Dashboard <span className="text-primary">Operacional</span></h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60 italic">SISTEMA DE GESTÃO CLÍNICA v1.0.5</p>
+                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60 italic">SISTEMA DE GESTÃO BANHO E TOSA v1.0.5</p>
                 </div>
                 <div className="flex gap-3">
                     <div className="flex items-center gap-2 px-6 py-2 bg-muted/20 border border-border/50 rounded-sm text-[10px] font-black uppercase tracking-widest shadow-sm">

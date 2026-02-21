@@ -145,13 +145,13 @@ export default function ClientesPage() {
                         <UserPlus className="text-primary" size={32} />
                         Diretório <span className="text-primary">Tutores</span>
                     </h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60 italic">SISTEMA DE GESTÃO CLÍNICA v1.0.5 // NODE 04</p>
+                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60 italic">SISTEMA DE GESTÃO BANHO E TOSA v1.0.5 // NODE 04</p>
                 </div>
                 <button
                     onClick={() => setIsCustomerModalOpen(true)}
                     className="bg-primary text-primary-foreground px-8 py-3 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 flex items-center gap-3 border border-primary/50"
                 >
-                    <Plus size={18} /> NOVO REGISTRO CLÍNICO
+                    <Plus size={18} /> NOVO REGISTRO PET
                 </button>
             </header>
 
@@ -202,7 +202,7 @@ export default function ClientesPage() {
                                                     <Phone size={10} className="text-primary/50" /> {customer.phone}
                                                 </p>
                                                 <span className="w-1 h-1 bg-border rounded-full" />
-                                                <span className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20">{customer.pets?.length || 0} PACIENTES</span>
+                                                <span className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20">{customer.pets?.length || 0} PETS</span>
                                             </div>
                                         </div>
                                     </div>
@@ -280,13 +280,13 @@ export default function ClientesPage() {
                                     <div className="flex justify-between items-center border-b border-border/30 pb-3">
                                         <div className="flex items-center gap-2">
                                             <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                                            <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Pacientes Vinculados</h5>
+                                            <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Pets Vinculados</h5>
                                         </div>
                                         <button
                                             onClick={() => setIsPetModalOpen(true)}
                                             className="px-4 py-2 bg-muted/20 text-primary text-[9px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-primary hover:text-white transition-all flex items-center gap-2 border border-border/50 hover:border-primary"
                                         >
-                                            <Plus size={12} /> Novo Paciente
+                                            <Plus size={12} /> Novo Pet
                                         </button>
                                     </div>
 
@@ -347,7 +347,7 @@ export default function ClientesPage() {
                                         {selectedCustomer.pets?.length === 0 && (
                                             <div className="py-16 text-center border border-dashed border-border/30 rounded-sm bg-muted/5">
                                                 <Dog className="mx-auto mb-3 opacity-10" size={40} />
-                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/30">Aguardando Pacientes</p>
+                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/30">Aguardando Pets</p>
                                             </div>
                                         )}
                                     </div>
@@ -364,7 +364,7 @@ export default function ClientesPage() {
                                         <h6 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-70">Logs de Atividade</h6>
                                     </div>
                                     <p className="text-[10px] text-muted-foreground font-medium leading-relaxed opacity-60 italic">
-                                        O histórico completo de agendamentos, transações financeiras e registros clínicos aparecerá aqui conforme o sistema opera em tempo real.
+                                        O histórico completo de agendamentos, transações financeiras e registros de banho e tosa aparecerá aqui conforme o sistema opera em tempo real.
                                     </p>
                                 </section>
                             </div>
