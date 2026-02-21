@@ -61,12 +61,12 @@ export function Sidebar() {
                     </div>
                     <div className="min-w-0 space-y-2">
                         <h1 className="font-black text-sm leading-none truncate text-foreground tracking-tighter uppercase font-title italic">
-                            {loading ? 'CALIBRATING...' : (config?.name || 'Clinical Trust')}
+                            {loading ? 'CALIBRATING...' : (config?.name || 'Vivid Stream Pet')}
                         </h1>
                         <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)]" />
                             <p className="text-[9px] text-muted-foreground truncate uppercase font-black tracking-[0.3em] opacity-40">
-                                {loading ? 'SYNCHRONIZING' : (config?.description || 'NODE_MASTER_CONTROL')}
+                                {loading ? 'SYNCHRONIZING' : (config?.description || 'BANHO_E_TOSA_AO_VIVO')}
                             </p>
                         </div>
                     </div>
