@@ -38,7 +38,7 @@ function StockBadge({ stock, min }: { stock: number; min: number }) {
     );
 }
 
-const categories = ['Todos', 'Banho', 'Tosa', 'Farmácia', 'Acessórios', 'Alimentos'];
+const categories = ['Todos', 'Banho', 'Tosa', 'Higiene / Estética', 'Acessórios', 'Alimentos'];
 
 export default function EstoquePage() {
     const { config } = useTenant();
