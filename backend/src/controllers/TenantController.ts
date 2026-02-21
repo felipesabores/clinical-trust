@@ -12,21 +12,18 @@ export class TenantController {
                 where: { id: tenantId }
             });
 
-            // Bootstrap if dev/test
-            if (!tenant && tenantId === 'test-tenant-123') {
+            // Bootstrap if dev/test or first time in prod
+            if (!tenant) {
+                console.log(`[WhiteLabel] Tenant ${tenantId} not found, creating default...`);
                 tenant = await prisma.tenant.create({
                     data: {
-                        id: 'test-tenant-123',
+                        id: tenantId,
                         name: 'Clinical Trust',
-                        document: '00.000.000/0001-00',
+                        document: '00.000.000/0001-00', // Default initial doc
                         description: 'Pet Boutique',
                         primary_color: '#7c3aed'
                     }
                 });
-            }
-
-            if (!tenant) {
-                return res.status(404).json({ error: 'Tenant not found' });
             }
 
             res.json(tenant);
@@ -41,10 +38,20 @@ export class TenantController {
         const { name, logo_url, description, primary_color, whatsapp } = req.body;
 
         try {
-            const tenant = await prisma.tenant.update({
+            // Use upsert to be safe, though update should work if record exists
+            const tenant = await prisma.tenant.upsert({
                 where: { id: tenantId },
-                data: {
+                update: {
                     name,
+                    logo_url,
+                    description,
+                    primary_color,
+                    whatsapp
+                },
+                create: {
+                    id: tenantId,
+                    name: name || 'Clinical Trust',
+                    document: '00.000.000/0001-00',
                     logo_url,
                     description,
                     primary_color,
@@ -52,10 +59,14 @@ export class TenantController {
                 }
             });
 
+            console.log(`[WhiteLabel] Configuration updated for tenant ${tenantId}`);
             res.json(tenant);
-        } catch (error) {
-            console.error('Error updating tenant config:', error);
-            res.status(500).json({ error: 'Internal server error' });
+        } catch (error: any) {
+            console.error('Error updating tenant config:', error.message);
+            res.status(500).json({
+                error: 'Erro interno ao salvar configurações',
+                details: error.message
+            });
         }
     }
 }

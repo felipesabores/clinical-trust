@@ -50,9 +50,10 @@ export default function ConfiguracoesPage() {
             await axios.patch(`${API}/api/config`, formData);
             alert('Configurações salvas com sucesso!');
             window.location.reload(); // Quick way to refresh context
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert('Erro ao salvar configurações');
+            const msg = error.response?.data?.error || error.message || 'Erro ao salvar configurações';
+            alert(`Erro: ${msg}`);
         } finally {
             setLoading(false);
         }
