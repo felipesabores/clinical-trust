@@ -5,11 +5,14 @@ import axios from 'axios';
 import {
     Dog,
     Video,
-    ArrowRight,
     CheckCircle2,
     Clock,
     Kanban as KanbanIcon,
-    GripVertical
+    GripVertical,
+    Share2,
+    MessageCircle,
+    Copy,
+    Check
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -39,6 +42,7 @@ export default function KanbanPage() {
     const [loading, setLoading] = useState(true);
     const [isMounted, setIsMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [copiedId, setCopiedId] = useState<string | null>(null);
 
     const fetchKanban = async () => {
         try {
@@ -66,10 +70,10 @@ export default function KanbanPage() {
                 status: newStatus,
                 camera_id: cameraId || undefined,
             });
-            // fetchKanban(); // We update locally for DnD
+            fetchKanban(); // We refresh to get the access_token if it was generated
         } catch (e) {
             console.error('Erro ao atualizar status', e);
-            fetchKanban(); // Rollback to server state on error
+            fetchKanban();
         }
     };
 
@@ -87,31 +91,36 @@ export default function KanbanPage() {
         if (!destination) return;
         if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-        // Clone current state
         const newBoard = { ...board };
-
-        // Find the item
         const sourceList = [...(newBoard[source.droppableId] || [])];
         const destList = source.droppableId === destination.droppableId
             ? sourceList
             : [...(newBoard[destination.droppableId] || [])];
 
         const [movedItem] = sourceList.splice(source.index, 1);
-
-        // Update item status locally
         const updatedItem = { ...movedItem, status: destination.droppableId };
-
         destList.splice(destination.index, 0, updatedItem);
 
-        // Update board state
         newBoard[source.droppableId] = sourceList;
         newBoard[destination.droppableId] = destList;
 
         setBoard(newBoard);
 
-        // Sync with backend
         const selectedCam = (window as any)[`selected_cam_${destination.droppableId}`];
         updateStatus(draggableId, destination.droppableId, selectedCam);
+    };
+
+    const handleCopyToken = (token: string, appId: string) => {
+        const url = `${window.location.origin}/live/${token}`;
+        navigator.clipboard.writeText(url);
+        setCopiedId(appId);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
+
+    const handleWhatsAppShare = (app: any) => {
+        const url = `${window.location.origin}/live/${app.access_token}`;
+        const message = `Olá! O banho do ${app.pet?.name} começou. Você pode acompanhar tudo ao vivo pelo link: ${url}`;
+        window.open(`https://wa.me/${app.pet?.customer?.phone}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
     if (!isMounted) return null;
@@ -217,6 +226,25 @@ export default function KanbanPage() {
                                                         <p className="text-[10px] text-muted-foreground font-medium mb-4 italic">
                                                             {app.pet?.breed} • {app.pet?.customer?.name}
                                                         </p>
+
+                                                        {app.access_token && (
+                                                            <div className="flex gap-2 pt-3 border-t border-border mt-3">
+                                                                <button
+                                                                    onClick={() => handleCopyToken(app.access_token, app.id)}
+                                                                    className="flex-1 flex items-center justify-center gap-2 py-2 bg-muted hover:bg-muted/80 rounded-lg text-[10px] font-black transition-colors"
+                                                                >
+                                                                    {copiedId === app.id ? <Check size={12} className="text-green-500" /> : <Copy size={12} />}
+                                                                    {copiedId === app.id ? 'COPIADO' : 'LINK'}
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleWhatsAppShare(app)}
+                                                                    className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-600 rounded-lg text-[10px] font-black transition-colors"
+                                                                >
+                                                                    <MessageCircle size={12} />
+                                                                    WHATSAPP
+                                                                </button>
+                                                            </div>
+                                                        )}
 
                                                         {status.id === 'READY' && (
                                                             <div className="flex items-center justify-center w-full text-green-500 py-2 rounded-xl gap-2 font-black text-[10px] bg-green-500/10">
