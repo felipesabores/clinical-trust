@@ -19,6 +19,15 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Health Check
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'UP',
+        timestamp: new Date().toISOString(),
+        database: !!process.env.DATABASE_URL
+    });
+});
+
 // Load API Routes
 app.use('/api', apiRoutes);
 
@@ -36,4 +45,8 @@ app.listen(PORT, () => {
     📡 Porta: ${PORT}
     🔗 API Base: http://localhost:${PORT}/api
     `);
+
+    if (!process.env.DATABASE_URL) {
+        console.error('CRITICAL: DATABASE_URL is not defined! Prisma will crash.');
+    }
 });
