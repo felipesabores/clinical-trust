@@ -72,7 +72,7 @@ export class TransactionController {
     static async delete(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            await prisma.transaction.delete({ where: { id } });
+            await prisma.transaction.delete({ where: { id: id as string } });
             res.status(204).send();
         } catch (error) {
             res.status(500).json({ error: 'Failed to delete transaction' });

@@ -44,7 +44,7 @@ export class StaffController {
             const { id } = req.params;
             const data = req.body;
             const staff = await prisma.staff.update({
-                where: { id },
+                where: { id: id as string },
                 data
             });
             res.json(staff);
@@ -56,7 +56,7 @@ export class StaffController {
     static async delete(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            await prisma.staff.delete({ where: { id } });
+            await prisma.staff.delete({ where: { id: id as string } });
             res.status(204).send();
         } catch (error) {
             res.status(500).json({ error: 'Failed to delete staff member' });

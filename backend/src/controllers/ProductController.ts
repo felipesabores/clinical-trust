@@ -43,7 +43,7 @@ export class ProductController {
         const data = req.body;
         try {
             const product = await prisma.product.update({
-                where: { id },
+                where: { id: id as string },
                 data: {
                     ...data,
                     stock: data.stock !== undefined ? Number(data.stock) : undefined,
@@ -60,7 +60,7 @@ export class ProductController {
     static async delete(req: Request, res: Response) {
         const { id } = req.params;
         try {
-            await prisma.product.delete({ where: { id } });
+            await prisma.product.delete({ where: { id: id as string } });
             res.json({ success: true });
         } catch (e) {
             res.status(500).json({ error: 'Erro ao excluir produto' });
