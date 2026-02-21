@@ -7,6 +7,104 @@ const prisma = new PrismaClient();
 
 export class AppointmentController {
 
+    // SEARCH Customers
+    static async searchCustomers(req: Request, res: Response) {
+        try {
+            const { q, tenantId } = req.query;
+            const customers = await prisma.customer.findMany({
+                where: {
+                    tenant_id: tenantId as string,
+                    OR: [
+                        { name: { contains: q as string, mode: 'insensitive' } },
+                        { phone: { contains: q as string } }
+                    ]
+                },
+                take: 10
+            });
+            res.json(customers);
+        } catch (error) {
+            res.status(500).json({ error: 'Search failed' });
+        }
+    }
+
+    // SEARCH Pets
+    static async searchPets(req: Request, res: Response) {
+        try {
+            const { q, customerId } = req.query;
+            const pets = await prisma.pet.findMany({
+                where: {
+                    customer_id: customerId as string,
+                    name: { contains: q as string, mode: 'insensitive' }
+                },
+                take: 10
+            });
+            res.json(pets);
+        } catch (error) {
+            res.status(500).json({ error: 'Search failed' });
+        }
+    }
+
+    // CREATE Appointment (Quick)
+    static async create(req: Request, res: Response) {
+        try {
+            const {
+                tenant_id,
+                customer_id,
+                customer_name,
+                customer_phone,
+                pet_id,
+                pet_name,
+                pet_breed,
+                scheduled_at
+            } = req.body;
+
+            let finalCustomerId = customer_id;
+            let finalPetId = pet_id;
+
+            // 1. Create Customer if not exists
+            if (!finalCustomerId) {
+                const customer = await prisma.customer.create({
+                    data: {
+                        tenant_id,
+                        name: customer_name,
+                        phone: customer_phone
+                    }
+                });
+                finalCustomerId = customer.id;
+            }
+
+            // 2. Create Pet if not exists
+            if (!finalPetId) {
+                const pet = await prisma.pet.create({
+                    data: {
+                        customer_id: finalCustomerId,
+                        name: pet_name,
+                        breed: pet_breed
+                    }
+                });
+                finalPetId = pet.id;
+            }
+
+            // 3. Create Appointment
+            const appointment = await prisma.appointment.create({
+                data: {
+                    tenant_id,
+                    pet_id: finalPetId,
+                    status: 'SCHEDULED',
+                    scheduled_at: new Date(scheduled_at || Date.now())
+                },
+                include: {
+                    pet: { include: { customer: true } }
+                }
+            });
+
+            res.status(201).json(appointment);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Failed to create appointment' });
+        }
+    }
+
     // GET /api/appointments/kanban
     static async getKanban(req: Request, res: Response) {
         try {

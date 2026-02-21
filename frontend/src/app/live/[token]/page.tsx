@@ -13,7 +13,8 @@ export default function LiveView() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/live/${token}`);
+                const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                const response = await axios.get(`${API}/api/live/${token}`);
                 setData(response.data);
             } catch (err: any) {
                 setError(err.response?.data?.error || 'Link inválido');

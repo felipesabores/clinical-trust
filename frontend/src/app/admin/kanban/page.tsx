@@ -8,10 +8,14 @@ import {
     ArrowRight,
     CheckCircle2,
     Clock,
-    Kanban as KanbanIcon
+    Kanban as KanbanIcon,
+    GripVertical
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
+
+import AppointmentModal from '@/components/AppointmentModal';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -33,6 +37,8 @@ export default function KanbanPage() {
     const [board, setBoard] = useState<Record<string, any[]>>({});
     const [cameras, setCameras] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isMounted, setIsMounted] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchKanban = async () => {
         try {
@@ -60,21 +66,64 @@ export default function KanbanPage() {
                 status: newStatus,
                 camera_id: cameraId || undefined,
             });
-            fetchKanban();
+            // fetchKanban(); // We update locally for DnD
         } catch (e) {
             console.error('Erro ao atualizar status', e);
+            fetchKanban(); // Rollback to server state on error
         }
     };
 
     useEffect(() => {
+        setIsMounted(true);
         fetchKanban();
         fetchCameras();
         const inter = setInterval(fetchKanban, 10000);
         return () => clearInterval(inter);
     }, []);
 
+    const onDragEnd = (result: DropResult) => {
+        const { source, destination, draggableId } = result;
+
+        if (!destination) return;
+        if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+        // Clone current state
+        const newBoard = { ...board };
+
+        // Find the item
+        const sourceList = [...(newBoard[source.droppableId] || [])];
+        const destList = source.droppableId === destination.droppableId
+            ? sourceList
+            : [...(newBoard[destination.droppableId] || [])];
+
+        const [movedItem] = sourceList.splice(source.index, 1);
+
+        // Update item status locally
+        const updatedItem = { ...movedItem, status: destination.droppableId };
+
+        destList.splice(destination.index, 0, updatedItem);
+
+        // Update board state
+        newBoard[source.droppableId] = sourceList;
+        newBoard[destination.droppableId] = destList;
+
+        setBoard(newBoard);
+
+        // Sync with backend
+        const selectedCam = (window as any)[`selected_cam_${destination.droppableId}`];
+        updateStatus(draggableId, destination.droppableId, selectedCam);
+    };
+
+    if (!isMounted) return null;
+
     return (
         <div className="p-8 h-screen flex flex-col bg-background">
+            <AppointmentModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSuccess={fetchKanban}
+            />
+
             <header className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
@@ -88,98 +137,111 @@ export default function KanbanPage() {
                     <button className="glass px-6 py-2.5 rounded-xl hover:bg-accent transition-all font-bold flex items-center gap-2">
                         <Video size={18} /> Câmeras
                     </button>
-                    <button className="bg-primary text-primary-foreground px-8 py-2.5 rounded-xl font-black hover:scale-105 transition-all shadow-lg shadow-primary/20">
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-primary text-primary-foreground px-8 py-2.5 rounded-xl font-black hover:scale-105 transition-all shadow-lg shadow-primary/20"
+                    >
                         NOVO AGENDAMENTO
                     </button>
                 </div>
             </header>
 
-            <div className="grid grid-cols-6 gap-5 flex-1 min-h-0 overflow-x-auto pb-4">
-                {statuses.map((status) => (
-                    <div key={status.id} className="flex flex-col min-w-[260px] h-full">
-                        <div className="flex flex-col gap-2 mb-4">
-                            <div className="flex items-center gap-2 px-2">
-                                <div className={cn('w-2 h-2 rounded-full', status.color)} />
-                                <h3 className="font-bold uppercase tracking-widest text-[10px] text-muted-foreground">{status.label}</h3>
-                                <span className="bg-muted px-2 py-0.5 rounded-lg text-[10px] font-black text-muted-foreground ml-auto">
-                                    {board[status.id]?.length || 0}
-                                </span>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <div className="grid grid-cols-6 gap-5 flex-1 min-h-0 overflow-x-auto pb-4">
+                    {statuses.map((status) => (
+                        <div key={status.id} className="flex flex-col min-w-[260px] h-full">
+                            <div className="flex flex-col gap-2 mb-4">
+                                <div className="flex items-center gap-2 px-2">
+                                    <div className={cn('w-2 h-2 rounded-full', status.color)} />
+                                    <h3 className="font-bold uppercase tracking-widest text-[10px] text-muted-foreground">{status.label}</h3>
+                                    <span className="bg-muted px-2 py-0.5 rounded-lg text-[10px] font-black text-muted-foreground ml-auto">
+                                        {board[status.id]?.length || 0}
+                                    </span>
+                                </div>
+
+                                {(status.id === 'BATHING' || status.id === 'GROOMING') && (
+                                    <select
+                                        id={`cam-select-${status.id}`}
+                                        className="bg-muted/50 border border-border rounded-lg text-[10px] px-3 py-1.5 text-muted-foreground font-bold outline-none focus:border-primary/50 mx-2"
+                                        onChange={(e) => {
+                                            (window as any)[`selected_cam_${status.id}`] = e.target.value;
+                                        }}
+                                    >
+                                        <option value="">Câmera Automática...</option>
+                                        {cameras.map(cam => (
+                                            <option key={cam.id} value={cam.id}>{cam.name}</option>
+                                        ))}
+                                    </select>
+                                )}
                             </div>
 
-                            {(status.id === 'BATHING' || status.id === 'GROOMING') && (
-                                <select
-                                    id={`cam-select-${status.id}`}
-                                    className="bg-muted/50 border border-border rounded-lg text-[10px] px-3 py-1.5 text-muted-foreground font-bold outline-none focus:border-primary/50 mx-2"
-                                    onChange={(e) => {
-                                        (window as any)[`selected_cam_${status.id}`] = e.target.value;
-                                    }}
-                                >
-                                    <option value="">Câmera Automática...</option>
-                                    {cameras.map(cam => (
-                                        <option key={cam.id} value={cam.id}>{cam.name}</option>
-                                    ))}
-                                </select>
-                            )}
-                        </div>
+                            <Droppable droppableId={status.id}>
+                                {(provided, snapshot) => (
+                                    <div
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                        className={cn(
+                                            "flex-1 bg-muted/30 rounded-3xl p-3 overflow-y-auto border border-border border-dashed space-y-3 transition-colors",
+                                            snapshot.isDraggingOver && "bg-muted/50 border-primary/30"
+                                        )}
+                                    >
+                                        {board[status.id]?.map((app: any, index: number) => (
+                                            <Draggable key={app.id} draggableId={app.id} index={index}>
+                                                {(provided, snapshot) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        className={cn(
+                                                            "bg-card border border-border p-4 rounded-2xl shadow-sm group hover:border-primary/50 transition-all hover:shadow-md",
+                                                            snapshot.isDragging && "shadow-2xl border-primary scale-105 z-50"
+                                                        )}
+                                                    >
+                                                        <div className="flex justify-between items-start mb-3">
+                                                            <div className="flex items-center gap-2">
+                                                                <div {...provided.dragHandleProps} className="text-muted-foreground/30 hover:text-primary transition-colors cursor-grab active:cursor-grabbing">
+                                                                    <GripVertical size={16} />
+                                                                </div>
+                                                                <div className="w-9 h-9 bg-accent rounded-xl flex items-center justify-center">
+                                                                    <Dog size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                                                </div>
+                                                            </div>
+                                                            {app.access_token && (
+                                                                <div className="flex items-center gap-1 bg-red-500/10 px-2 py-1 rounded-lg border border-red-500/20">
+                                                                    <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse" />
+                                                                    <span className="text-[8px] font-black text-red-500 uppercase tracking-tighter">LIVE</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
 
-                        <div className="flex-1 bg-muted/30 rounded-3xl p-3 overflow-y-auto border border-border border-dashed space-y-3">
-                            {board[status.id]?.map((app: any) => (
-                                <div key={app.id} className="bg-card border border-border p-4 rounded-2xl shadow-sm group hover:border-primary/50 transition-all hover:shadow-md">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div className="w-9 h-9 bg-accent rounded-xl flex items-center justify-center">
-                                            <Dog size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                                        </div>
-                                        {app.access_token && (
-                                            <div className="flex items-center gap-1 bg-red-500/10 px-2 py-1 rounded-lg border border-red-500/20">
-                                                <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse" />
-                                                <span className="text-[8px] font-black text-red-500 uppercase tracking-tighter">LIVE</span>
+                                                        <h4 className="font-bold text-base mb-0.5">{app.pet?.name}</h4>
+                                                        <p className="text-[10px] text-muted-foreground font-medium mb-4 italic">
+                                                            {app.pet?.breed} • {app.pet?.customer?.name}
+                                                        </p>
+
+                                                        {status.id === 'READY' && (
+                                                            <div className="flex items-center justify-center w-full text-green-500 py-2 rounded-xl gap-2 font-black text-[10px] bg-green-500/10">
+                                                                <CheckCircle2 size={14} /> CONCLUÍDO
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+
+                                        {(!board[status.id] || (board[status.id]?.length ?? 0) === 0) && !loading && (
+                                            <div className="h-40 flex flex-col items-center justify-center opacity-30">
+                                                <Clock size={24} className="mb-2" />
+                                                <span className="text-[9px] font-bold uppercase tracking-widest">Vazio</span>
                                             </div>
                                         )}
                                     </div>
-
-                                    <h4 className="font-bold text-base mb-0.5">{app.pet?.name}</h4>
-                                    <p className="text-[10px] text-muted-foreground font-medium mb-4 italic">
-                                        {app.pet?.breed} • {app.pet?.customer?.name}
-                                    </p>
-
-                                    <div className="flex gap-2">
-                                        {statuses
-                                            .slice(
-                                                statuses.findIndex(s => s.id === status.id) + 1,
-                                                statuses.findIndex(s => s.id === status.id) + 2
-                                            )
-                                            .map(next => (
-                                                <button
-                                                    key={next.id}
-                                                    onClick={() => {
-                                                        const camId = (window as any)[`selected_cam_${next.id}`];
-                                                        updateStatus(app.id, next.id, camId);
-                                                    }}
-                                                    className="flex-1 bg-accent/50 hover:bg-primary hover:text-primary-foreground py-2 rounded-xl text-[10px] font-black transition-all flex items-center justify-center gap-2 group/btn"
-                                                >
-                                                    MOVER PARA {next.label.toUpperCase()}
-                                                    <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
-                                                </button>
-                                            ))}
-                                        {status.id === 'READY' && (
-                                            <div className="flex items-center justify-center w-full text-green-500 py-2 rounded-xl gap-2 font-black text-[10px] bg-green-500/10">
-                                                <CheckCircle2 size={14} /> CONCLUÍDO
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-
-                            {(!board[status.id] || (board[status.id]?.length ?? 0) === 0) && !loading && (
-                                <div className="h-40 flex flex-col items-center justify-center opacity-30">
-                                    <Clock size={24} className="mb-2" />
-                                    <span className="text-[9px] font-bold uppercase tracking-widest">Vazio</span>
-                                </div>
-                            )}
+                                )}
+                            </Droppable>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            </DragDropContext>
         </div>
     );
 }

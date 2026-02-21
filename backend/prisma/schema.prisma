@@ -23,6 +23,7 @@ model Customer {
   tenant     Tenant   @relation(fields: [tenant_id], references: [id])
   name       String
   phone      String   // WhatsApp format
+  avatar_url String?
   created_at DateTime @default(now())
   pets       Pet[]
 }
@@ -32,7 +33,9 @@ model Pet {
   customer_id  String
   customer     Customer      @relation(fields: [customer_id], references: [id])
   name         String
+  type         String        @default("DOG") // DOG, CAT, RABBIT, etc.
   breed        String?
+  avatar_url   String?
   notes        String?
   created_at   DateTime      @default(now())
   appointments Appointment[]

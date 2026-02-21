@@ -3,48 +3,57 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: clinical-trust-db
+    container_name: ct-db
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: clinical_trust
+      POSTGRES_USER: ${DB_USER:-user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-clinical_trust}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: clinical-trust-backend
+    container_name: ct-backend
+    restart: always
     ports:
       - "3001:3001"
     environment:
-      DATABASE_URL: "postgresql://user:password@db:5432/clinical_trust"
+      DATABASE_URL: "postgresql://${DB_USER:-user}:${DB_PASSWORD:-password}@db:5432/${DB_NAME:-clinical_trust}"
+      PORT: 3001
+      NEXT_PUBLIC_TENANT_ID: ${NEXT_PUBLIC_TENANT_ID:-test-tenant-123}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "npx prisma migrate deploy && npm start"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: clinical-trust-frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_TENANT_ID: ${NEXT_PUBLIC_TENANT_ID:-test-tenant-123}
+    container_name: ct-frontend
+    restart: always
     ports:
       - "3000:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: "http://localhost:3001"
     depends_on:
       - backend
 
   mediamtx:
     image: bluenviron/mediamtx
-    container_name: clinical-trust-mediamtx
+    container_name: ct-mediamtx
+    restart: always
     ports:
       - "8554:8554" # RTSP
       - "8888:8888" # HLS
       - "8889:8889" # WebRTC
-
-volumes:
-  postgres_data:
