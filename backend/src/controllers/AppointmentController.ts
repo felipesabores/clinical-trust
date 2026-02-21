@@ -58,6 +58,21 @@ export class AppointmentController {
                 scheduled_at
             } = req.body;
 
+            console.log('Criando agendamento para tenant:', tenant_id);
+
+            // SEGURANÇA: Garantir que o Tenant existe
+            const tenantExists = await prisma.tenant.findUnique({ where: { id: tenant_id } });
+            if (!tenantExists) {
+                console.log('Criando tenant em tempo de execução:', tenant_id);
+                await prisma.tenant.create({
+                    data: {
+                        id: tenant_id,
+                        name: 'Banho e Tosa - Unidade Principal',
+                        document: '12345678000199-' + Date.now(), // Documento único temp
+                    }
+                });
+            }
+
             let finalCustomerId = customer_id;
             let finalPetId = pet_id;
 
@@ -86,22 +101,28 @@ export class AppointmentController {
             }
 
             // 3. Create Appointment
+            const dateToSchedule = scheduled_at ? new Date(scheduled_at) : new Date();
+
             const appointment = await prisma.appointment.create({
                 data: {
                     tenant_id,
                     pet_id: finalPetId,
-                    status: 'SCHEDULED',
-                    scheduled_at: new Date(scheduled_at || Date.now())
+                    status: 'SCHEDULED' as AppointmentStatus,
+                    scheduled_at: dateToSchedule
                 },
                 include: {
                     pet: { include: { customer: true } }
                 }
             });
 
+            console.log('Agendamento criado com sucesso:', appointment.id);
             res.status(201).json(appointment);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Failed to create appointment' });
+        } catch (error: any) {
+            console.error('ERRO DETALHADO NO BACKEND:', error);
+            res.status(500).json({
+                error: 'Failed to create appointment',
+                details: error.message
+            });
         }
     }
 
@@ -121,7 +142,7 @@ export class AppointmentController {
             });
 
             // Grouping by status for Kanban
-            const kanban: Record<AppointmentStatus, any[]> = {
+            const kanban: Record<string, any[]> = {
                 SCHEDULED: [],
                 RECEPTION: [],
                 BATHING: [],
@@ -162,11 +183,9 @@ export class AppointmentController {
                 updateData.access_token = token;
                 updateData.token_expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
 
-                // Generate full magic link (URL should come from config/env)
                 const frontendUrl = process.env.FRONTEND_CLIENT_URL || 'http://localhost:3000';
                 const magicLink = `${frontendUrl}/live/${token}`;
 
-                // Trigger Webhook
                 await WebhookService.sendLiveLink({
                     petName: currentAppointment.pet.name,
                     customerPhone: currentAppointment.pet.customer.phone,
