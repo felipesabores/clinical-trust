@@ -5,8 +5,9 @@ import axios from 'axios';
 import { X, Search, Plus, User, Dog, Phone, Calendar, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useTenant } from '@/context/TenantContext';
+
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
 
 interface AppointmentModalProps {
     isOpen: boolean;
@@ -15,6 +16,7 @@ interface AppointmentModalProps {
 }
 
 export default function AppointmentModal({ isOpen, onClose, onSuccess }: AppointmentModalProps) {
+    const { config } = useTenant();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
 
@@ -42,7 +44,7 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess }: Appoint
         searchTimeout.current = setTimeout(async () => {
             setSearching(true);
             try {
-                const res = await axios.get(`${API}/api/customers/search?tenantId=${TENANT_ID}&q=${q}`);
+                const res = await axios.get(`${API}/api/customers/search?tenantId=${config?.id}&q=${q}`);
                 setCustomers(res.data || []);
             } catch (e) {
                 console.error(e);
@@ -78,7 +80,7 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess }: Appoint
         setLoading(true);
         try {
             await axios.post(`${API}/api/appointments`, {
-                tenant_id: TENANT_ID,
+                tenant_id: config?.id,
                 customer_id: customerData.id || undefined,
                 customer_name: customerData.name,
                 customer_phone: customerData.phone,

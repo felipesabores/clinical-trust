@@ -61,17 +61,24 @@ export class AppointmentController {
             console.log('Criando agendamento para tenant:', tenant_id);
 
             // SEGURANÇA: Garantir que o Tenant existe
-            const tenantExists = await prisma.tenant.findUnique({ where: { id: tenant_id } });
+            let tenantExists = await prisma.tenant.findUnique({ where: { id: tenant_id } });
             if (!tenantExists) {
                 console.log('Criando tenant em tempo de execução:', tenant_id);
-                await prisma.tenant.create({
-                    data: {
-                        id: tenant_id,
-                        name: 'Banho e Tosa - Unidade Principal',
-                        document: '12345678000199-' + Date.now(), // Documento único temp
-                    }
-                });
+                try {
+                    tenantExists = await prisma.tenant.create({
+                        data: {
+                            id: tenant_id,
+                            name: 'Clínica Principal',
+                            document: 'TEMP-' + uuidv4().substring(0, 8), // Garantir unicidade
+                        }
+                    });
+                } catch (e) {
+                    // Se falhar a criação (ex: race condition), tenta buscar novamente
+                    tenantExists = await prisma.tenant.findUnique({ where: { id: tenant_id } });
+                }
             }
+
+            if (!tenantExists) throw new Error('Tenant could not be found or created');
 
             let finalCustomerId = customer_id;
             let finalPetId = pet_id;
