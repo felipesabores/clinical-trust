@@ -14,5 +14,6 @@ RUN npm run build
 
 EXPOSE 3001
 
-# Scripts run direct by Dokploy or Compose
-CMD ["npm", "run", "start"]
+# Garante que o banco está sincronizado antes de iniciar
+# 'db push' é ideal para protótipos e deploys isolados no Dokploy
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run start"]
