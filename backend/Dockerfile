@@ -14,6 +14,5 @@ RUN npm run build
 
 EXPOSE 3001
 
-# Garante que o banco está sincronizado antes de iniciar
-# 'db push' é ideal para protótipos e deploys isolados no Dokploy
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run start"]
+# Usa migrações do Prisma no padrão de Produção
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]

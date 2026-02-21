@@ -28,8 +28,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: >
-      sh -c "npx prisma generate && npx prisma db push --accept-data-loss && node dist/server.js"
     networks:
       - dokploy-network
       - default
