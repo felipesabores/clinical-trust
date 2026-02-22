@@ -184,7 +184,7 @@ export default function DashboardPage() {
     if (!mounted) return null;
 
     return (
-        <div className="space-y-8 flex flex-col h-full">
+        <div className="space-y-8 flex flex-col h-full min-w-0">
             {/* Page Action Header (Sub-header since global App Bar handles the main title) */}
             <header className="flex justify-between items-center gap-4 shrink-0">
                 <div>
