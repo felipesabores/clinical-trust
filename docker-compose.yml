@@ -25,6 +25,11 @@ services:
       DATABASE_URL: "postgresql://${DB_USER:-user}:${DB_PASSWORD:-password}@db:5432/${DB_NAME:-clinical_trust}"
       PORT: 3001
       NEXT_PUBLIC_TENANT_ID: ${NEXT_PUBLIC_TENANT_ID:-test-tenant-123}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
     depends_on:
       db:
         condition: service_healthy
