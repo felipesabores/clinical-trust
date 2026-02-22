@@ -16,9 +16,12 @@ export class UploadController {
             const publicUrl = await StorageService.uploadFile(fileName, file.buffer, file.mimetype);
 
             res.json({ url: publicUrl });
-        } catch (error) {
+        } catch (error: any) {
             console.error('Upload error:', error);
-            res.status(500).json({ error: 'Failed to upload file' });
+            const message = error.message.includes('não configurado')
+                ? error.message
+                : 'Failed to upload file';
+            res.status(500).json({ error: message });
         }
     }
 }
