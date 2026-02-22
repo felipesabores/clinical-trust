@@ -84,11 +84,11 @@
 
 /* Glassmorphism Utilities */
 .glass {
-  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
+  @apply bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-xl dark:shadow-2xl;
 }
 
 .glass-panel {
-  @apply bg-slate-900/50 backdrop-blur-md border border-white/5 shadow-2xl;
+  @apply bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-white/5 shadow-lg dark:shadow-2xl;
 }
 
 /* Base Form Inputs (SaaS styling) */
@@ -100,5 +100,5 @@ input[type="date"],
 input[type="time"],
 select,
 textarea {
-  @apply bg-slate-800/50 border border-slate-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 outline-none;
+  @apply bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 outline-none;
 }
