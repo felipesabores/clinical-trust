@@ -36,6 +36,10 @@ services:
     networks:
       - dokploy-network
       - default
+    extra_hosts:
+      - "s3.carvalhodev.com.br:95.111.231.141"
+      - "core.carvalhodev.com.br:95.111.231.141"
+      - "minio.carvalhodev.com.br:95.111.231.141"
 
   frontend:
     build:
@@ -51,6 +55,8 @@ services:
     networks:
       - dokploy-network
       - default
+    extra_hosts:
+      - "core.carvalhodev.com.br:95.111.231.141"
 
   mediamtx:
     image: bluenviron/mediamtx
