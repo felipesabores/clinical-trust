@@ -125,92 +125,94 @@ export default function EquipePage() {
     };
 
     if (loading && staff.length === 0) return (
-        <div className="p-10 flex flex-col items-center justify-center min-h-[50vh] gap-4">
-            <Activity className="animate-pulse text-primary" size={48} />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground">RECRUITING_ASSETS...</span>
+        <div className="p-8 flex flex-col items-center justify-center min-h-[50vh] gap-4">
+            <Loader2 className="animate-spin text-indigo-400" size={40} />
+            <span className="text-sm font-medium text-slate-400">Carregando equipe...</span>
         </div>
     );
 
     return (
         <div className="p-8 space-y-10 bg-background text-foreground min-h-screen">
-            <header className="flex justify-between items-start">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 uppercase">
-                        <Users className="text-primary" size={32} />
-                        Equipe <span className="text-primary">Grooming Squad</span>
-                    </h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-muted-foreground mt-2 opacity-60 italic">HUMAN_RESOURCES // PERFORMANCE_MATRIX</p>
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
+                        <Users className="text-indigo-400" size={24} />
+                        Equipe
+                    </h2>
+                    <p className="text-sm text-slate-400 mt-1">
+                        Gerencie os colaboradores, comissões e acessos da clínica.
+                    </p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-primary text-primary-foreground px-10 py-4 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 flex items-center gap-3 border border-primary/50"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20 flex items-center gap-2"
                 >
                     <UserPlus size={18} />
-                    ADICIONAR COLABORADOR
+                    Adicionar Colaborador
                 </button>
             </header>
 
             {/* Matrix View */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {staff.map((member: any) => (
-                    <div key={member.id} className="hud-card bg-card border-border/50 p-8 relative overflow-hidden group hover:border-primary/40 transition-all shadow-xl">
+                    <div key={member.id} className="glass-panel p-6 relative overflow-hidden group hover:border-indigo-500/30 transition-all">
                         {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 transition-all group-hover:bg-primary/20 blur-2xl" />
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-12 -mt-12 transition-all group-hover:bg-indigo-500/10 blur-xl" />
 
                         <div className="relative flex flex-col items-center text-center">
-                            <div className="w-24 h-24 rounded-sm border border-border/50 p-1 mb-6 relative">
-                                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary" />
-                                <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary" />
+                            <div className="w-20 h-20 rounded-2xl border border-white/10 p-1 mb-5 relative bg-slate-800/50 shadow-inner">
                                 {member.avatar_url ? (
-                                    <img src={member.avatar_url} className="w-full h-full object-cover grayscale active:grayscale-0 transition-all" />
+                                    <img src={member.avatar_url} className="w-full h-full object-cover rounded-xl" />
                                 ) : (
-                                    <div className="w-full h-full bg-muted/20 flex items-center justify-center opacity-30">
-                                        <Users size={32} />
+                                    <div className="w-full h-full rounded-xl bg-slate-700/50 flex items-center justify-center text-slate-400">
+                                        <Users size={28} />
                                     </div>
                                 )}
                             </div>
 
-                            <h3 className="font-black text-lg uppercase tracking-tight text-foreground">{member.name}</h3>
-                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mb-6">{member.role}</span>
+                            <h3 className="font-heading font-semibold text-lg text-slate-100">{member.name}</h3>
+                            <span className="text-xs font-medium text-indigo-400 mb-5">{member.role}</span>
 
-                            <div className="w-full space-y-3 pt-6 border-t border-border/20">
-                                <div className="flex items-center justify-between text-[10px] font-bold">
-                                    <span className="text-muted-foreground uppercase tracking-widest opacity-40">Status</span>
+                            <div className="w-full space-y-3 pt-5 border-t border-white/5">
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-slate-500 font-medium">Status</span>
                                     <div className="flex items-center gap-2">
-                                        <div className={cn("w-1.5 h-1.5 rounded-full", member.is_active ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" : "bg-rose-500")} />
-                                        <span className="uppercase tracking-widest">{member.is_active ? 'Active' : 'Offline'}</span>
+                                        <div className={cn("w-2 h-2 rounded-full", member.is_active ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-rose-500")} />
+                                        <span className="text-slate-300 font-medium">{member.is_active ? 'Ativo' : 'Inativo'}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between text-[10px] font-bold">
-                                    <span className="text-muted-foreground uppercase tracking-widest opacity-40">Commission</span>
-                                    <span className="text-primary font-black tabular-nums">{member.commission}%</span>
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-slate-500 font-medium">Comissão</span>
+                                    <span className="text-indigo-400 font-semibold tabular-nums">{member.commission}%</span>
                                 </div>
                             </div>
 
-                            <button
-                                onClick={() => {
-                                    setEditingMember(member);
-                                    setNewMember({
-                                        name: member.name,
-                                        role: member.role,
-                                        phone: member.phone || '',
-                                        email: member.email || '',
-                                        commission: member.commission,
-                                        avatar_url: member.avatar_url || '',
-                                        is_active: member.is_active
-                                    });
-                                    setShowModal(true);
-                                }}
-                                className="flex-1 p-3 bg-muted/10 border border-border/50 rounded-sm hover:bg-primary/20 transition-all text-muted-foreground hover:text-primary"
-                            >
-                                <MoreVertical size={14} className="mx-auto" />
-                            </button>
-                            <button
-                                onClick={() => handleDelete(member.id, member.name)}
-                                className="flex-1 p-3 bg-muted/10 border border-border/50 rounded-sm hover:bg-red-500/20 transition-all text-muted-foreground hover:text-red-500"
-                            >
-                                <Trash2 size={14} className="mx-auto" />
-                            </button>
+                            <div className="w-full flex gap-3 mt-5">
+                                <button
+                                    onClick={() => {
+                                        setEditingMember(member);
+                                        setNewMember({
+                                            name: member.name,
+                                            role: member.role,
+                                            phone: member.phone || '',
+                                            email: member.email || '',
+                                            commission: member.commission,
+                                            avatar_url: member.avatar_url || '',
+                                            is_active: member.is_active
+                                        });
+                                        setShowModal(true);
+                                    }}
+                                    className="flex-1 p-2.5 bg-slate-800 border border-white/5 rounded-xl hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all text-slate-400 hover:text-indigo-400"
+                                >
+                                    <MoreVertical size={16} className="mx-auto" />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(member.id, member.name)}
+                                    className="flex-1 p-2.5 bg-slate-800 border border-white/5 rounded-xl hover:bg-rose-500/10 hover:border-rose-500/30 transition-all text-slate-400 hover:text-rose-400"
+                                >
+                                    <Trash2 size={16} className="mx-auto" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -218,20 +220,17 @@ export default function EquipePage() {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="hud-card bg-card border-primary/30 w-full max-w-xl relative p-10 shadow-2xl overflow-hidden">
-                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary" />
-                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary" />
-
-                        <h2 className="text-2xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
-                            <UserPlus className="text-primary" />
-                            {editingMember ? 'EDIÇÃO DE COLABORADOR' : 'CADASTRO DE COLABORADOR'}
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => { setShowModal(false); resetForm(); }} />
+                    <div className="glass-panel w-full max-w-xl relative p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <h2 className="text-xl font-heading font-semibold text-white mb-6 flex items-center gap-3 shrink-0">
+                            <UserPlus className="text-indigo-400" />
+                            {editingMember ? 'Editar Colaborador' : 'Novo Colaborador'}
                         </h2>
 
-                        <div className="space-y-6">
-                            <div className="flex flex-col items-center mb-8">
-                                <div className="w-24 h-24 rounded-sm border border-primary/30 p-1 relative mb-4 group cursor-pointer overflow-hidden">
+                        <div className="space-y-6 overflow-y-auto custom-scrollbar-thin pr-2">
+                            <div className="flex flex-col items-center mb-6">
+                                <div className="w-24 h-24 rounded-full border border-white/10 p-1 relative mb-4 group cursor-pointer overflow-hidden bg-slate-800">
                                     <input
                                         type="file"
                                         onChange={handleUpload}
@@ -239,92 +238,91 @@ export default function EquipePage() {
                                         accept="image/*"
                                     />
                                     {newMember.avatar_url ? (
-                                        <img src={newMember.avatar_url} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                                        <img src={newMember.avatar_url} className="w-full h-full object-cover rounded-full" />
                                     ) : (
-                                        <div className="w-full h-full bg-muted/20 flex items-center justify-center opacity-30">
+                                        <div className="w-full h-full rounded-full bg-slate-700/50 flex items-center justify-center text-slate-400">
                                             {uploading ? <Loader2 className="animate-spin" /> : <Plus size={24} />}
                                         </div>
                                     )}
-                                    <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all bg-black/40">
-                                        <p className="text-[8px] font-black uppercase text-white tracking-widest">{uploading ? 'UPLOADING...' : 'CHANGE_PHOTO'}</p>
+                                    <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-full">
+                                        <p className="text-xs font-medium text-white">{uploading ? 'Enviando...' : 'Alterar Foto'}</p>
                                     </div>
                                 </div>
-                                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40 italic">ASSET_PHOTO_SCAN // MINIO_STORAGE</p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-2 gap-4 sm:gap-6">
                                 <div className="col-span-2 space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">Full Legal Name</label>
+                                    <label className="text-sm font-medium text-slate-300 ml-1">Nome Completo</label>
                                     <input
                                         value={newMember.name}
                                         onChange={e => setNewMember({ ...newMember, name: e.target.value })}
-                                        placeholder="ASSET_IDENTIFIER..."
-                                        className="w-full bg-muted/5 border border-border/50 rounded-sm px-6 py-4 text-base font-black tracking-tight focus:border-primary/50 outline-none uppercase"
+                                        placeholder="Ex: João da Silva"
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">Role_Assignment</label>
+                                    <label className="text-sm font-medium text-slate-300 ml-1">Cargo</label>
                                     <select
                                         value={newMember.role}
                                         onChange={e => setNewMember({ ...newMember, role: e.target.value })}
-                                        className="w-full bg-muted border-border/50 rounded-sm px-6 py-4 text-[10px] font-black uppercase tracking-widest focus:border-primary/50 outline-none transition-all border appearance-none"
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all appearance-none"
                                     >
-                                        <option value="GROOMER">ESTETICISTA / TOSADOR</option>
-                                        <option value="BANHISTA">BANHISTA</option>
-                                        <option value="RECEPTIONIST">RECEPCIONISTA</option>
-                                        <option value="ADMIN">ADMINISTRADOR</option>
+                                        <option value="GROOMER">Esteticista / Tosador</option>
+                                        <option value="BANHISTA">Banhista</option>
+                                        <option value="RECEPTIONIST">Recepcionista</option>
+                                        <option value="ADMIN">Administrador</option>
                                     </select>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">Performance_Comm (%)</label>
+                                    <label className="text-sm font-medium text-slate-300 ml-1">Comissão (%)</label>
                                     <input
                                         type="number"
                                         value={newMember.commission}
                                         onChange={e => setNewMember({ ...newMember, commission: e.target.value as any })}
-                                        className="w-full bg-muted/5 border border-border/50 rounded-sm px-6 py-4 text-lg font-black tracking-widest focus:border-primary/50 outline-none tabular-nums"
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none tabular-nums transition-all"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">Data Tunnel (Phone)</label>
+                                    <label className="text-sm font-medium text-slate-300 ml-1">Telefone</label>
                                     <input
                                         value={newMember.phone}
                                         onChange={e => setNewMember({ ...newMember, phone: e.target.value })}
-                                        placeholder="55XXXXXXXXXXX"
-                                        className="w-full bg-muted/5 border border-border/50 rounded-sm px-6 py-4 text-[10px] font-black tracking-widest focus:border-primary/50 outline-none"
+                                        placeholder="(11) 99999-9999"
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">Comms Link (Email)</label>
+                                    <label className="text-sm font-medium text-slate-300 ml-1">E-mail</label>
                                     <input
                                         value={newMember.email}
                                         onChange={e => setNewMember({ ...newMember, email: e.target.value })}
-                                        placeholder="ASSET@PROTOCOL.IO"
-                                        className="w-full bg-muted/5 border border-border/50 rounded-sm px-6 py-4 text-[10px] font-black tracking-widest focus:border-primary/50 outline-none"
+                                        placeholder="email@exemplo.com"
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
                                     />
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="flex justify-end gap-4 pt-4">
-                                <button
-                                    onClick={() => {
-                                        setShowModal(false);
-                                        resetForm();
-                                    }}
-                                    className="px-8 py-4 rounded-sm text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/20 transition-all border border-transparent"
-                                >
-                                    ABORT_PROVISION
-                                </button>
-                                <button
-                                    onClick={handleSave}
-                                    className="px-10 py-4 bg-primary text-primary-foreground rounded-sm font-black text-[10px] uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 border border-primary/50"
-                                >
-                                    {editingMember ? 'SALVAR ALTERAÇÕES' : 'FINALIZAR CADASTRO'}
-                                </button>
-                            </div>
+                        <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-white/5 shrink-0">
+                            <button
+                                onClick={() => {
+                                    setShowModal(false);
+                                    resetForm();
+                                }}
+                                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20"
+                            >
+                                {editingMember ? 'Salvar Alterações' : 'Cadastrar'}
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -184,38 +184,38 @@ export default function DashboardPage() {
     if (!mounted) return null;
 
     return (
-        <div className="p-8 space-y-8 min-h-screen bg-background text-foreground flex flex-col">
-            {/* Header */}
-            <header className="flex justify-between items-end flex-wrap gap-4 shrink-0">
+        <div className="space-y-8 flex flex-col h-full">
+            {/* Page Action Header (Sub-header since global App Bar handles the main title) */}
+            <header className="flex justify-between items-center gap-4 shrink-0">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tighter uppercase leading-none">Dashboard <span className="text-primary">Operacional</span></h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60 italic">SISTEMA DE GESTÃO BANHO E TOSA v1.0.5</p>
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white">Visão Geral</h2>
+                    <p className="text-sm text-muted-foreground mt-1">Bem-vindo(a) ao seu workspace do Vivid Stream.</p>
                 </div>
                 <div className="flex gap-3">
-                    <div className="flex items-center gap-2 px-6 py-2 bg-muted/20 border border-border/50 rounded-sm text-[10px] font-black uppercase tracking-widest shadow-sm">
-                        <CalendarDays size={14} className="text-primary" />
-                        NODE // {today}
+                    <div className="flex items-center gap-2 px-4 py-2 bg-slate-900/50 border border-white/5 rounded-lg text-sm font-medium text-slate-300 shadow-sm backdrop-blur-md">
+                        <CalendarDays size={16} className="text-indigo-400" />
+                        {today}
                     </div>
                 </div>
             </header>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 shrink-0">
                 {dashStats.map((stat, i) => (
-                    <div key={i} className="hud-card p-6 rounded-sm group overflow-visible border border-border/50 bg-gradient-to-br from-white to-muted/5">
-                        <div className="flex justify-between items-start">
-                            <div className="bg-primary/5 p-3 rounded-sm text-primary ring-1 ring-primary/20 shadow-[0_0_15px_rgba(var(--primary),0.05)]">
+                    <div key={i} className="glass-panel p-6 rounded-2xl group transition-all duration-300 hover:border-indigo-500/30">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="bg-indigo-500/10 p-2.5 rounded-xl text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.1)] group-hover:scale-110 transition-transform duration-300">
                                 <stat.icon size={20} />
                             </div>
                             {stat.change && (
-                                <span className="text-[9px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-sm border border-emerald-500/20 uppercase tracking-widest">
+                                <span className="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/20">
                                     {stat.change} ↑
                                 </span>
                             )}
                         </div>
-                        <div className="mt-6">
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">{stat.label}</p>
-                            <h3 className="text-3xl font-black mt-2 tracking-tighter tabular-nums">{stat.value}</h3>
+                        <div className="min-w-0">
+                            <p className="text-sm font-medium text-slate-400 truncate">{stat.label}</p>
+                            <h3 className="text-3xl font-heading font-bold mt-1 text-white tracking-tight truncate" title={stat.value}>{stat.value}</h3>
                         </div>
                     </div>
                 ))}
@@ -223,11 +223,11 @@ export default function DashboardPage() {
 
             {/* Kanban Board */}
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className="flex gap-6 overflow-x-auto pb-8 custom-scrollbar flex-1 min-h-0">
+                <div className="flex gap-6 overflow-x-auto pb-6 custom-scrollbar flex-1 min-h-0">
                     {loading ? (
-                        <div className="w-full flex flex-col items-center justify-center py-20 text-muted-foreground gap-4">
-                            <Loader2 className="animate-spin text-primary" size={40} />
-                            <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Sincronizando Fluxo de Trabalho...</span>
+                        <div className="w-full flex flex-col items-center justify-center py-20 text-indigo-400 gap-4">
+                            <Loader2 className="animate-spin" size={40} />
+                            <span className="text-sm font-medium animate-pulse text-slate-400">Sincronizando Workspace...</span>
                         </div>
                     ) : (
                         (Object.keys(COLUMN_CONFIG) as (keyof typeof COLUMN_CONFIG)[]).map((status) => {
@@ -236,32 +236,32 @@ export default function DashboardPage() {
                             const isLiveColumn = status === 'BATHING' || status === 'GROOMING';
 
                             return (
-                                <div key={status} className="flex-shrink-0 w-[300px] flex flex-col h-full">
-                                    <div className="flex flex-col gap-3 px-2 mb-4 shrink-0">
+                                <div key={status} className="flex-shrink-0 w-[320px] flex flex-col h-full">
+                                    <div className="flex flex-col gap-3 px-1 mb-4 shrink-0">
                                         <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <div className={cn("w-1.5 h-4 rounded-full", config.color.replace('bg-', 'bg-'))} />
-                                                <h4 className="font-black text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{config.title}</h4>
-                                                <span className="text-[10px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20">
+                                            <div className="flex items-center gap-3">
+                                                <div className={cn("w-2 h-2 rounded-full shadow-sm", config.color)} />
+                                                <h4 className="font-heading font-semibold text-sm text-slate-200">{config.title}</h4>
+                                                <span className="text-xs font-medium text-indigo-300 bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-indigo-500/20">
                                                     {kanbanData[status]?.length || 0}
                                                 </span>
                                             </div>
-                                            {isLiveColumn && <Video size={14} className="text-primary/30" />}
+                                            {isLiveColumn && <Video size={16} className="text-indigo-400/50" />}
                                         </div>
 
                                         {isLiveColumn && (
                                             <div className="relative group/select">
-                                                <Video className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none group-hover/select:text-primary transition-colors" size={12} />
+                                                <Video className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none group-hover/select:text-indigo-400 transition-colors" />
                                                 <select
                                                     id={`cam-select-${status}`}
-                                                    className="w-full bg-muted/20 border border-border/50 rounded-sm text-[9px] pl-8 pr-4 py-2 text-muted-foreground font-black uppercase tracking-widest outline-none focus:border-primary/50 focus:bg-muted/40 transition-all appearance-none cursor-pointer"
+                                                    className="w-full bg-slate-900/50 border border-white/5 rounded-lg text-xs pl-9 pr-4 py-2 text-slate-300 font-medium outline-none focus:border-indigo-500/50 focus:bg-slate-800/80 transition-all appearance-none cursor-pointer"
                                                     onChange={(e) => {
                                                         (window as any)[`selected_cam_${status}`] = e.target.value;
                                                     }}
                                                 >
-                                                    <option value="">AUTODETECT CAMERA</option>
+                                                    <option value="">Detecção Automática</option>
                                                     {cameras.map(cam => (
-                                                        <option key={cam.id} value={cam.id}>{cam.name.toUpperCase()}</option>
+                                                        <option key={cam.id} value={cam.id}>{cam.name}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -274,8 +274,8 @@ export default function DashboardPage() {
                                                 {...provided.droppableProps}
                                                 ref={provided.innerRef}
                                                 className={cn(
-                                                    "flex-1 space-y-4 p-4 rounded-sm border border-dashed transition-all overflow-y-auto custom-scrollbar-thin",
-                                                    snapshot.isDraggingOver ? "bg-primary/[0.04] border-primary/40 ring-4 ring-primary/[0.02]" : "bg-muted/5 border-border/30"
+                                                    "flex-1 space-y-3 p-3 rounded-2xl border border-transparent transition-all overflow-y-auto custom-scrollbar-thin bg-slate-900/20 backdrop-blur-sm",
+                                                    snapshot.isDraggingOver && "bg-indigo-500/5 border-indigo-500/20 ring-1 ring-inset ring-indigo-500/10"
                                                 )}
                                             >
                                                 {kanbanData[status]?.map((app, index) => (
@@ -286,68 +286,71 @@ export default function DashboardPage() {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                                 className={cn(
-                                                                    "hud-card p-5 group transition-all relative",
-                                                                    snapshot.isDragging ? "shadow-2xl scale-105 rotate-1 ring-2 ring-primary border-primary bg-background z-50" : "hover:border-primary/40"
+                                                                    "bg-slate-800/80 backdrop-blur-md p-4 rounded-xl border border-white/5 shadow-sm group transition-all relative overflow-hidden",
+                                                                    snapshot.isDragging ? "shadow-2xl shadow-indigo-500/10 scale-105 rotate-1 ring-2 ring-indigo-500 border-indigo-500 z-50 bg-slate-800" : "hover:border-indigo-500/30 hover:shadow-md"
                                                                 )}
                                                             >
-                                                                <div className="flex justify-between items-start mb-4">
-                                                                    <div className="min-w-0 pr-2">
-                                                                        <h5 className="font-black text-sm uppercase tracking-tight group-hover:text-primary transition-colors truncate">{app.pet.name}</h5>
-                                                                        <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-1 opacity-60 italic truncate border-l-2 border-primary/20 pl-2">
+                                                                {/* Side Color Indicator matching Column */}
+                                                                <div className={cn("absolute left-0 top-0 bottom-0 w-1 opacity-50", config.color)} />
+
+                                                                <div className="flex justify-between items-start mb-3">
+                                                                    <div className="min-w-0 pr-2 pl-2">
+                                                                        <h5 className="font-heading font-semibold text-sm text-slate-100 truncate">{app.pet.name}</h5>
+                                                                        <p className="text-xs text-slate-400 mt-0.5 truncate">
                                                                             {app.pet.breed || 'SRD'}
                                                                         </p>
                                                                     </div>
                                                                     {app.access_token ? (
-                                                                        <div className="flex items-center gap-1.5 bg-red-500/10 px-2 py-1 rounded-sm border border-red-500/20 shrink-0">
-                                                                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                                                                            <span className="text-[8px] font-black text-red-500 uppercase tracking-tighter">LIVE FEED</span>
+                                                                        <div className="flex items-center gap-1.5 bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-500/20 shrink-0">
+                                                                            <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
+                                                                            <span className="text-[10px] font-medium text-rose-500 tracking-wide">AO VIVO</span>
                                                                         </div>
                                                                     ) : (
-                                                                        <div className="p-1.5 bg-muted/30 rounded-sm text-muted-foreground/30 group-hover:text-primary/30 transition-colors">
+                                                                        <div className="p-1.5 bg-white/5 rounded-lg text-slate-500 group-hover:text-indigo-400 transition-colors">
                                                                             {(() => {
                                                                                 const Icon = COLUMN_CONFIG[status]?.icon || Clock;
-                                                                                return <Icon size={14} />;
+                                                                                return <Icon size={16} />;
                                                                             })()}
                                                                         </div>
                                                                     )}
                                                                 </div>
 
-                                                                <div className="flex items-center gap-3 mb-5">
-                                                                    <div className="w-9 h-9 rounded-sm bg-gradient-to-br from-muted/50 to-muted/20 flex items-center justify-center text-[10px] font-black text-muted-foreground border border-border group-hover:border-primary/30 group-hover:text-primary transition-all shrink-0">
+                                                                <div className="flex items-center gap-3 pl-2 mb-4">
+                                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-xs font-semibold text-indigo-300 border border-indigo-500/20 group-hover:border-indigo-500/40 transition-colors shrink-0">
                                                                         {app.pet.customer.name[0]?.toUpperCase() || '?'}
                                                                     </div>
                                                                     <div className="min-w-0">
-                                                                        <p className="text-[10px] font-black uppercase tracking-tight truncate opacity-80">{app.pet.customer.name}</p>
-                                                                        <p className="text-[8px] font-bold text-muted-foreground uppercase opacity-40">Tutor Responsável</p>
+                                                                        <p className="text-xs font-medium text-slate-300 truncate">{app.pet.customer.name}</p>
+                                                                        <p className="text-[10px] text-slate-500">Tutor Responsável</p>
                                                                     </div>
                                                                 </div>
 
-                                                                <div className="pt-4 border-t border-border/50 flex items-center justify-between gap-2">
-                                                                    <div className="flex items-center gap-2 px-2 py-1 bg-muted/10 rounded-sm border border-border/30 text-[9px] font-black uppercase tracking-widest text-muted-foreground tabular-nums">
-                                                                        <Clock size={10} className="text-primary/50" />
+                                                                <div className="pt-3 border-t border-white/5 flex items-center justify-between gap-2 pl-2">
+                                                                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                                                                        <Clock size={12} className="text-slate-500" />
                                                                         {new Date(app.scheduled_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                                                     </div>
 
                                                                     {app.access_token ? (
-                                                                        <div className="flex gap-1">
+                                                                        <div className="flex gap-1.5">
                                                                             <button
                                                                                 onClick={(e) => { e.stopPropagation(); handleCopyToken(app.access_token!, app.id); }}
-                                                                                className="p-1.5 bg-muted/30 hover:bg-primary/20 hover:text-primary border border-border/30 rounded-sm transition-all"
+                                                                                className="p-1.5 bg-white/5 hover:bg-indigo-500/20 hover:text-indigo-400 border border-white/5 rounded-md transition-all"
                                                                                 title="Copiar Link"
                                                                             >
-                                                                                {copiedId === app.id ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
+                                                                                {copiedId === app.id ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                                                                             </button>
                                                                             <button
                                                                                 onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(app); }}
-                                                                                className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500 hover:text-white border border-emerald-500/20 rounded-sm text-emerald-500 transition-all"
+                                                                                className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500 hover:text-white border border-emerald-500/20 rounded-md text-emerald-400 transition-all"
                                                                                 title="Enviar WhatsApp"
                                                                             >
-                                                                                <MessageCircle size={12} />
+                                                                                <MessageCircle size={14} />
                                                                             </button>
                                                                         </div>
                                                                     ) : (
-                                                                        <button className="text-muted-foreground/30 hover:text-primary p-1.5 transition-all">
-                                                                            <MoreVertical size={14} />
+                                                                        <button className="text-slate-500 hover:text-indigo-400 p-1 transition-colors">
+                                                                            <MoreVertical size={16} />
                                                                         </button>
                                                                     )}
                                                                 </div>
@@ -357,9 +360,8 @@ export default function DashboardPage() {
                                                 ))}
                                                 {provided.placeholder}
                                                 {(!kanbanData[status] || kanbanData[status].length === 0) && (
-                                                    <div className="h-24 flex flex-col items-center justify-center border border-dashed border-border/10 rounded-sm opacity-20">
-                                                        <p className="text-[8px] font-black uppercase tracking-[0.3em] mb-1">Standby</p>
-                                                        <div className="w-8 h-[1px] bg-muted-foreground/50" />
+                                                    <div className="h-24 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl opacity-50">
+                                                        <p className="text-xs font-medium text-slate-500 mb-1">Nenhum pet aqui</p>
                                                     </div>
                                                 )}
                                             </div>

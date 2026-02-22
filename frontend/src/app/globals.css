@@ -4,101 +4,101 @@
 
 @layer base {
   :root {
-    --background: 180 15% 98.5%;
-    /* Alabaster */
-    --foreground: 180 50% 2%;
-    /* Deep Charcoal/Obsidian */
+    /* Pure Light Mode Default (SaaS Premium) */
+    --background: 210 40% 98%;
+    /* #F8FAFC */
+    --foreground: 222 47% 11%;
+    /* #0F172A */
 
     --card: 0 0% 100%;
-    --card-foreground: 180 50% 2%;
+    /* #FFFFFF */
+    --card-foreground: 222 47% 11%;
 
-    --primary: 180 80% 35%;
-    /* Sage Teal - Clinical & Trustworthy */
-    --primary-foreground: 180 15% 98.5%;
+    --primary: 238 82% 66%;
+    /* #6366F1 Indigo */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 100% 45%;
-    /* Soft Gold accent */
-    --secondary-foreground: 180 50% 2%;
+    --secondary: 214 32% 91%;
+    /* #E2E8F0 */
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 180 10% 93%;
-    --muted-foreground: 180 10% 45%;
+    --muted: 210 40% 96.1%;
+    /* #F1F5F9 */
+    --muted-foreground: 215.4 16.3% 46.9%;
+    /* #64748B */
 
-    --accent: 180 10% 93%;
-    --accent-foreground: 180 50% 2%;
+    --accent: 238 82% 66%;
+    --accent-foreground: 0 0% 100%;
 
-    --border: 180 10% 88%;
-    --radius: 0.25rem;
-    /* Sharp clinical precision */
+    --border: 214.3 31.8% 91.4%;
+    /* #E2E8F0 */
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 180 50% 2%;
-    --foreground: 180 10% 98%;
-
-    --card: 180 50% 3%;
-    --card-foreground: 180 10% 98%;
-
-    --primary: 180 100% 45%;
-    --primary-foreground: 180 50% 2%;
-
-    --secondary: 45 100% 50%;
-    --secondary-foreground: 180 50% 2%;
-
-    --muted: 180 30% 8%;
-    --muted-foreground: 180 10% 60%;
-
-    --accent: 180 100% 45%;
-    --accent-foreground: 180 50% 2%;
-
-    --border: 180 30% 12%;
-    --radius: 0.25rem;
-    /* Sharp geometry for Obsidian Lab */
+    /* Enforcing dark mode as default/primary */
+    --background: 222 47% 11%;
+    --foreground: 0 0% 100%;
+    --card: 215 28% 17%;
+    --card-foreground: 0 0% 100%;
+    --primary: 238 82% 66%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 25%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 238 82% 66%;
+    --accent-foreground: 0 0% 100%;
+    --border: 215 28% 22%;
+    --radius: 0.75rem;
   }
 }
 
 @layer base {
   body {
-    @apply bg-background text-foreground selection:bg-primary selection:text-primary-foreground;
+    @apply bg-background text-foreground selection:bg-primary selection:text-white font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
     position: relative;
     min-height: 100vh;
   }
 
-  /* Obsidian Lab Noise Texture Layer */
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.015;
-    z-index: 9999;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
+  /* Premium Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
 
-  .dark body::before {
-    opacity: 0.06;
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
+/* Glassmorphism Utilities */
 .glass {
-  @apply bg-white/70 dark:bg-card/40 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-xl;
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0, 0, 0, 0.3)];
 }
 
-/* Sharp HUD Cards - Obsidian Style */
-.hud-card {
-  @apply bg-card border border-border relative overflow-hidden transition-all duration-300;
-  box-shadow: 0 0 0 1px inset rgba(255, 255, 255, 0.01);
+.glass-panel {
+  @apply bg-slate-900/50 backdrop-blur-md border border-white/5 shadow-2xl;
 }
 
-.dark .hud-card {
-  background-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.02), transparent);
-}
-
-.dark .hud-card:hover {
-  border-color: hsl(var(--primary) / 0.4);
-  box-shadow: 0 0 30px -10px hsl(var(--primary) / 0.2), 0 0 0 1px inset rgba(255, 255, 255, 0.03);
+/* Base Form Inputs (SaaS styling) */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+  @apply bg-slate-800/50 border border-slate-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 outline-none;
 }

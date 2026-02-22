@@ -139,40 +139,42 @@ export default function ClientesPage() {
                 />
             )}
 
-            <header className="flex justify-between items-center mb-8 shrink-0">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 shrink-0">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tighter flex items-center gap-3 uppercase">
-                        <UserPlus className="text-primary" size={32} />
-                        Diretório <span className="text-primary">Tutores</span>
-                    </h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground mt-2 opacity-60 italic">SISTEMA DE GESTÃO BANHO E TOSA v1.0.5 // NODE 04</p>
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
+                        <UserPlus className="text-indigo-400" size={24} />
+                        Diretório de Tutores
+                    </h2>
+                    <p className="text-sm text-slate-400 mt-1">
+                        Gerencie seus clientes e seus respectivos pets.
+                    </p>
                 </div>
                 <button
                     onClick={() => setIsCustomerModalOpen(true)}
-                    className="bg-primary text-primary-foreground px-8 py-3 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 flex items-center gap-3 border border-primary/50"
+                    className="flex items-center gap-2 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
                 >
-                    <Plus size={18} /> NOVO REGISTRO PET
+                    <Plus size={18} /> Novo Registro
                 </button>
             </header>
 
-            <div className="flex gap-8 flex-1 min-h-0">
+            <div className="flex flex-col lg:flex-row gap-8 flex-1 min-h-0">
                 {/* List Side */}
-                <div className="flex-[1.5] flex flex-col min-w-0">
+                <div className="flex-1 lg:max-w-md xl:max-w-lg flex flex-col min-w-0">
                     <div className="relative mb-6">
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-primary opacity-30" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                         <input
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="PESQUISAR POR NOME OU ID..."
-                            className="w-full pl-14 pr-5 py-5 bg-muted/10 border border-border/50 rounded-sm focus:border-primary/50 transition-all outline-none font-black uppercase text-[10px] tracking-widest shadow-sm placeholder:opacity-30"
+                            placeholder="Pesquisar por nome ou celular..."
+                            className="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-white/10 rounded-xl focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all outline-none text-sm text-white placeholder:text-slate-500"
                         />
                     </div>
 
                     <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
                         {loading && customers.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-4">
-                                <Loader2 className="animate-spin text-primary" size={40} />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Sincronizando base de dados...</span>
+                            <div className="flex flex-col items-center justify-center py-20 text-indigo-400 gap-4">
+                                <Loader2 className="animate-spin" size={40} />
+                                <span className="text-sm font-medium animate-pulse text-slate-400">Carregando clientes...</span>
                             </div>
                         ) : (
                             customers.map(customer => (
@@ -180,14 +182,18 @@ export default function ClientesPage() {
                                     key={customer.id}
                                     onClick={() => fetchDetail(customer.id)}
                                     className={cn(
-                                        "hud-card p-5 cursor-pointer transition-all flex items-center justify-between group",
-                                        selectedCustomer?.id === customer.id ? "border-primary bg-primary/[0.03] ring-1 ring-primary/20 shadow-lg shadow-primary/5" : "hover:border-primary/30"
+                                        "p-4 rounded-xl cursor-pointer transition-all flex items-center justify-between group border",
+                                        selectedCustomer?.id === customer.id
+                                            ? "bg-indigo-500/10 border-indigo-500/40 shadow-md shadow-indigo-500/10"
+                                            : "bg-slate-900/40 border-white/5 hover:border-indigo-500/30 hover:bg-slate-800/60"
                                     )}
                                 >
-                                    <div className="flex gap-5 items-center min-w-0">
+                                    <div className="flex gap-4 items-center min-w-0">
                                         <div className={cn(
-                                            "w-12 h-12 rounded-sm flex items-center justify-center text-lg font-black transition-all shrink-0 overflow-hidden border border-border/50",
-                                            selectedCustomer?.id === customer.id ? "bg-primary text-white border-primary" : "bg-muted/30 text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary group-hover:border-primary/30"
+                                            "w-12 h-12 rounded-xl flex items-center justify-center text-lg font-semibold transition-all shrink-0 overflow-hidden",
+                                            selectedCustomer?.id === customer.id
+                                                ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/30"
+                                                : "bg-slate-800 text-slate-400 border border-white/5 group-hover:text-indigo-400"
                                         )}>
                                             {customer.avatar_url ? (
                                                 <img src={customer.avatar_url} className="w-full h-full object-cover" alt={customer.name} />
@@ -196,24 +202,26 @@ export default function ClientesPage() {
                                             )}
                                         </div>
                                         <div className="min-w-0">
-                                            <h4 className="font-black text-[11px] truncate uppercase tracking-[0.1em] group-hover:text-primary transition-colors">{customer.name}</h4>
-                                            <div className="flex items-center gap-3 mt-1.5">
-                                                <p className="text-[9px] text-muted-foreground font-black flex items-center gap-1.5 uppercase tracking-widest opacity-60">
-                                                    <Phone size={10} className="text-primary/50" /> {customer.phone}
+                                            <h4 className="font-heading font-semibold text-slate-200 truncate group-hover:text-indigo-400 transition-colors">{customer.name}</h4>
+                                            <div className="flex items-center gap-3 mt-1">
+                                                <p className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                                                    <Phone size={12} className="text-slate-500" /> {customer.phone}
                                                 </p>
-                                                <span className="w-1 h-1 bg-border rounded-full" />
-                                                <span className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20">{customer.pets?.length || 0} PETS</span>
+                                                <span className="w-1 h-1 bg-white/10 rounded-full" />
+                                                <span className="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">{customer.pets?.length || 0} PETS</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+
+                                    <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setEditingCustomer(customer);
                                                 setIsCustomerModalOpen(true);
                                             }}
-                                            className="p-2.5 bg-muted/10 hover:bg-primary/20 rounded-sm text-primary transition-colors border border-border/50 hover:border-primary/30"
+                                            className="p-2 hover:bg-indigo-500/20 rounded-lg text-slate-400 hover:text-indigo-400 transition-colors"
+                                            title="Editar Tutor"
                                         >
                                             <Edit3 size={16} />
                                         </button>
@@ -222,7 +230,8 @@ export default function ClientesPage() {
                                                 e.stopPropagation();
                                                 handleDeleteCustomer(customer.id, customer.name);
                                             }}
-                                            className="p-2.5 bg-red-500/5 hover:bg-red-500/20 rounded-sm text-red-400 hover:text-red-500 transition-colors border border-red-500/10 hover:border-red-500/30"
+                                            className="p-2 hover:bg-rose-500/20 rounded-lg text-slate-400 hover:text-rose-400 transition-colors"
+                                            title="Excluir Tutor"
                                         >
                                             <Trash2 size={16} />
                                         </button>
@@ -231,156 +240,157 @@ export default function ClientesPage() {
                             ))
                         )}
                         {customers.length === 0 && !loading && (
-                            <div className="text-center py-24 text-muted-foreground border border-dashed border-border/20 rounded-sm bg-muted/5">
-                                <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Nenhum registro encontrado no sistema</p>
+                            <div className="text-center py-20 text-slate-500 border border-dashed border-white/10 rounded-xl bg-slate-900/20">
+                                <p className="text-sm font-medium">Nenhum tutor encontrado.</p>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Detail Side */}
-                <div className="flex-[1.2] min-w-0 h-full">
+                <div className="flex-1 min-w-0 h-full">
                     {selectedCustomer ? (
-                        <div className="h-full bg-card border border-border/50 rounded-sm flex flex-col overflow-hidden shadow-2xl shadow-primary/5 border-t-2 border-primary relative">
-                            {/* Technical Overlay */}
-                            <div className="absolute top-0 right-0 p-4 pointer-events-none opacity-10">
-                                <Dna size={80} className="text-primary" />
-                            </div>
+                        <div className="h-full glass-panel rounded-2xl flex flex-col overflow-hidden relative border border-white/10 shadow-xl">
+                            {/* Decorative background circle */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
 
-                            <div className="p-8 pb-8 border-b border-border/30 bg-muted/5 relative">
-                                <div className="flex items-start gap-7">
-                                    <div className="w-24 h-24 bg-gradient-to-br from-muted/50 to-muted/20 rounded-sm flex items-center justify-center border-2 border-border/50 overflow-hidden shrink-0 shadow-inner group relative">
+                            {/* Detail Header */}
+                            <div className="p-8 pb-6 border-b border-white/5 bg-slate-900/60 relative z-10">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                                    <div className="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center border border-white/5 overflow-hidden shrink-0 shadow-lg relative group">
                                         {selectedCustomer.avatar_url ? (
                                             <img src={selectedCustomer.avatar_url} className="w-full h-full object-cover" />
                                         ) : (
-                                            <span className="text-3xl font-black text-muted-foreground opacity-30">{selectedCustomer.name[0]?.toUpperCase()}</span>
+                                            <span className="text-4xl font-semibold text-slate-500">{selectedCustomer.name[0]?.toUpperCase()}</span>
                                         )}
-                                        <div className="absolute inset-0 border-2 border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="absolute inset-0 ring-4 ring-indigo-500/0 group-hover:ring-indigo-500/20 transition-all rounded-2xl" />
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <span className="text-[8px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20 uppercase tracking-widest">REGISTRADO</span>
-                                            <span className="text-[8px] font-black text-muted-foreground opacity-40 uppercase tracking-widest">ID {selectedCustomer.id.slice(0, 8)}</span>
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <span className="text-xs flex items-center gap-1 font-medium text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
+                                                <UserPlus size={12} /> Cliente Registrado
+                                            </span>
+                                            <span className="text-xs font-mono text-slate-500">ID: {selectedCustomer.id.slice(0, 8)}</span>
                                         </div>
-                                        <h3 className="text-3xl font-black uppercase tracking-tighter leading-none mb-4 truncate text-foreground/90">{selectedCustomer.name}</h3>
-                                        <div className="flex flex-col gap-2">
-                                            <div className="flex items-center gap-4">
-                                                <p className="text-[10px] font-black text-primary flex items-center gap-2 uppercase tracking-widest bg-primary/5 px-3 py-1.5 border border-primary/10 rounded-sm">
-                                                    <Phone size={14} className="opacity-50" /> {selectedCustomer.phone}
-                                                </p>
-                                                <ShieldCheck size={18} className="text-primary/30" />
+                                        <h3 className="text-2xl sm:text-3xl font-heading font-bold text-white mb-3 truncate">{selectedCustomer.name}</h3>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-2 text-sm text-slate-300 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-white/5">
+                                                <Phone size={14} className="text-slate-500" />
+                                                {selectedCustomer.phone}
                                             </div>
+                                            {(selectedCustomer.pets?.length ?? 0) > 0 && (
+                                                <div className="flex items-center gap-2 text-sm text-emerald-400 font-medium">
+                                                    <ShieldCheck size={16} /> Verificado
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar-thin">
-                                <section className="space-y-6">
-                                    <div className="flex justify-between items-center border-b border-border/30 pb-3">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                                            <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Pets Vinculados</h5>
+                            <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar relative z-10">
+                                <section>
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div className="flex items-center gap-2 text-indigo-400 font-medium">
+                                            <Dog size={18} />
+                                            <h5 className="text-sm">Pets Vinculados</h5>
                                         </div>
                                         <button
                                             onClick={() => setIsPetModalOpen(true)}
-                                            className="px-4 py-2 bg-muted/20 text-primary text-[9px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-primary hover:text-white transition-all flex items-center gap-2 border border-border/50 hover:border-primary"
+                                            className="px-4 py-1.5 bg-indigo-500/10 text-indigo-400 text-sm font-medium rounded-lg hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20"
                                         >
-                                            <Plus size={12} /> Novo Pet
+                                            Novo Pet
                                         </button>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {selectedCustomer.pets?.map((pet: any) => {
                                             const PetIcon = petIconMap[pet.type] || Info;
                                             return (
-                                                <div key={pet.id} className="hud-card p-6 group relative overflow-hidden bg-gradient-to-br from-white to-muted/5">
-                                                    <div className="flex justify-between items-center mb-5">
-                                                        <div className="flex gap-5 items-center min-w-0">
-                                                            <div className="w-14 h-14 bg-muted/20 rounded-sm flex items-center justify-center overflow-hidden border border-border/50 shrink-0 group-hover:border-primary/40 transition-colors">
-                                                                {pet.avatar_url ? (
-                                                                    <img src={pet.avatar_url} className="w-full h-full object-cover" />
-                                                                ) : (
-                                                                    <PetIcon size={24} className="text-primary/30 group-hover:text-primary transition-colors" />
-                                                                )}
-                                                            </div>
-                                                            <div className="min-w-0">
-                                                                <div className="flex items-center gap-3">
-                                                                    <p className="font-black text-sm uppercase tracking-tight group-hover:text-primary transition-colors truncate">{pet.name}</p>
-                                                                    <span className="text-[8px] px-2 py-0.5 bg-muted/50 border border-border rounded-sm font-black text-muted-foreground uppercase opacity-60">{pet.type}</span>
-                                                                </div>
-                                                                <p className="text-[9px] font-black text-muted-foreground tracking-[0.2em] uppercase mt-2 italic opacity-40 border-l border-primary/20 pl-2">{pet.breed || 'SRD'}</p>
-                                                            </div>
+                                                <div key={pet.id} className="bg-slate-900/40 border border-white/5 rounded-2xl p-5 relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+                                                    <div className="flex gap-4 items-start mb-4">
+                                                        <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center overflow-hidden shrink-0 border border-white/5 group-hover:border-indigo-500/20 group-hover:shadow-md transition-all">
+                                                            {pet.avatar_url ? (
+                                                                <img src={pet.avatar_url} className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <PetIcon size={20} className="text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                                                            )}
                                                         </div>
-                                                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                                            <button
-                                                                onClick={() => {
-                                                                    setEditingPet(pet);
-                                                                    setIsPetModalOpen(true);
-                                                                }}
-                                                                className="p-2.5 bg-muted/30 hover:bg-primary/20 rounded-sm text-primary transition-colors border border-border/50"
-                                                            >
-                                                                <Edit3 size={14} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDeletePet(pet.id, pet.name)}
-                                                                className="p-2.5 bg-red-500/5 hover:bg-red-500/20 rounded-sm text-red-400 border border-red-500/10 transition-colors"
-                                                            >
-                                                                <Trash2 size={14} />
-                                                            </button>
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="flex items-center justify-between gap-2">
+                                                                <p className="font-heading font-semibold text-slate-100 truncate group-hover:text-indigo-400 transition-colors">{pet.name}</p>
+
+                                                                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setEditingPet(pet);
+                                                                            setIsPetModalOpen(true);
+                                                                        }}
+                                                                        className="p-1 hover:text-indigo-400 text-slate-500 transition-colors"
+                                                                    >
+                                                                        <Edit3 size={14} />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleDeletePet(pet.id, pet.name)}
+                                                                        className="p-1 hover:text-rose-400 text-slate-500 transition-colors"
+                                                                    >
+                                                                        <Trash2 size={14} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <p className="text-xs text-slate-400 mt-1 truncate">{pet.breed || 'SRD'}</p>
+                                                            <span className="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 bg-slate-800 text-slate-400 rounded-lg border border-white/5 uppercase tracking-wide">{pet.type}</span>
                                                         </div>
                                                     </div>
 
                                                     {pet.notes ? (
-                                                        <div className="p-4 bg-primary/[0.02] border-l-3 border-primary/30 rounded-r-sm relative group/notes">
-                                                            <p className="text-[10px] font-bold leading-relaxed italic text-muted-foreground opacity-80">"{pet.notes}"</p>
-                                                            <AlertCircle size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-primary/20 group-hover/notes:text-primary/40 transition-colors" />
+                                                        <div className="text-xs text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-white/5 leading-relaxed rounded-tl-sm relative">
+                                                            <div className="absolute top-0 left-0 w-0.5 h-full bg-indigo-500 rounded-l-lg" />
+                                                            <p className="italic">"{pet.notes}"</p>
                                                         </div>
                                                     ) : (
-                                                        <div className="flex items-center gap-2 opacity-20 text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground border-t border-border/50 pt-4">
-                                                            <HistoryIcon size={12} /> Nenhuma observação registrada
+                                                        <div className="flex items-center gap-1.5 text-xs text-slate-500 border-t border-white/5 pt-3">
+                                                            <Info size={14} /> Nenhuma observação registrada
                                                         </div>
                                                     )}
                                                 </div>
                                             );
                                         })}
                                         {selectedCustomer.pets?.length === 0 && (
-                                            <div className="py-16 text-center border border-dashed border-border/30 rounded-sm bg-muted/5">
-                                                <Dog className="mx-auto mb-3 opacity-10" size={40} />
-                                                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/30">Aguardando Pets</p>
+                                            <div className="col-span-full py-16 text-center border border-dashed border-white/10 rounded-2xl bg-slate-900/20 text-slate-500">
+                                                <Dog className="mx-auto mb-3 opacity-50" size={32} />
+                                                <p className="text-sm font-medium">Nenhum pet cadastrado para este tutor.</p>
                                             </div>
                                         )}
                                     </div>
                                 </section>
 
-                                <section className="p-6 bg-muted/5 border border-border/30 rounded-sm border-dashed relative group">
-                                    <div className="absolute top-0 right-0 p-3 opacity-5">
-                                        <HistoryIcon size={40} />
+                                <section className="p-6 bg-slate-900/30 border border-white/5 rounded-2xl relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                                        <HistoryIcon size={64} className="text-slate-500 group-hover:rotate-12 transition-transform duration-700" />
                                     </div>
-                                    <div className="flex items-center gap-3 mb-5">
-                                        <div className="w-8 h-8 rounded-sm bg-muted/10 flex items-center justify-center border border-border/50">
-                                            <HistoryIcon size={16} className="text-primary/50" />
-                                        </div>
-                                        <h6 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-70">Logs de Atividade</h6>
+                                    <div className="flex items-center gap-2 mb-3 text-slate-300 font-medium">
+                                        <HistoryIcon size={16} className="text-slate-400" />
+                                        <h6 className="text-sm">Logs de Atividade Recentes</h6>
                                     </div>
-                                    <p className="text-[10px] text-muted-foreground font-medium leading-relaxed opacity-60 italic">
-                                        O histórico completo de agendamentos, transações financeiras e registros de banho e tosa aparecerá aqui conforme o sistema opera em tempo real.
+                                    <p className="text-sm text-slate-500 leading-relaxed italic relative z-10 max-w-lg">
+                                        O histórico completo de agendamentos e interações aparecerá aqui em tempo real. (Em construção)
                                     </p>
                                 </section>
                             </div>
 
-                            <div className="p-8 pt-0 mt-auto shrink-0">
-                                <button className="w-full py-5 bg-foreground text-background rounded-sm font-black text-[11px] uppercase tracking-[0.3em] shadow-2xl hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-4 group border border-transparent hover:border-primary-foreground/20">
-                                    <Calendar size={20} className="group-hover:rotate-12 group-hover:scale-110 transition-transform text-primary" />
-                                    AGENDAR NOVO PROCEDIMENTO
+                            <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-white/5 bg-slate-900/30">
+                                <button className="w-full py-4 mt-6 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all flex items-center justify-center gap-3 group">
+                                    <Calendar size={18} className="group-hover:scale-110 group-hover:rotate-12 transition-transform" />
+                                    Agendar Procedimento
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <div className="h-full border-2 border-border/30 border-dashed rounded-sm flex flex-col items-center justify-center p-12 text-center text-muted-foreground/20 bg-muted/[0.02]">
-                            <UserPlus size={80} className="mb-6 opacity-5 rotate-12" />
-                            <p className="font-black text-[11px] uppercase tracking-[0.4em]">Aguardando Seleção de Node</p>
-                            <div className="w-20 h-[1px] bg-border/50 mt-4" />
+                        <div className="h-full border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center p-12 text-center text-slate-500 bg-slate-900/20">
+                            <UserPlus size={64} className="mb-4 opacity-30" />
+                            <p className="text-base font-medium text-slate-400">Selecione um cliente para ver os detalhes</p>
+                            <p className="text-sm mt-2 opacity-70">Ou pesquise na barra lateral para encontrar rapidamente.</p>
                         </div>
                     )}
                 </div>

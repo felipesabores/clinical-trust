@@ -72,116 +72,129 @@ export default function FinanceiroPage() {
     };
 
     if (loading && transactions.length === 0) return (
-        <div className="p-10 flex flex-col items-center justify-center min-h-[50vh] gap-4">
-            <Activity className="animate-pulse text-primary" size={48} />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground">CALIBRATING_LEDGER...</span>
+        <div className="p-8 flex flex-col items-center justify-center min-h-[50vh] gap-4">
+            <Loader2 className="animate-spin text-indigo-400" size={40} />
+            <span className="text-sm font-medium text-slate-400">Carregando dados financeiros...</span>
         </div>
     );
 
     return (
         <div className="p-8 space-y-10 bg-background text-foreground min-h-screen">
-            <header className="flex justify-between items-start">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 uppercase">
-                        <TrendingUp className="text-emerald-500" size={32} />
-                        Financial <span className="text-primary">Orchestration</span>
-                    </h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-muted-foreground mt-2 opacity-60 italic">LEDGER_V1 // CASH_FLOW_MONITOR</p>
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
+                        <DollarSign className="text-indigo-400" size={24} />
+                        Financeiro
+                    </h2>
+                    <p className="text-sm text-slate-400 mt-1">
+                        Gerencie as receitas, despesas e o fluxo de caixa da clínica.
+                    </p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-primary text-primary-foreground px-10 py-4 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 flex items-center gap-3 border border-primary/50"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20 flex items-center gap-2"
                 >
                     <Plus size={18} />
-                    INITIALIZE_ENTRY
+                    Nova Transação
                 </button>
             </header>
 
             {/* KPI HUD */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* KPI HUD */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: 'Net Balance', value: stats.balance, icon: DollarSign, color: 'text-primary' },
-                    { label: 'Total Income', value: stats.total_income, icon: ArrowUpRight, color: 'text-emerald-500' },
-                    { label: 'Total Expenses', value: stats.total_expenses, icon: ArrowDownLeft, color: 'text-rose-500' },
+                    { label: 'Saldo Atual', value: stats.balance, icon: DollarSign, color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
+                    { label: 'Total de Receitas', value: stats.total_income, icon: ArrowUpRight, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+                    { label: 'Total de Despesas', value: stats.total_expenses, icon: ArrowDownLeft, color: 'text-rose-400', bg: 'bg-rose-400/10' },
                 ].map((kpi, i) => (
-                    <div key={i} className="hud-card p-8 bg-card border-border/50 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-4 opacity-5">
-                            <kpi.icon size={48} />
+                    <div key={i} className="glass-panel p-6 relative overflow-hidden group">
+                        <div className="flex justify-between items-start mb-4">
+                            <p className="font-medium text-slate-400 text-sm">{kpi.label}</p>
+                            <div className={cn("p-2 rounded-lg", kpi.bg)}>
+                                <kpi.icon size={20} className={kpi.color} />
+                            </div>
                         </div>
-                        <p className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground mb-4 opacity-50">{kpi.label}</p>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-[10px] font-bold opacity-30">BRL</span>
-                            <h2 className={cn("text-4xl font-black tracking-tighter tabular-nums", kpi.color)}>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-sm text-slate-500 font-medium">R$</span>
+                            <h3 className={cn("text-3xl font-heading font-semibold tracking-tight", kpi.color)}>
                                 {kpi.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </h2>
-                        </div>
-                        <div className="mt-6 flex items-center gap-2">
-                            <div className={cn("w-2 h-2 rounded-full animate-pulse", kpi.color.replace('text-', 'bg-'))} />
-                            <span className="text-[8px] font-black uppercase tracking-widest opacity-40">Live Sync Active</span>
+                            </h3>
                         </div>
                     </div>
                 ))}
             </div>
 
             {/* Main Ledger Table */}
-            <div className="hud-card bg-card border-border/50 overflow-hidden">
-                <div className="p-6 border-b border-border/50 flex justify-between items-center bg-muted/10">
-                    <div className="flex items-center gap-4">
-                        <div className="p-2 bg-primary/10 border border-primary/20 rounded-sm text-primary">
-                            <Activity size={18} />
-                        </div>
-                        <h3 className="font-black text-sm uppercase tracking-widest">TRANSACTION_LOG</h3>
-                    </div>
+            <div className="glass-panel overflow-hidden flex flex-col">
+                <div className="p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="relative group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={14} />
+                        <div className="p-2 bg-indigo-500/10 rounded-lg">
+                            <Activity className="text-indigo-400" size={20} />
+                        </div>
+                        <h3 className="font-heading font-semibold text-lg text-slate-100">Histórico de Transações</h3>
+                    </div>
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <div className="relative group w-full md:w-64">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={16} />
                             <input
-                                placeholder="FILTER_DESCRIPTION..."
-                                className="bg-muted/5 border border-border/50 rounded-sm pl-9 pr-4 py-2 text-[10px] font-black uppercase tracking-widest focus:border-primary/50 outline-none w-64 transition-all"
+                                placeholder="Buscar transação..."
+                                className="w-full bg-slate-900/50 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
                             />
                         </div>
-                        <button className="p-2 bg-muted/20 border border-border/50 rounded-sm hover:bg-muted/30 transition-colors">
-                            <Filter size={16} />
+                        <button className="p-2 bg-slate-800 border border-white/5 rounded-xl hover:bg-slate-700 transition-colors text-slate-400 hover:text-slate-200 flex-shrink-0">
+                            <Filter size={18} />
                         </button>
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-border/50 bg-muted/5">
-                                <th className="px-8 py-5 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">Timestamp</th>
-                                <th className="px-8 py-5 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">Category</th>
-                                <th className="px-8 py-5 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">Description</th>
-                                <th className="px-8 py-5 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground text-right">Amount (BRL)</th>
-                                <th className="px-8 py-5 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground text-center">Protocol</th>
+                            <tr className="border-b border-white/5 bg-slate-900/50">
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400">Data</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400">Categoria</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400">Descrição</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 text-right">Valor (R$)</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 text-center">Status</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-border/20">
+                        <tbody className="divide-y divide-white/5">
                             {transactions.map((t: any) => (
-                                <tr key={t.id} className="hover:bg-primary/5 transition-colors group">
-                                    <td className="px-8 py-5 text-[10px] font-bold tabular-nums opacity-60">
+                                <tr key={t.id} className="hover:bg-slate-800/40 transition-colors group">
+                                    <td className="px-6 py-4 text-sm text-slate-300">
                                         {new Date(t.date).toLocaleDateString('pt-BR')}
                                     </td>
-                                    <td className="px-8 py-5 text-[10px]">
-                                        <span className="bg-muted/30 border border-border/50 px-3 py-1 rounded-sm font-black uppercase tracking-widest text-[8px] opacity-70">
-                                            {t.category}
+                                    <td className="px-6 py-4 text-sm">
+                                        <span className="bg-slate-800 border border-white/10 px-2.5 py-1 rounded-md text-xs font-medium text-slate-300">
+                                            {t.category === 'SERVICE' ? 'Serviço' :
+                                                t.category === 'PRODUCT' ? 'Produto' :
+                                                    t.category === 'RENT' ? 'Aluguel' :
+                                                        t.category === 'SALARY' ? 'Salário' :
+                                                            t.category === 'TAX' ? 'Impostos' :
+                                                                t.category === 'OTHER' ? 'Outros' : t.category}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-5 text-[10px] font-black uppercase tracking-tight">
+                                    <td className="px-6 py-4 text-sm font-medium text-slate-200">
                                         {t.description}
                                     </td>
                                     <td className={cn(
-                                        "px-8 py-5 text-sm font-bold tabular-nums text-right",
-                                        t.type === 'INCOME' ? "text-emerald-500" : "text-rose-500"
+                                        "px-6 py-4 text-sm font-semibold text-right tabular-nums",
+                                        t.type === 'INCOME' ? "text-emerald-400" : "text-rose-400"
                                     )}>
                                         {t.type === 'INCOME' ? '+' : '-'} {t.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                     </td>
-                                    <td className="px-8 py-5 text-center">
-                                        <div className="w-2 h-2 rounded-full mx-auto bg-primary/20 border border-primary/40 group-hover:bg-primary transition-all shadow-[0_0_8px_rgba(var(--primary),0.3)] opacity-0 group-hover:opacity-100" />
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="w-2 h-2 rounded-full mx-auto bg-emerald-500/20 border border-emerald-500/50 shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
                                     </td>
                                 </tr>
                             ))}
+                            {transactions.length === 0 && !loading && (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-12 text-center text-slate-500 text-sm">
+                                        Nenhuma transação encontrada.
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -189,90 +202,92 @@ export default function FinanceiroPage() {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                    <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="hud-card bg-card border-primary/30 w-full max-w-lg relative p-10 shadow-2xl overflow-hidden">
-                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary" />
-                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary" />
-
-                        <h2 className="text-2xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
-                            <Plus className="text-primary" />
-                            NEW_VALUATION_ENTRY
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+                    <div className="glass-panel w-full max-w-lg relative p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <h2 className="text-xl font-heading font-semibold text-white mb-6 flex items-center gap-3 shrink-0">
+                            <Plus className="text-indigo-400" />
+                            Nova Transação
                         </h2>
 
-                        <div className="space-y-6">
+                        <div className="space-y-6 overflow-y-auto custom-scrollbar-thin pr-2">
                             <div className="grid grid-cols-2 gap-4">
                                 <button
                                     onClick={() => setNewTransaction({ ...newTransaction, type: 'INCOME' })}
                                     className={cn(
-                                        "py-4 rounded-sm text-[10px] font-black uppercase tracking-widest border transition-all",
-                                        newTransaction.type === 'INCOME' ? "bg-emerald-500 border-emerald-500 text-white" : "border-border/50 opacity-40 hover:opacity-100"
+                                        "py-3 rounded-xl text-sm font-medium border transition-all flex items-center justify-center gap-2",
+                                        newTransaction.type === 'INCOME' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-slate-800/50 border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800"
                                     )}
                                 >
-                                    INCOME (CREDIT)
+                                    <TrendingUp size={16} />
+                                    Receita
                                 </button>
                                 <button
                                     onClick={() => setNewTransaction({ ...newTransaction, type: 'EXPENSE' })}
                                     className={cn(
-                                        "py-4 rounded-sm text-[10px] font-black uppercase tracking-widest border transition-all",
-                                        newTransaction.type === 'EXPENSE' ? "bg-rose-500 border-rose-500 text-white" : "border-border/50 opacity-40 hover:opacity-100"
+                                        "py-3 rounded-xl text-sm font-medium border transition-all flex items-center justify-center gap-2",
+                                        newTransaction.type === 'EXPENSE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-slate-800/50 border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800"
                                     )}
                                 >
-                                    EXPENSE (DEBIT)
+                                    <TrendingDown size={16} />
+                                    Despesa
                                 </button>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mr-2 italic border-l border-primary/40 pl-3">Value (BRL)</label>
+                                <label className="text-sm font-medium text-slate-300 ml-1">Valor (R$)</label>
                                 <input
                                     type="number"
                                     value={newTransaction.amount}
                                     onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value as any })}
-                                    className="w-full bg-muted/5 border border-border/50 rounded-sm px-6 py-4 text-3xl font-black tracking-tighter focus:border-primary/50 outline-none tabular-nums"
+                                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-2xl font-semibold text-white focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none"
                                 />
                             </div>
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mr-2 italic border-l border-primary/40 pl-3">Description</label>
+                                    <label className="text-sm font-medium text-slate-300 ml-1">Descrição</label>
                                     <input
                                         value={newTransaction.description}
                                         onChange={e => setNewTransaction({ ...newTransaction, description: e.target.value })}
-                                        placeholder="VALUATION_META_DATA..."
-                                        className="w-full bg-muted/5 border border-border/50 rounded-sm px-6 py-4 text-[10px] font-black uppercase tracking-widest focus:border-primary/50 outline-none transition-all"
+                                        placeholder="Ex: Consulta Dr. Silva"
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mr-2 italic border-l border-primary/40 pl-3">Category_Tag</label>
-                                    <select
-                                        value={newTransaction.category}
-                                        onChange={e => setNewTransaction({ ...newTransaction, category: e.target.value })}
-                                        className="w-full bg-muted border-border/50 rounded-sm px-6 py-4 text-[10px] font-black uppercase tracking-widest focus:border-primary/50 outline-none transition-all border appearance-none"
-                                    >
-                                        <option value="SERVICE">SERVICE_DELIVERY</option>
-                                        <option value="PRODUCT">PRODUCT_SALES</option>
-                                        <option value="RENT">OPERATIONAL_RENT</option>
-                                        <option value="SALARY">HUMAN_CAPITAL</option>
-                                        <option value="TAX">REGULATORY_TAX</option>
-                                        <option value="OTHER">MISC_ENTRY</option>
-                                    </select>
+                                    <label className="text-sm font-medium text-slate-300 ml-1">Categoria</label>
+                                    <div className="relative">
+                                        <select
+                                            value={newTransaction.category}
+                                            onChange={e => setNewTransaction({ ...newTransaction, category: e.target.value })}
+                                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all appearance-none pr-10"
+                                        >
+                                            <option value="SERVICE">Serviço</option>
+                                            <option value="PRODUCT">Produto</option>
+                                            <option value="RENT">Aluguel</option>
+                                            <option value="SALARY">Salário</option>
+                                            <option value="TAX">Impostos</option>
+                                            <option value="OTHER">Outros</option>
+                                        </select>
+                                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} />
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="flex justify-end gap-4 pt-4">
-                                <button
-                                    onClick={() => setShowModal(false)}
-                                    className="px-8 py-4 rounded-sm text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/20 transition-all border border-transparent"
-                                >
-                                    ABORT_OPERATION
-                                </button>
-                                <button
-                                    onClick={handleCreate}
-                                    className="px-10 py-4 bg-primary text-primary-foreground rounded-sm font-black text-[10px] uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 border border-primary/50"
-                                >
-                                    COMMIT_TO_LEDGER
-                                </button>
-                            </div>
+                        <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-white/5 shrink-0">
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleCreate}
+                                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20"
+                            >
+                                Salvar Transação
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -70,33 +70,33 @@ export default function AgendaPage() {
     };
 
     if (loading && professionals.length === 0) return (
-        <div className="p-10 flex flex-col items-center justify-center min-h-[50vh] gap-4 text-muted-foreground">
-            <Activity className="animate-pulse text-primary" size={48} />
-            <span className="text-[10px] font-black uppercase tracking-[0.5em]">Synchronizing Agenda Nodes...</span>
+        <div className="p-10 flex flex-col items-center justify-center min-h-[50vh] gap-4 text-indigo-400">
+            <Activity className="animate-pulse" size={48} />
+            <span className="text-sm font-medium animate-pulse text-slate-400">Carregando Agenda...</span>
         </div>
     );
 
     return (
-        <div className="p-8 space-y-8 bg-background min-h-screen flex flex-col">
+        <div className="space-y-8 flex flex-col h-full">
             {/* Header */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 uppercase">
-                        <CalendarIcon className="text-primary" size={28} />
-                        Agenda Global
-                    </h1>
-                    <p className="text-muted-foreground mt-1 text-[10px] font-black uppercase tracking-widest italic opacity-70">
-                        Sincronização de Nodes e Procedimentos em Tempo Real.
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
+                        <CalendarIcon className="text-indigo-400" size={24} />
+                        Agenda
+                    </h2>
+                    <p className="text-sm text-slate-400 mt-1">
+                        Gerencie os agendamentos e horários da sua equipe.
                     </p>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                    <div className="flex bg-muted/20 border border-border p-1 rounded-sm gap-1">
+                    <div className="flex bg-slate-900/50 border border-white/5 p-1 rounded-lg gap-1">
                         <button
                             onClick={() => setView('grid')}
                             className={cn(
-                                "p-2 rounded-sm transition-all",
-                                view === 'grid' ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
+                                "p-2 rounded-md transition-all",
+                                view === 'grid' ? "bg-indigo-500 text-white shadow-md shadow-indigo-500/20" : "text-slate-400 hover:text-white"
                             )}
                         >
                             <LayoutGrid size={18} />
@@ -104,18 +104,18 @@ export default function AgendaPage() {
                         <button
                             onClick={() => setView('list')}
                             className={cn(
-                                "p-2 rounded-sm transition-all",
-                                view === 'list' ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
+                                "p-2 rounded-md transition-all",
+                                view === 'list' ? "bg-indigo-500 text-white shadow-md shadow-indigo-500/20" : "text-slate-400 hover:text-white"
                             )}
                         >
                             <List size={18} />
                         </button>
                     </div>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-muted/20 border border-border rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-muted/30 transition-colors">
-                        <Filter size={16} /> FILTROS
+                    <button className="flex items-center gap-2 px-6 py-2 bg-slate-900/50 border border-white/5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors">
+                        <Filter size={16} /> Filtros
                     </button>
-                    <button className="flex items-center gap-2 px-8 py-2 bg-primary text-primary-foreground rounded-sm text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-                        <Plus size={18} /> NOVO AGENDAMENTO
+                    <button className="flex items-center gap-2 px-8 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all">
+                        <Plus size={18} /> Novo Agendamento
                     </button>
                 </div>
             </header>
@@ -124,16 +124,16 @@ export default function AgendaPage() {
                 {view === 'grid' ? (
                     <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 h-full">
                         {/* Calendar Grid */}
-                        <div className="xl:col-span-3 hud-card overflow-hidden flex flex-col">
+                        <div className="xl:col-span-3 glass-panel overflow-hidden flex flex-col rounded-2xl">
                             {/* Toolbar */}
-                            <div className="p-6 border-b border-border/50 flex items-center justify-between flex-wrap gap-4 bg-muted/5">
+                            <div className="p-6 border-b border-white/5 flex items-center justify-between flex-wrap gap-4 bg-slate-900/40">
                                 <div className="flex items-center gap-4">
-                                    <h3 className="text-lg font-black uppercase tracking-tight">20 de Fevereiro, 2026</h3>
-                                    <div className="flex items-center gap-1 bg-muted/30 border border-border/50 p-1 rounded-sm">
-                                        <button className="p-1.5 hover:bg-primary/20 rounded-sm transition-colors text-muted-foreground hover:text-primary">
+                                    <h3 className="text-lg font-heading font-semibold text-white">20 de Fevereiro, 2026</h3>
+                                    <div className="flex items-center gap-1 bg-slate-800/50 border border-white/5 p-1 rounded-lg">
+                                        <button className="p-1.5 hover:bg-indigo-500/20 rounded-md transition-colors text-slate-400 hover:text-indigo-300">
                                             <ChevronLeft size={16} />
                                         </button>
-                                        <button className="p-1.5 hover:bg-primary/20 rounded-sm transition-colors text-muted-foreground hover:text-primary">
+                                        <button className="p-1.5 hover:bg-indigo-500/20 rounded-md transition-colors text-slate-400 hover:text-indigo-300">
                                             <ChevronRight size={16} />
                                         </button>
                                     </div>
@@ -141,8 +141,8 @@ export default function AgendaPage() {
                                 <div className="flex gap-6">
                                     {professionals.map(p => (
                                         <div key={p.name} className="flex items-center gap-2">
-                                            <div className={cn("w-2 h-2 rounded-full", p.color)} />
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{p.name}</span>
+                                            <div className={cn("w-2.5 h-2.5 rounded-full shadow-sm", p.color)} />
+                                            <span className="text-xs font-medium text-slate-400">{p.name}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -152,10 +152,10 @@ export default function AgendaPage() {
                             <div className="flex-1 overflow-auto custom-scrollbar">
                                 <div className="min-w-[800px]">
                                     {/* Header row */}
-                                    <div className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-border/50 bg-muted/10 font-black text-[10px] uppercase tracking-widest text-muted-foreground sticky top-0 z-20">
-                                        <div className="p-4 border-r border-border/50 text-center bg-muted/10">Horário</div>
+                                    <div className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-white/5 bg-slate-900/60 font-medium text-xs text-slate-400 sticky top-0 z-20">
+                                        <div className="p-4 border-r border-white/5 text-center">Horário</div>
                                         {professionals.map(p => (
-                                            <div key={p.name} className="p-4 border-r border-border/50 last:border-r-0 text-center bg-muted/10">
+                                            <div key={p.name} className="p-4 border-r border-white/5 last:border-r-0 text-center">
                                                 {p.name}
                                             </div>
                                         ))}
@@ -164,8 +164,8 @@ export default function AgendaPage() {
                                     {/* Time Slots */}
                                     <div className="relative">
                                         {timeSlots.map(time => (
-                                            <div key={time} className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-border/30 last:border-b-0 min-h-[120px]">
-                                                <div className="p-4 border-r border-border/50 bg-muted/5 text-[11px] font-black text-muted-foreground flex items-start justify-center pt-4 tabular-nums">
+                                            <div key={time} className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-white/5 last:border-b-0 min-h-[120px]">
+                                                <div className="p-4 border-r border-white/5 bg-slate-900/20 text-xs font-medium text-slate-500 flex items-start justify-center pt-4 tabular-nums">
                                                     {time}
                                                 </div>
                                                 {professionals.map(p => {
@@ -173,36 +173,38 @@ export default function AgendaPage() {
                                                         a => a.time === time && a.professional === p.name
                                                     );
                                                     return (
-                                                        <div key={p.name} className="p-2 border-r border-border/30 last:border-r-0 relative group transition-colors hover:bg-primary/[0.01]">
+                                                        <div key={p.name} className="p-2 border-r border-white/5 last:border-r-0 relative group transition-colors hover:bg-indigo-500/5">
                                                             {appts.map(a => (
                                                                 <div
                                                                     key={a.id}
                                                                     style={{ height: `calc(${a.duration * 120}px - 16px)` }}
                                                                     className={cn(
-                                                                        "absolute top-2 left-2 right-2 z-10 p-4 rounded-sm border shadow-xl transition-all cursor-pointer group/item",
-                                                                        p.border, p.light
+                                                                        "absolute top-2 left-2 right-2 z-10 p-3 rounded-xl border border-white/5 shadow-md shadow-black/20 transition-all cursor-pointer group/item bg-slate-800/90 backdrop-blur-md hover:scale-[1.02] hover:shadow-lg",
+                                                                        // fallback style if colors undefined
                                                                     )}
                                                                 >
-                                                                    <div className="flex justify-between items-start gap-2 mb-2">
-                                                                        <h4 className="font-black text-xs uppercase tracking-tight group-hover/item:text-primary transition-colors">{a.pet}</h4>
+                                                                    <div className={cn("absolute left-0 top-0 bottom-0 w-1 opacity-50 rounded-l-xl", p.color)} />
+
+                                                                    <div className="flex justify-between items-start gap-2 mb-2 pl-2">
+                                                                        <h4 className="font-heading font-semibold text-sm text-slate-100 group-hover/item:text-indigo-400 transition-colors">{a.pet}</h4>
                                                                         <span className={cn(
-                                                                            "text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-sm border whitespace-nowrap",
-                                                                            statusBadgeClass[a.status] || "bg-muted text-muted-foreground"
+                                                                            "text-[10px] font-medium px-2 py-0.5 rounded-full border whitespace-nowrap",
+                                                                            statusBadgeClass[a.status] || "bg-slate-800 text-slate-400 border-white/10"
                                                                         )}>
                                                                             {a.status}
                                                                         </span>
                                                                     </div>
-                                                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60 mb-3 truncate">{a.owner}</p>
-                                                                    <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] border-t border-border/30 pt-3">
-                                                                        <ArrowRight size={10} className="text-primary" />
+                                                                    <p className="text-xs text-slate-400 mb-2 truncate pl-2">{a.owner}</p>
+                                                                    <div className="flex items-center gap-2 text-xs font-medium text-slate-500 border-t border-white/5 pt-2 pl-2 mt-auto">
+                                                                        <ArrowRight size={12} className="text-indigo-400" />
                                                                         {a.breed}
                                                                     </div>
                                                                 </div>
                                                             ))}
                                                             {/* Hover: add appointment */}
                                                             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                                                                <button className="w-8 h-8 rounded-sm bg-primary/20 backdrop-blur-sm flex items-center justify-center border border-primary/30 shadow-2xl">
-                                                                    <Plus size={16} className="text-primary" />
+                                                                <button className="w-8 h-8 rounded-full bg-indigo-500/20 backdrop-blur-sm flex items-center justify-center border border-indigo-500/30 shadow-lg pointer-events-auto">
+                                                                    <Plus size={16} className="text-indigo-400" />
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -217,54 +219,54 @@ export default function AgendaPage() {
 
                         {/* Sidebar panel */}
                         <div className="space-y-6 flex flex-col min-h-0 overflow-y-auto custom-scrollbar pr-2">
-                            <div className="hud-card p-6 border-l-4 border-primary">
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-center justify-between">
+                            <div className="glass-panel p-6 rounded-2xl border-l-4 border-l-indigo-500">
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center justify-between">
                                     Resumo da Operação
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                                 </h4>
                                 <div className="space-y-4">
                                     {[
-                                        { label: 'Confirmados', value: '12', color: 'text-foreground' },
-                                        { label: 'Finalizados', value: '08', color: 'text-emerald-500' },
-                                        { label: 'Em Atraso', value: '02', color: 'text-red-500' },
+                                        { label: 'Confirmados', value: '12', color: 'text-white' },
+                                        { label: 'Finalizados', value: '08', color: 'text-emerald-400' },
+                                        { label: 'Em Atraso', value: '02', color: 'text-rose-400' },
                                     ].map(item => (
-                                        <div key={item.label} className="bg-muted/10 border border-border/50 p-4 rounded-sm flex justify-between items-center group hover:bg-muted/20 transition-all">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.label}</span>
-                                            <span className={cn("font-black text-xl tabular-nums", item.color)}>{item.value}</span>
+                                        <div key={item.label} className="bg-slate-900/40 border border-white/5 p-4 rounded-xl flex justify-between items-center group hover:bg-slate-800/60 transition-all">
+                                            <span className="text-xs font-medium text-slate-400">{item.label}</span>
+                                            <span className={cn("font-heading font-bold text-xl tabular-nums", item.color)}>{item.value}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="hud-card p-6 bg-primary/[0.03] border-border/50 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
-                                <h4 className="text-[10px] font-black text-primary mb-4 flex items-center gap-2 uppercase tracking-[0.2em]">
-                                    <Clock size={14} />
-                                    Node de Lembrete
+                            <div className="glass-panel p-6 rounded-2xl bg-indigo-500/5 relative overflow-hidden group border-indigo-500/10">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full -mr-16 -mt-16 blur-3xl" />
+                                <h4 className="text-sm font-semibold text-indigo-400 mb-4 flex items-center gap-2">
+                                    <Clock size={16} />
+                                    Lembrete da Equipe
                                 </h4>
-                                <p className="text-[11px] font-black text-muted-foreground leading-relaxed uppercase tracking-widest opacity-80 italic">
+                                <p className="text-sm text-slate-300 leading-relaxed italic relative z-10">
                                     "Confirmar agendamentos de amanhã via canal WhatsApp até o fechamento."
                                 </p>
                             </div>
 
                             {/* Next appointments */}
-                            <div className="hud-card p-6 border-border/50 flex-1 min-h-[300px]">
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">Fila de Entrada</h4>
+                            <div className="glass-panel p-6 rounded-2xl flex-1 min-h-[300px]">
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6">Fila de Entrada</h4>
                                 <div className="space-y-4">
                                     {appointments.map(a => (
-                                        <div key={a.id} className="flex items-center gap-4 group cursor-pointer border-b border-border/30 pb-4 last:border-0 hover:border-primary/50 transition-colors">
-                                            <div className="w-12 h-12 rounded-sm bg-muted/20 border border-border flex items-center justify-center shrink-0 text-[11px] font-black text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary group-hover:border-primary/50 transition-all tabular-nums">
+                                        <div key={a.id} className="flex items-center gap-4 group cursor-pointer border-b border-white/5 pb-4 last:border-0 hover:border-indigo-500/30 transition-colors">
+                                            <div className="w-12 h-12 rounded-xl bg-slate-900/60 border border-white/5 flex items-center justify-center shrink-0 text-xs font-semibold text-slate-400 group-hover:bg-indigo-500/10 group-hover:text-indigo-400 group-hover:border-indigo-500/30 transition-all tabular-nums">
                                                 {a.time.split(':')[0]}H
                                             </div>
                                             <div className="min-w-0 flex-1">
-                                                <p className="font-black text-xs uppercase tracking-tight truncate group-hover:text-primary transition-colors">{a.pet}</p>
-                                                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest truncate opacity-60 mt-1">
+                                                <p className="font-heading font-semibold text-sm text-slate-200 truncate group-hover:text-indigo-400 transition-colors">{a.pet}</p>
+                                                <p className="text-xs text-slate-500 truncate mt-0.5">
                                                     {a.owner} · {a.professional}
                                                 </p>
                                             </div>
                                             <div className={cn(
                                                 "w-1.5 h-6 rounded-full shrink-0",
-                                                a.status === 'CheckedIn' ? 'bg-primary' : a.status === 'Confirmado' ? 'bg-emerald-500' : 'bg-muted'
+                                                a.status === 'CheckedIn' ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]' : a.status === 'Confirmado' ? 'bg-emerald-500' : 'bg-slate-700'
                                             )} />
                                         </div>
                                     ))}
@@ -274,49 +276,51 @@ export default function AgendaPage() {
                     </div>
                 ) : (
                     /* List view */
-                    <div className="hud-card overflow-hidden">
+                    <div className="glass-panel overflow-hidden rounded-2xl">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
-                                <thead className="border-b border-border/50 bg-muted/10">
-                                    <tr className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">
-                                        <th className="p-5">HORÁRIO</th>
-                                        <th className="p-5">PET / RAÇA</th>
-                                        <th className="p-5">TUTOR RESPONSÁVEL</th>
-                                        <th className="p-5">PROFISSIONAL / NODE</th>
-                                        <th className="p-5 text-center">STATUS ATUAL</th>
+                                <thead className="border-b border-white/5 bg-slate-900/40">
+                                    <tr className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                        <th className="p-5">Horário</th>
+                                        <th className="p-5">Pet / Raça</th>
+                                        <th className="p-5">Tutor Responsável</th>
+                                        <th className="p-5">Equipe</th>
+                                        <th className="p-5 text-center">Status Atual</th>
                                         <th className="p-5" />
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-border/30">
+                                <tbody className="divide-y divide-white/5">
                                     {appointments.map(a => {
                                         const prof = professionals.find(p => p.name === a.professional);
                                         return (
-                                            <tr key={a.id} className="hover:bg-primary/[0.02] transition-colors group cursor-pointer border-l-2 border-transparent hover:border-primary">
-                                                <td className="p-5 font-black text-xs tabular-nums text-muted-foreground">{a.time}</td>
+                                            <tr key={a.id} className="hover:bg-slate-800/40 transition-colors group cursor-pointer border-l-2 border-transparent hover:border-indigo-500">
+                                                <td className="p-5 font-semibold text-sm tabular-nums text-slate-300">{a.time}</td>
                                                 <td className="p-5">
-                                                    <p className="font-black text-xs uppercase tracking-tight group-hover:text-primary transition-colors">{a.pet}</p>
-                                                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-0.5 opacity-60 italic">{a.breed}</p>
+                                                    <p className="font-heading font-semibold text-sm text-slate-200 group-hover:text-indigo-400 transition-colors">{a.pet}</p>
+                                                    <p className="text-xs text-slate-500 mt-0.5">{a.breed}</p>
                                                 </td>
-                                                <td className="p-5 font-black text-[10px] uppercase tracking-wide">{a.owner}</td>
+                                                <td className="p-5 font-medium text-sm text-slate-300">{a.owner}</td>
                                                 <td className="p-5">
-                                                    <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
-                                                        <div className={cn("w-2 h-2 rounded-full", prof?.color || "bg-muted")} />
+                                                    <span className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                                                        <div className={cn("w-2 h-2 rounded-full", prof?.color || "bg-slate-700")} />
                                                         {a.professional}
                                                     </span>
                                                 </td>
                                                 <td className="p-5">
                                                     <div className="flex justify-center">
                                                         <span className={cn(
-                                                            "text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-sm border whitespace-nowrap",
-                                                            statusBadgeClass[a.status] || "bg-muted text-muted-foreground"
+                                                            "text-xs font-medium px-3 py-1 rounded-full border whitespace-nowrap",
+                                                            a.status === 'Confirmado' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                                                                a.status === 'CheckedIn' ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' :
+                                                                    "bg-slate-800 text-slate-400 border-white/10"
                                                         )}>
                                                             {a.status}
                                                         </span>
                                                     </div>
                                                 </td>
                                                 <td className="p-5 text-right">
-                                                    <button className="p-2 text-muted-foreground/30 hover:text-primary transition-colors">
-                                                        <User size={14} />
+                                                    <button className="p-2 text-slate-500 hover:text-indigo-400 transition-colors">
+                                                        <User size={16} />
                                                     </button>
                                                 </td>
                                             </tr>
