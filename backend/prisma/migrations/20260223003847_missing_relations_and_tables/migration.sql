@@ -5,21 +5,25 @@
 
 */
 -- CreateEnum
-CREATE TYPE "TransactionType" AS ENUM ('INCOME', 'EXPENSE');
+DO $$ BEGIN
+    CREATE TYPE "TransactionType" AS ENUM ('INCOME', 'EXPENSE');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- AlterTable
-ALTER TABLE "Appointment" ADD COLUMN     "end_time" TIMESTAMP(3),
-ADD COLUMN     "staff_id" TEXT;
+ALTER TABLE "Appointment" ADD COLUMN IF NOT EXISTS "end_time" TIMESTAMP(3);
+ALTER TABLE "Appointment" ADD COLUMN IF NOT EXISTS "staff_id" TEXT;
 
 -- AlterTable
-ALTER TABLE "Tenant" ADD COLUMN     "description" TEXT DEFAULT 'Pet Boutique',
-ADD COLUMN     "logo_url" TEXT,
-ADD COLUMN     "primary_color" TEXT DEFAULT '#7c3aed',
-ADD COLUMN     "slug" TEXT,
-ADD COLUMN     "whatsapp" TEXT;
+ALTER TABLE "Tenant" ADD COLUMN IF NOT EXISTS "description" TEXT DEFAULT 'Pet Boutique';
+ALTER TABLE "Tenant" ADD COLUMN IF NOT EXISTS "logo_url" TEXT;
+ALTER TABLE "Tenant" ADD COLUMN IF NOT EXISTS "primary_color" TEXT DEFAULT '#7c3aed';
+ALTER TABLE "Tenant" ADD COLUMN IF NOT EXISTS "slug" TEXT;
+ALTER TABLE "Tenant" ADD COLUMN IF NOT EXISTS "whatsapp" TEXT;
 
 -- CreateTable
-CREATE TABLE "Staff" (
+CREATE TABLE IF NOT EXISTS "Staff" (
     "id" TEXT NOT NULL,
     "tenant_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -35,7 +39,7 @@ CREATE TABLE "Staff" (
 );
 
 -- CreateTable
-CREATE TABLE "Transaction" (
+CREATE TABLE IF NOT EXISTS "Transaction" (
     "id" TEXT NOT NULL,
     "tenant_id" TEXT NOT NULL,
     "type" "TransactionType" NOT NULL,
@@ -49,7 +53,7 @@ CREATE TABLE "Transaction" (
 );
 
 -- CreateTable
-CREATE TABLE "Product" (
+CREATE TABLE IF NOT EXISTS "Product" (
     "id" TEXT NOT NULL,
     "tenant_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -67,19 +71,35 @@ CREATE TABLE "Product" (
 );
 
 -- CreateIndex
-CREATE INDEX "Product_tenant_id_idx" ON "Product"("tenant_id");
+CREATE INDEX IF NOT EXISTS "Product_tenant_id_idx" ON "Product"("tenant_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Tenant_slug_key" ON "Tenant"("slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "Tenant_slug_key" ON "Tenant"("slug");
 
 -- AddForeignKey
-ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_staff_id_fkey" FOREIGN KEY ("staff_id") REFERENCES "Staff"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Appointment_staff_id_fkey') THEN
+        ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_staff_id_fkey" FOREIGN KEY ("staff_id") REFERENCES "Staff"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+    END IF;
+END $$;
 
 -- AddForeignKey
-ALTER TABLE "Staff" ADD CONSTRAINT "Staff_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Staff_tenant_id_fkey') THEN
+        ALTER TABLE "Staff" ADD CONSTRAINT "Staff_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+    END IF;
+END $$;
 
 -- AddForeignKey
-ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Transaction_tenant_id_fkey') THEN
+        ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+    END IF;
+END $$;
 
 -- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Product_tenant_id_fkey') THEN
+        ALTER TABLE "Product" ADD CONSTRAINT "Product_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+    END IF;
+END $$;
