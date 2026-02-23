@@ -70,18 +70,18 @@ export default function VendasPage() {
     }
 
     return (
-        <div className="p-8 space-y-8 bg-background/50 min-h-screen">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-8 space-y-8 bg-[#F7F8F0] dark:bg-slate-950 min-h-screen">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-foreground">
-                        <ShoppingCart className="text-primary" size={28} />
+                    <h1 className="text-3xl font-heading font-black tracking-tight flex items-center gap-3 text-[#355872] dark:text-white">
+                        <ShoppingCart className="text-[#7AAACE]" size={32} />
                         Transações Financeiras
                     </h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Monitoramento de fluxo de caixa e histórico de operações.
+                    <p className="text-[#355872]/60 font-medium mt-1">
+                        Monitoramento de fluxo de caixa e histórico de operações com o <span className="text-[#7AAACE] font-bold">Vivid Stream</span>.
                     </p>
                 </div>
-                <button className="flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-semibold shadow-md hover:bg-primary/90 transition-all">
+                <button className="flex items-center gap-2 px-8 py-2.5 bg-[#7AAACE] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:bg-[#355872] transition-all duration-300">
                     <Plus size={18} /> Nova Venda
                 </button>
             </header>
@@ -89,24 +89,25 @@ export default function VendasPage() {
             {/* KPIs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((s, i) => (
-                    <div key={i} className="glass-panel p-6 flex flex-col justify-between bg-card text-foreground">
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground mb-4">{s.label}</p>
-                            <h3 className="text-2xl font-bold tracking-tight">{s.value}</h3>
+                    <div key={i} className="bg-white dark:bg-slate-900/40 backdrop-blur-md border border-[#E4E9D5] dark:border-white/5 p-6 rounded-3xl group transition-all duration-500 hover:border-[#7AAACE]/50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#7AAACE]/5 to-transparent rounded-bl-full pointer-events-none" />
+                        <div className="relative z-10">
+                            <p className="text-[10px] font-bold text-[#355872]/40 dark:text-slate-400 uppercase tracking-widest mb-4">{s.label}</p>
+                            <h3 className="text-3xl font-heading font-black text-[#355872] dark:text-white tracking-tighter">{s.value}</h3>
                         </div>
-                        <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
+                        <div className="mt-4 pt-4 border-t border-[#E4E9D5]/50 flex items-center justify-between relative z-10">
                             {s.change ? (
                                 <span className={cn(
-                                    "flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-md",
-                                    s.up ? 'text-emerald-500 bg-emerald-500/10' : 'text-red-500 bg-red-500/10'
+                                    "flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider",
+                                    s.up ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-400/10 border border-emerald-100' : 'text-rose-600 bg-rose-50 dark:bg-rose-400/10 border border-rose-100'
                                 )}>
                                     <ArrowUpRight size={14} className={s.up ? '' : 'rotate-90'} />
-                                    {s.change} vs ref
+                                    {s.change}
                                 </span>
                             ) : <div />}
                             {s.label === 'Meta do Mês' && (
-                                <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-                                    <div className="h-full w-[68%] bg-primary" />
+                                <div className="w-20 h-1.5 bg-[#E4E9D5] rounded-full overflow-hidden">
+                                    <div className="h-full w-[68%] bg-[#7AAACE]" />
                                 </div>
                             )}
                         </div>
@@ -115,22 +116,22 @@ export default function VendasPage() {
             </div>
 
             {/* Table */}
-            <div className="glass-panel overflow-hidden bg-card border-border/50">
-                <div className="p-6 border-b border-border/50 flex items-center gap-4 flex-wrap bg-muted/20">
-                    <div className="relative flex-1 min-w-[300px]">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+            <div className="bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-3xl border border-[#E4E9D5] dark:border-white/5 overflow-hidden shadow-2xl">
+                <div className="p-6 border-b border-[#E4E9D5]/50 flex items-center gap-6 flex-wrap bg-[#F7F8F0]/30">
+                    <div className="relative flex-1 min-w-[300px] group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#355872]/40 group-focus-within:text-[#7AAACE] transition-all" size={18} />
                         <input
                             type="text"
-                            placeholder="Pesquisar transação, tutor ou pet..."
-                            className="w-full pl-10 pr-4 py-2 bg-background border border-border/50 rounded-lg text-sm focus:border-primary/50 focus:ring-1 focus:ring-primary/50 outline-none transition-all placeholder:text-muted-foreground"
+                            placeholder="Filtrar transações..."
+                            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-950/20 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-sm font-medium focus:border-[#7AAACE]/50 focus:ring-4 focus:ring-[#7AAACE]/10 outline-none transition-all placeholder:text-[#355872]/30"
                         />
                     </div>
-                    <div className="flex gap-2">
-                        <button className="flex items-center gap-2 px-4 py-2 bg-background border border-border/50 rounded-lg text-sm font-medium hover:bg-muted/50 transition-colors text-foreground">
-                            <Filter size={16} /> Filtros
+                    <div className="flex gap-3">
+                        <button className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-xs font-bold text-[#355872] hover:bg-[#E4E9D5]/20 transition-all shadow-sm">
+                            <Filter size={16} className="text-[#7AAACE]" /> Filtros
                         </button>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-background border border-border/50 rounded-lg text-sm font-medium hover:bg-muted/50 transition-colors text-foreground">
-                            <TrendingUp size={16} /> Exportar
+                        <button className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-xs font-bold text-[#355872] hover:bg-[#E4E9D5]/20 transition-all shadow-sm">
+                            <TrendingUp size={16} className="text-[#355872]" /> Exportar
                         </button>
                     </div>
                 </div>

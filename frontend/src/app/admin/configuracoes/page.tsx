@@ -68,65 +68,71 @@ export default function ConfiguracoesPage() {
     );
 
     return (
-        <div className="p-8 space-y-10 bg-background text-foreground min-h-screen">
-            <header className="flex justify-between items-start">
+        <div className="p-8 space-y-10 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-screen">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 uppercase">
-                        <Settings className="text-primary" size={32} />
-                        System <span className="text-primary">Orchestration</span>
+                    <h1 className="text-4xl font-heading font-black tracking-tighter flex items-center gap-4 text-[#355872] dark:text-white uppercase transition-all duration-300">
+                        <Settings className="text-[#7AAACE]" size={40} />
+                        Orquestração <span className="text-[#7AAACE]">Sistêmica</span>
                     </h1>
-                    <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-muted-foreground mt-2 opacity-60 italic">GLOBAL CONFIGURATION // CORE PARAMETERS</p>
+                    <p className="text-[10px] uppercase font-black tracking-[0.5em] text-[#355872]/40 dark:text-slate-500 mt-2 pl-1">
+                        CENTRAL DE CONTROLE GLOBAL // PARÂMETROS NATIVOS
+                    </p>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={loading}
-                    className="bg-primary text-primary-foreground px-10 py-4 rounded-sm font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 flex items-center gap-3 border border-primary/50"
+                    className="group relative overflow-hidden bg-[#355872] hover:bg-[#7AAACE] text-white px-12 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl shadow-[#355872]/20 flex items-center gap-3 border-2 border-[#355872]/10"
                 >
-                    {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-                    DEPLOY CHANGES
+                    <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+                    {loading ? <Loader2 className="animate-spin relative z-10" size={18} /> : <Save size={18} className="relative z-10" />}
+                    <span className="relative z-10">Implementar Alterações</span>
                 </button>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
                 {/* Navigation Nodes */}
-                <div className="lg:col-span-1 space-y-4">
-                    <div className="space-y-1">
+                <div className="lg:col-span-1 space-y-6">
+                    <div className="space-y-2">
                         {[
-                            { id: 'profile', icon: Building2, label: 'CLINIC PROFILE' },
-                            { id: 'appearance', icon: Palette, label: 'HUD VISUALS' },
-                            { id: 'security', icon: Shield, label: 'ENCRYPTION' },
-                            { id: 'integrations', icon: Globe, label: 'DATA TUNNELS' },
+                            { id: 'profile', icon: Building2, label: 'PERFIL DA MARCA' },
+                            { id: 'appearance', icon: Palette, label: 'AJUSTE VISUAL (HUD)' },
+                            { id: 'security', icon: Shield, label: 'ENCRIPTAÇÃO & ACESSO' },
+                            { id: 'integrations', icon: Globe, label: 'TÚNEIS DE DADOS' },
                         ].map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={cn(
-                                    "w-full flex items-center justify-between px-6 py-4 rounded-sm text-[10px] font-black uppercase tracking-widest transition-all border",
+                                    "w-full flex items-center justify-between px-6 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 group",
                                     activeTab === tab.id
-                                        ? "bg-primary text-primary-foreground border-primary shadow-xl"
-                                        : "bg-muted/10 border-border/50 text-muted-foreground hover:bg-muted/20 hover:text-foreground"
+                                        ? "bg-white text-[#355872] border-2 border-[#7AAACE] shadow-2xl shadow-[#7AAACE]/10"
+                                        : "bg-white/40 border border-[#E4E9D5] text-[#355872]/40 hover:bg-white hover:text-[#355872] hover:border-[#7AAACE]/40"
                                 )}
                             >
                                 <div className="flex items-center gap-4">
-                                    <tab.icon size={16} />
+                                    <tab.icon size={18} className={cn("transition-colors", activeTab === tab.id ? "text-[#7AAACE]" : "group-hover:text-[#7AAACE]")} />
                                     {tab.label}
                                 </div>
-                                <ChevronRight size={14} className={cn("transition-transform", activeTab === tab.id ? "rotate-90" : "")} />
+                                <Activity size={12} className={cn("transition-opacity", activeTab === tab.id ? "opacity-100" : "opacity-0")} />
                             </button>
                         ))}
                     </div>
 
                     {/* Technical Status */}
-                    <div className="hud-card p-6 bg-card border-border/50 mt-10">
-                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4">SYSTEM_STATUS</p>
-                        <div className="space-y-4">
+                    <div className="bg-white/60 dark:bg-slate-900/40 backdrop-blur-md p-8 rounded-[2rem] border border-[#E4E9D5] dark:border-white/5 relative overflow-hidden ring-1 ring-black/5 hover:shadow-2xl transition-all duration-500">
+                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#355872]/30 dark:text-slate-500 mb-6">DIAGNÓSTICO_CORE</p>
+                        <div className="space-y-5">
                             <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                <span className="opacity-40">Integrity</span>
-                                <span className="text-emerald-500">Nominal</span>
+                                <span className="text-[#355872]/50">Integridade</span>
+                                <span className="text-emerald-500 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    NOMINAL
+                                </span>
                             </div>
                             <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                                <span className="opacity-40">Uptime</span>
-                                <span className="text-primary">99.98%</span>
+                                <span className="text-[#355872]/50">Uptime Global</span>
+                                <span className="text-[#7AAACE]">99.98%</span>
                             </div>
                         </div>
                     </div>
@@ -134,114 +140,119 @@ export default function ConfiguracoesPage() {
 
                 {/* Content Control Area */}
                 <div className="lg:col-span-3 space-y-8">
-                    <div className="hud-card p-10 bg-card border-border/50 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-8 opacity-5">
-                            <Zap size={80} />
+                    <div className="bg-white dark:bg-slate-900/40 backdrop-blur-xl p-10 rounded-[2.5rem] border border-[#E4E9D5] dark:border-white/5 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute -top-24 -right-24 p-8 opacity-[0.02] dark:opacity-[0.05] group-hover:opacity-[0.05] group-hover:rotate-12 transition-all duration-1000">
+                            <Zap size={300} />
                         </div>
 
-                        <div className="flex items-center gap-4 mb-10">
-                            <div className="p-3 bg-primary/10 border border-primary/20 rounded-sm text-primary">
-                                <Building2 size={24} />
+                        <div className="flex items-center gap-6 mb-12">
+                            <div className="p-4 bg-[#7AAACE]/10 border-2 border-[#7AAACE]/20 rounded-2xl text-[#355872]">
+                                <Building2 size={32} />
                             </div>
                             <div>
-                                <h3 className="font-black text-2xl uppercase tracking-tighter">Identidade de Marca</h3>
-                                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-40">WHITE-LABEL ASSETS & CONTACT CONFIG</p>
+                                <h3 className="font-heading font-black text-3xl text-[#355872] dark:text-white uppercase tracking-tighter">Assinatura de Marca</h3>
+                                <p className="text-[10px] text-[#355872]/30 font-black uppercase tracking-[0.4em] mt-1 pl-1">PREMIUM IDENTITY & COMMUNICATION ASSETS</p>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <div className="md:col-span-2 flex items-center gap-10 pb-8 border-b border-border/10">
-                                <div className="w-32 h-32 bg-muted/10 rounded-sm flex items-center justify-center relative overflow-hidden group/logo border border-border/50 hover:border-primary/50 transition-colors shadow-inner">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div className="md:col-span-2 flex flex-col md:flex-row items-center gap-12 pb-12 border-b border-[#E4E9D5] dark:border-white/10">
+                                <div className="w-40 h-40 bg-[#F7F8F0] dark:bg-slate-800 rounded-[2rem] flex items-center justify-center relative overflow-hidden group/logo border-2 border-[#E4E9D5] hover:border-[#7AAACE] transition-all duration-500 shadow-inner">
                                     {formData.logo_url ? (
-                                        <img src={formData.logo_url} className="w-full h-full object-cover grayscale active:grayscale-0 transition-all" />
+                                        <img src={formData.logo_url} className="w-full h-full object-cover transition-all duration-500 filter hover:contrast-125" />
                                     ) : (
-                                        <Camera className="text-muted-foreground opacity-20" size={40} />
+                                        <Camera className="text-[#355872]/10" size={48} />
                                     )}
-                                    <div className="absolute inset-0 bg-primary/80 flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-all cursor-pointer">
-                                        <label className="cursor-pointer text-white text-[9px] font-black uppercase tracking-widest">UPLOAD_URL</label>
+                                    <div className="absolute inset-0 bg-[#355872]/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/logo:opacity-100 transition-all duration-500 cursor-pointer">
+                                        <label className="cursor-pointer text-white text-[10px] font-black uppercase tracking-widest px-4 text-center">Alterar Logotipo</label>
                                     </div>
                                 </div>
-                                <div className="flex-1 space-y-4">
-                                    <label className="block text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">LOGOTYPE SOURCE PATH</label>
+                                <div className="flex-1 space-y-4 w-full">
+                                    <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#355872]/40 dark:text-slate-400 italic border-l-4 border-[#7AAACE] pl-4">PATH_FONTE_VISUAL</label>
                                     <input
                                         value={formData.logo_url}
                                         onChange={e => setFormData({ ...formData, logo_url: e.target.value })}
-                                        placeholder="HTTPS://CDN.PROTOCOL.X/LOGO.PNG"
-                                        className="w-full px-6 py-4 bg-muted/5 border border-border/50 rounded-sm text-xs font-black uppercase tracking-widest focus:border-primary/50 outline-none transition-all placeholder:opacity-20"
+                                        placeholder="EX: CLOUD.STORAGE/BRAND/LOGO.SVG"
+                                        className="w-full px-8 py-5 bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl text-sm font-bold text-[#355872] dark:text-white placeholder:text-[#355872]/20 focus:border-[#7AAACE] focus:ring-4 focus:ring-[#7AAACE]/5 outline-none transition-all"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-4">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">SYSTEM DISPLAY NAME</label>
+                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#355872]/40 dark:text-slate-400 italic border-l-4 border-[#7AAACE] pl-4">NOME ESTRUTURAL</label>
                                 <input
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-6 py-4 bg-muted/5 border border-border/50 rounded-sm text-base font-black tracking-tighter uppercase focus:border-primary/50 outline-none transition-all"
+                                    className="w-full px-8 py-5 bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl text-xl font-heading font-black tracking-tight text-[#355872] dark:text-white uppercase focus:border-[#7AAACE] outline-none transition-all"
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">CORE SLOGAN // META_DATA</label>
+                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#355872]/40 dark:text-slate-400 italic border-l-4 border-[#7AAACE] pl-4">TAGLINE // META_TAG</label>
                                 <input
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    className="w-full px-6 py-4 bg-muted/5 border border-border/50 rounded-sm text-xs font-black uppercase tracking-widest focus:border-primary/50 outline-none transition-all"
+                                    className="w-full px-8 py-5 bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl text-sm font-bold tracking-widest text-[#355872]/80 dark:text-white uppercase focus:border-[#7AAACE] outline-none transition-all"
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">WHATSAPP DATA TUNNEL</label>
+                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#355872]/40 dark:text-slate-400 italic border-l-4 border-[#7AAACE] pl-4">CANAL WHATSAPP_API</label>
                                 <input
                                     value={formData.whatsapp}
                                     onChange={e => setFormData({ ...formData, whatsapp: e.target.value })}
-                                    placeholder="5511999999999"
-                                    className="w-full px-6 py-4 bg-muted/5 border border-border/50 rounded-sm text-xs font-black tracking-widest focus:border-primary/50 outline-none transition-all"
+                                    placeholder="+55 11 99999-9999"
+                                    className="w-full px-8 py-5 bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl text-sm font-black tracking-[0.2em] text-[#355872] dark:text-white focus:border-[#7AAACE] outline-none transition-all tabular-nums"
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground italic border-l border-primary/40 pl-3">PRIMARY_HEX_VALUE</label>
+                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#355872]/40 dark:text-slate-400 italic border-l-4 border-[#7AAACE] pl-4">CSS_PRIMARY_HEX</label>
                                 <div className="flex gap-4">
                                     <div
-                                        className="w-14 h-14 rounded-sm border border-border/50 shadow-xl"
+                                        className="w-16 h-16 rounded-2xl border-4 border-white shadow-2xl relative z-10"
                                         style={{ backgroundColor: formData.primary_color }}
-                                    />
+                                    >
+                                        <div className="absolute inset-0 bg-black/5 rounded-xl shadow-inner" />
+                                    </div>
                                     <input
                                         value={formData.primary_color}
                                         onChange={e => setFormData({ ...formData, primary_color: e.target.value })}
-                                        className="flex-1 px-6 py-4 bg-muted/5 border border-border/50 rounded-sm text-xs font-mono font-bold tracking-widest focus:border-primary/50 outline-none transition-all uppercase"
+                                        className="flex-1 px-8 py-5 bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl text-sm font-mono font-black text-[#355872] dark:text-white focus:border-[#7AAACE] outline-none transition-all uppercase"
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="hud-card p-10 bg-card border-border/50 opacity-40 hover:opacity-100 transition-opacity relative group overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8 opacity-5">
-                            <Clock size={40} />
+                    <div className="bg-white/40 dark:bg-slate-900/20 backdrop-blur-sm p-10 rounded-[2.5rem] border border-[#E4E9D5] dark:border-white/5 opacity-60 hover:opacity-100 transition-all duration-500 relative group overflow-hidden">
+                        <div className="absolute -bottom-10 -right-10 p-8 opacity-[0.03] group-hover:rotate-45 transition-transform duration-1000">
+                            <Clock size={160} />
                         </div>
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="p-2 bg-primary/10 border border-primary/20 rounded-sm text-primary">
-                                <Clock size={18} />
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="p-3 bg-[#355872]/5 rounded-xl text-[#355872]">
+                                <Clock size={24} />
                             </div>
-                            <h3 className="font-black text-lg uppercase tracking-widest">TEMPORAL_VALIDATION_RULES</h3>
+                            <h3 className="font-black text-xl text-[#355872] uppercase tracking-[0.2em]">VALIDAÇÃO_TEMPORAL</h3>
                         </div>
-                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest leading-relaxed">System-wide scheduling validation is currently locked to default parameters. Advanced temporal logic module will be unlocked in the next deployment cycle.</p>
+                        <p className="text-[10px] text-[#355872]/60 font-black uppercase tracking-[0.3em] leading-relaxed max-w-2xl">A lógica de agendamento está restrita aos parâmetros de core. Módulos avançados de heurística temporal estarão ativos no próximo ciclo de sincronização.</p>
                     </div>
 
-                    <div className="flex justify-end gap-6 pt-6">
-                        <div className="flex items-center gap-2 text-[8px] font-black text-muted-foreground uppercase tracking-[0.3em] opacity-40 mr-auto">
-                            <Lock size={12} /> SECURE_HANDSHAKE_ENFORCED
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-10 px-4">
+                        <div className="flex items-center gap-4 text-[10px] font-black text-[#355872]/30 uppercase tracking-[0.4em]">
+                            <div className="flex items-center justify-center p-2 bg-[#F7F8F0] rounded-lg">
+                                <Lock size={14} className="text-[#355872]/40" />
+                            </div>
+                            Conexão Segura // Protocolo AES-256
                         </div>
                         <button
                             onClick={handleSave}
                             disabled={loading}
-                            className="bg-primary text-primary-foreground px-12 py-5 rounded-sm font-black text-sm uppercase tracking-[0.3em] shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-4 relative overflow-hidden group"
+                            className="w-full md:w-auto bg-[#355872] hover:bg-[#7AAACE] text-white px-16 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-[0_24px_48px_-12px_rgba(53,88,114,0.4)] hover:shadow-[0_24px_48px_-12px_rgba(122,170,206,0.4)] hover:scale-[1.05] active:scale-95 transition-all duration-500 flex items-center justify-center gap-4 relative overflow-hidden group"
                         >
                             <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
-                            {loading ? <Loader2 className="animate-spin" size={20} /> : <Zap size={20} className="relative z-10" />}
-                            <span className="relative z-10">COMMIT ALL CHANGES</span>
+                            {loading ? <Loader2 className="animate-spin relative z-10" size={24} /> : <Zap size={24} className="relative z-10 text-[#7AAACE]" />}
+                            <span className="relative z-10">Consolidar Infraestrutura</span>
                         </button>
                     </div>
                 </div>

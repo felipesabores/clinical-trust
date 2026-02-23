@@ -125,27 +125,33 @@ export default function EquipePage() {
     };
 
     if (loading && staff.length === 0) return (
-        <div className="p-8 flex flex-col items-center justify-center min-h-[50vh] gap-4">
-            <Loader2 className="animate-spin text-indigo-400" size={40} />
-            <span className="text-sm font-medium text-slate-400">Carregando equipe...</span>
+        <div className="p-8 flex flex-col items-center justify-center min-h-screen gap-6 bg-[#F7F8F0] dark:bg-slate-950">
+            <div className="relative">
+                <div className="w-16 h-16 border-4 border-[#7AAACE]/20 border-t-[#7AAACE] rounded-full animate-spin" />
+                <Users className="absolute inset-0 m-auto text-[#7AAACE] animate-pulse" size={24} />
+            </div>
+            <span className="text-sm font-black text-[#355872]/40 uppercase tracking-[0.2em]">Sincronizando Talentos...</span>
         </div>
     );
 
     return (
-        <div className="p-8 space-y-10 bg-background text-foreground min-h-screen">
+        <div className="p-8 space-y-10 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-screen">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
-                        <Users className="text-indigo-400" size={24} />
-                        Equipe
-                    </h2>
-                    <p className="text-sm text-slate-400 mt-1">
-                        Gerencie os colaboradores, comissões e acessos da clínica.
+                    <h1 className="text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                        <Users className="text-[#7AAACE]" size={32} />
+                        Gestão de Talentos
+                    </h1>
+                    <p className="text-[#355872]/60 font-medium mt-1">
+                        Gerencie os colaboradores, comissões e acessos da sua marca.
                     </p>
                 </div>
                 <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20 flex items-center gap-2"
+                    onClick={() => {
+                        resetForm();
+                        setShowModal(true);
+                    }}
+                    className="flex items-center gap-2 px-8 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300"
                 >
                     <UserPlus size={18} />
                     Adicionar Colaborador
@@ -155,35 +161,35 @@ export default function EquipePage() {
             {/* Matrix View */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {staff.map((member: any) => (
-                    <div key={member.id} className="glass-panel p-6 relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+                    <div key={member.id} className="bg-white dark:bg-slate-900/40 backdrop-blur-md p-6 rounded-[2rem] border border-[#E4E9D5] dark:border-white/5 relative overflow-hidden group hover:border-[#7AAACE]/50 transition-all duration-500 shadow-sm hover:shadow-2xl">
                         {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-12 -mt-12 transition-all group-hover:bg-indigo-500/10 blur-xl" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#7AAACE]/5 to-transparent rounded-bl-full pointer-events-none" />
 
                         <div className="relative flex flex-col items-center text-center">
-                            <div className="w-20 h-20 rounded-2xl border border-white/10 p-1 mb-5 relative bg-slate-800/50 shadow-inner">
+                            <div className="w-24 h-24 rounded-3xl border border-[#E4E9D5] dark:border-white/10 p-1 mb-6 relative bg-[#F7F8F0] dark:bg-slate-800 shadow-sm group-hover:scale-105 transition-transform">
                                 {member.avatar_url ? (
-                                    <img src={member.avatar_url} className="w-full h-full object-cover rounded-xl" />
+                                    <img src={member.avatar_url} className="w-full h-full object-cover rounded-2xl" />
                                 ) : (
-                                    <div className="w-full h-full rounded-xl bg-slate-700/50 flex items-center justify-center text-slate-400">
-                                        <Users size={28} />
+                                    <div className="w-full h-full rounded-2xl bg-[#E4E9D5]/30 flex items-center justify-center text-[#355872]/30">
+                                        <Users size={32} />
                                     </div>
                                 )}
                             </div>
 
-                            <h3 className="font-heading font-semibold text-lg text-slate-100">{member.name}</h3>
-                            <span className="text-xs font-medium text-indigo-400 mb-5">{member.role}</span>
+                            <h3 className="font-heading font-black text-xl text-[#355872] dark:text-white tracking-tight">{member.name}</h3>
+                            <span className="text-[10px] font-black text-[#7AAACE] uppercase tracking-widest mt-1 mb-6">{member.role}</span>
 
-                            <div className="w-full space-y-3 pt-5 border-t border-white/5">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-500 font-medium">Status</span>
+                            <div className="w-full space-y-4 pt-6 border-t border-[#E4E9D5] dark:border-white/5">
+                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-tighter">
+                                    <span className="text-[#355872]/40">Status Operacional</span>
                                     <div className="flex items-center gap-2">
-                                        <div className={cn("w-2 h-2 rounded-full", member.is_active ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-rose-500")} />
-                                        <span className="text-slate-300 font-medium">{member.is_active ? 'Ativo' : 'Inativo'}</span>
+                                        <div className={cn("w-2 h-2 rounded-full", member.is_active ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" : "bg-rose-500")} />
+                                        <span className={cn("font-black", member.is_active ? "text-emerald-600" : "text-rose-600")}>{member.is_active ? 'Online' : 'Offline'}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-500 font-medium">Comissão</span>
-                                    <span className="text-indigo-400 font-semibold tabular-nums">{member.commission}%</span>
+                                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-tighter">
+                                    <span className="text-[#355872]/40">Taxa de Comissão</span>
+                                    <span className="text-[#355872] dark:text-white italic">{member.commission}%</span>
                                 </div>
                             </div>
 
@@ -202,15 +208,15 @@ export default function EquipePage() {
                                         });
                                         setShowModal(true);
                                     }}
-                                    className="flex-1 p-2.5 bg-slate-800 border border-white/5 rounded-xl hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-all text-slate-400 hover:text-indigo-400"
+                                    className="flex-1 p-3 bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/5 rounded-2xl hover:bg-[#7AAACE]/10 hover:border-[#7AAACE] transition-all text-[#355872]/40 hover:text-[#7AAACE] flex items-center justify-center"
                                 >
-                                    <MoreVertical size={16} className="mx-auto" />
+                                    <MoreVertical size={16} />
                                 </button>
                                 <button
                                     onClick={() => handleDelete(member.id, member.name)}
-                                    className="flex-1 p-2.5 bg-slate-800 border border-white/5 rounded-xl hover:bg-rose-500/10 hover:border-rose-500/30 transition-all text-slate-400 hover:text-rose-400"
+                                    className="flex-1 p-3 bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/5 rounded-2xl hover:bg-rose-500/10 hover:border-rose-500/30 transition-all text-[#355872]/40 hover:text-rose-500 flex items-center justify-center"
                                 >
-                                    <Trash2 size={16} className="mx-auto" />
+                                    <Trash2 size={16} />
                                 </button>
                             </div>
                         </div>
@@ -221,107 +227,117 @@ export default function EquipePage() {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => { setShowModal(false); resetForm(); }} />
-                    <div className="glass-panel w-full max-w-xl relative p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-                        <h2 className="text-xl font-heading font-semibold text-white mb-6 flex items-center gap-3 shrink-0">
-                            <UserPlus className="text-indigo-400" />
-                            {editingMember ? 'Editar Colaborador' : 'Novo Colaborador'}
-                        </h2>
+                    <div className="absolute inset-0 bg-[#355872]/60 backdrop-blur-xl" onClick={() => { setShowModal(false); resetForm(); }} />
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-xl relative p-8 shadow-[0_32px_128px_-12px_rgba(53,88,114,0.3)] rounded-[3rem] border border-[#7AAACE]/20 overflow-hidden flex flex-col max-h-[95vh]">
+                        <div className="shrink-0 flex justify-between items-start mb-10">
+                            <div>
+                                <h1 className="text-3xl font-heading font-black text-[#355872] dark:text-white-8 flex items-center gap-3">
+                                    <UserPlus className="text-[#7AAACE]" size={36} />
+                                    {editingMember ? 'Perfil do Talento' : 'Novo Talento'}
+                                </h1>
+                                <p className="text-[10px] font-black text-[#355872]/30 uppercase tracking-[0.2em] mt-2">Personalize as permissões e dados do colaborador</p>
+                            </div>
+                        </div>
 
-                        <div className="space-y-6 overflow-y-auto custom-scrollbar-thin pr-2">
-                            <div className="flex flex-col items-center mb-6">
-                                <div className="w-24 h-24 rounded-full border border-white/10 p-1 relative mb-4 group cursor-pointer overflow-hidden bg-slate-800">
-                                    <input
-                                        type="file"
-                                        onChange={handleUpload}
-                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                        accept="image/*"
-                                    />
+                        <div className="space-y-10 overflow-y-auto custom-scrollbar-thin pr-4 pb-4">
+                            {/* Avatar section */}
+                            <div className="flex flex-col items-center">
+                                <div className="w-32 h-32 rounded-[2.5rem] border-2 border-dashed border-[#E4E9D5] p-2 relative group cursor-pointer hover:border-[#7AAACE] transition-all">
+                                    <input type="file" onChange={handleUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" />
                                     {newMember.avatar_url ? (
-                                        <img src={newMember.avatar_url} className="w-full h-full object-cover rounded-full" />
+                                        <img src={newMember.avatar_url} className="w-full h-full object-cover rounded-[2rem]" />
                                     ) : (
-                                        <div className="w-full h-full rounded-full bg-slate-700/50 flex items-center justify-center text-slate-400">
-                                            {uploading ? <Loader2 className="animate-spin" /> : <Plus size={24} />}
+                                        <div className="w-full h-full rounded-[2rem] bg-[#F7F8F0] flex items-center justify-center text-[#7AAACE]">
+                                            {uploading ? <Loader2 className="animate-spin" /> : <Plus size={40} />}
                                         </div>
                                     )}
-                                    <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-full">
-                                        <p className="text-xs font-medium text-white">{uploading ? 'Enviando...' : 'Alterar Foto'}</p>
+                                    <div className="absolute inset-0 bg-[#355872]/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-[2rem]">
+                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">{uploading ? 'Enviando...' : 'Trocar Foto'}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 sm:gap-6">
-                                <div className="col-span-2 space-y-2">
-                                    <label className="text-sm font-medium text-slate-300 ml-1">Nome Completo</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                                <div className="col-span-2 space-y-3">
+                                    <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">Nome Completo</label>
                                     <input
                                         value={newMember.name}
                                         onChange={e => setNewMember({ ...newMember, name: e.target.value })}
-                                        placeholder="Ex: João da Silva"
-                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
+                                        placeholder="Ex: Dra. Mariana Lima"
+                                        className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl px-6 py-4 text-sm text-[#355872] dark:text-white placeholder:text-[#355872]/30 focus:border-[#7AAACE] focus:ring-4 focus:ring-[#7AAACE]/10 outline-none transition-all font-bold"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300 ml-1">Cargo</label>
-                                    <select
-                                        value={newMember.role}
-                                        onChange={e => setNewMember({ ...newMember, role: e.target.value })}
-                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all appearance-none"
-                                    >
-                                        <option value="GROOMER">Esteticista / Tosador</option>
-                                        <option value="BANHISTA">Banhista</option>
-                                        <option value="RECEPTIONIST">Recepcionista</option>
-                                        <option value="ADMIN">Administrador</option>
-                                    </select>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">Cargo / Especialidade</label>
+                                    <div className="relative">
+                                        <select
+                                            value={newMember.role}
+                                            onChange={e => setNewMember({ ...newMember, role: e.target.value })}
+                                            className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl px-6 py-4 text-sm text-[#355872] dark:text-white focus:border-[#7AAACE] focus:ring-4 focus:ring-[#7AAACE]/10 outline-none appearance-none transition-all font-bold pr-12"
+                                        >
+                                            <option value="GROOMER">Veterinário(a)</option>
+                                            <option value="BANHISTA">Assistente</option>
+                                            <option value="RECEPTIONIST">Recepcionista</option>
+                                            <option value="ADMIN">Administrador(a)</option>
+                                        </select>
+                                        <Briefcase className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7AAACE]/40" size={20} />
+                                    </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300 ml-1">Comissão (%)</label>
-                                    <input
-                                        type="number"
-                                        value={newMember.commission}
-                                        onChange={e => setNewMember({ ...newMember, commission: e.target.value as any })}
-                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none tabular-nums transition-all"
-                                    />
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">Comissão (%)</label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            value={newMember.commission}
+                                            onChange={e => setNewMember({ ...newMember, commission: e.target.value as any })}
+                                            className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl px-6 py-4 text-sm text-[#355872] dark:text-white focus:border-[#7AAACE] focus:ring-4 focus:ring-[#7AAACE]/10 outline-none transition-all font-bold tabular-nums pr-12"
+                                        />
+                                        <Award className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7AAACE]/40" size={20} />
+                                    </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300 ml-1">Telefone</label>
-                                    <input
-                                        value={newMember.phone}
-                                        onChange={e => setNewMember({ ...newMember, phone: e.target.value })}
-                                        placeholder="(11) 99999-9999"
-                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
-                                    />
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">Telefone Direto</label>
+                                    <div className="relative">
+                                        <input
+                                            value={newMember.phone}
+                                            onChange={e => setNewMember({ ...newMember, phone: e.target.value })}
+                                            placeholder="(11) 99999-9999"
+                                            className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl px-6 py-4 text-sm text-[#355872] dark:text-white placeholder:text-[#355872]/30 focus:border-[#7AAACE] focus:ring-4 focus:ring-[#7AAACE]/10 outline-none transition-all font-bold"
+                                        />
+                                        <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7AAACE]/40" size={20} />
+                                    </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300 ml-1">E-mail</label>
-                                    <input
-                                        value={newMember.email}
-                                        onChange={e => setNewMember({ ...newMember, email: e.target.value })}
-                                        placeholder="email@exemplo.com"
-                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
-                                    />
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">E-mail Corporativo</label>
+                                    <div className="relative">
+                                        <input
+                                            value={newMember.email}
+                                            onChange={e => setNewMember({ ...newMember, email: e.target.value })}
+                                            placeholder="email@suaclinica.com"
+                                            className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl px-6 py-4 text-sm text-[#355872] dark:text-white placeholder:text-[#355872]/30 focus:border-[#7AAACE] focus:ring-4 focus:ring-[#7AAACE]/10 outline-none transition-all font-bold"
+                                        />
+                                        <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7AAACE]/40" size={20} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-white/5 shrink-0">
+                        <div className="flex justify-end gap-3 pt-10 mt-6 border-t border-[#E4E9D5] dark:border-white/5 shrink-0">
                             <button
-                                onClick={() => {
-                                    setShowModal(false);
-                                    resetForm();
-                                }}
-                                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+                                onClick={() => { setShowModal(false); resetForm(); }}
+                                className="px-8 py-3 rounded-2xl text-[10px] font-black text-[#355872]/40 hover:text-[#355872] hover:bg-[#F7F8F0] transition-all uppercase tracking-[0.2em]"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20"
+                                className="px-12 py-3 bg-[#355872] hover:bg-[#7AAACE] text-white rounded-2xl font-black text-[11px] transition-all shadow-xl shadow-[#355872]/20 uppercase tracking-[0.2em]"
                             >
-                                {editingMember ? 'Salvar Alterações' : 'Cadastrar'}
+                                {editingMember ? 'Atualizar Perfil' : 'Finalizar Cadastro'}
                             </button>
                         </div>
                     </div>

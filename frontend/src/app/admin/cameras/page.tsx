@@ -67,7 +67,7 @@ export default function CamerasPage() {
     const onlineCount = cameras.filter(c => c.is_active).length;
 
     return (
-        <div className="p-8 space-y-10 h-screen flex flex-col bg-background text-foreground overflow-hidden">
+        <div className="p-8 space-y-10 h-screen flex flex-col bg-[#F7F8F0] dark:bg-slate-950 text-foreground overflow-hidden">
             <CameraModal
                 isOpen={isModalOpen}
                 onClose={() => {
@@ -78,99 +78,101 @@ export default function CamerasPage() {
                 initialData={editingCamera}
             />
 
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0 px-2">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 shrink-0 px-2">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-                        <Video className="text-primary" size={28} />
-                        Transmissão ao Vivo
+                    <h1 className="text-3xl font-heading font-black tracking-tighter text-[#355872] dark:text-white flex items-center gap-4">
+                        <Video className="text-[#7AAACE]" size={32} />
+                        Monitoramento Crítico
                     </h1>
-                    <p className="text-muted-foreground mt-1 text-sm">Acompanhamento em tempo real das áreas de banho e tosa.</p>
+                    <p className="text-[#355872]/50 font-medium text-sm mt-1 pl-1 italic">VIGILÂNCIA EM TEMPO REAL // BACKBONE ÓPTICO</p>
                 </div>
-                <div className="flex gap-3 items-center">
-                    <div className="flex items-center gap-3 px-4 py-2 bg-card border border-border/50 rounded-full text-sm font-medium glass-panel">
-                        <div className={cn("w-2 h-2 rounded-full", onlineCount > 0 ? "bg-emerald-500 animate-[pulse_1.5s_infinite]" : "bg-red-500")} />
-                        {onlineCount} {onlineCount === 1 ? 'Câmera Ativa' : 'Câmeras Ativas'}
+                <div className="flex gap-4 items-center">
+                    <div className="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-900/60 border-2 border-[#E4E9D5] dark:border-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-[#355872] shadow-sm">
+                        <div className={cn("w-2.5 h-2.5 rounded-full border-2 border-white", onlineCount > 0 ? "bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.5)]" : "bg-rose-500")} />
+                        {onlineCount} {onlineCount === 1 ? 'NÓ ATIVO' : 'NÓS ATIVOS'}
                     </div>
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-primary/90 transition-all shadow-md flex items-center gap-2"
+                        className="bg-[#355872] hover:bg-[#7AAACE] text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-[#355872]/20 flex items-center gap-2 border-2 border-[#355872]/10"
                     >
-                        <Plus size={18} /> Adicionar Câmera
+                        <Plus size={18} /> INJETAR CANAL
                     </button>
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 min-h-[500px]">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 flex-1 min-h-[500px]">
                 {/* Theater Mode Viewer */}
-                <div className="lg:col-span-3 flex flex-col relative group glass-panel bg-card border-border/50 p-2 overflow-hidden rounded-2xl">
-                    <div className="relative bg-black rounded-xl overflow-hidden flex-1 shadow-inner h-full flex items-center justify-center">
+                <div className="lg:col-span-3 flex flex-col relative group bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-[#E4E9D5] dark:border-white/5 p-3 overflow-hidden rounded-[2.5rem] shadow-2xl">
+                    <div className="relative bg-black rounded-[1.8rem] overflow-hidden flex-1 shadow-inner h-full flex items-center justify-center">
                         {loading && cameras.length === 0 ? (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
-                                <Loader2 className="animate-spin text-primary" size={48} />
-                                <span className="text-sm font-medium">Carregando câmeras...</span>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-[#7AAACE]/40 gap-6">
+                                <Activity className="animate-pulse" size={64} />
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em]">SINCRONIZANDO FEEDS...</span>
                             </div>
                         ) : selected?.is_active ? (
                             <>
                                 {/* Simulated live feed background */}
-                                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-80" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90" />
+                                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-80 mix-blend-screen" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90" />
 
                                 {/* Overlays */}
-                                <div className="absolute top-6 left-6 flex flex-col gap-2 z-30">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-600/90 rounded-full text-white text-xs font-bold shadow-lg backdrop-blur-md">
-                                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" /> AO VIVO
+                                <div className="absolute top-8 left-8 flex flex-col gap-3 z-30">
+                                    <div className="flex items-center gap-3 px-4 py-2 bg-rose-600/90 rounded-xl text-white text-[10px] font-black uppercase tracking-widest shadow-2xl backdrop-blur-xl border border-white/20">
+                                        <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse shadow-glow" /> TRANSMISSÃO_ONLINE
                                     </div>
-                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-black/50 backdrop-blur-md rounded-full text-white/90 text-xs font-medium border border-white/10">
-                                        HD 1080p
-                                    </div>
-                                </div>
-
-                                <div className="absolute top-6 right-6 flex items-center gap-2 z-30">
-                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-white/90 text-xs font-medium">
-                                        <Eye size={14} className="text-primary/80" /> 4 Visualizações
+                                    <div className="flex items-center gap-3 px-4 py-2 bg-black/60 backdrop-blur-xl rounded-xl text-white/90 text-[10px] font-black uppercase tracking-widest border border-white/10">
+                                        FHD 1080P // 60 FPS
                                     </div>
                                 </div>
 
-                                <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between z-30">
-                                    <div className="bg-black/40 backdrop-blur-md rounded-xl p-4 border border-white/10 shadow-lg max-w-md">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <Shield size={16} className="text-primary" />
-                                            <p className="text-white font-semibold text-lg leading-none">{selected?.name}</p>
+                                <div className="absolute top-8 right-8 flex items-center gap-3 z-30">
+                                    <div className="flex items-center gap-3 px-4 py-2 bg-[#F7F8F0]/10 backdrop-blur-xl border border-white/10 rounded-xl text-white/90 text-[10px] font-black uppercase tracking-widest">
+                                        <Eye size={16} className="text-[#7AAACE]" /> 4 ESCRUTADORES
+                                    </div>
+                                </div>
+
+                                <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between z-30">
+                                    <div className="bg-black/60 backdrop-blur-xl rounded-[1.5rem] p-6 border border-white/10 shadow-2xl max-w-lg">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <Shield size={18} className="text-[#7AAACE]" />
+                                            <p className="text-white font-heading font-black text-2xl uppercase tracking-tighter leading-none">{selected?.name}</p>
                                         </div>
-                                        <p className="text-white/60 text-xs font-medium truncate">{selected.rtsp_url.split('@')[1] || 'Conexão local ativa'}</p>
+                                        <p className="text-[#F7F8F0]/40 text-[10px] font-black uppercase tracking-widest truncate">{selected.rtsp_url.split('@')[1] || 'PROTOCOLO_LOCAL_ENCRYPTED'}</p>
                                     </div>
 
-                                    <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button className="w-10 h-10 flex items-center justify-center bg-black/50 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-primary/80 transition-colors shadow-lg">
-                                            <RefreshCw size={18} />
+                                    <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+                                        <button className="w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-xl rounded-2xl text-white border border-white/10 hover:bg-[#7AAACE] transition-all duration-300 shadow-2xl">
+                                            <RefreshCw size={20} />
                                         </button>
                                         <button
                                             onClick={() => {
                                                 setEditingCamera(selected);
                                                 setIsModalOpen(true);
                                             }}
-                                            className="w-10 h-10 flex items-center justify-center bg-black/50 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-primary/80 transition-colors shadow-lg"
+                                            className="w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-xl rounded-2xl text-white border border-white/10 hover:bg-[#7AAACE] transition-all duration-300 shadow-2xl"
                                         >
-                                            <Settings size={18} />
+                                            <Settings size={20} />
                                         </button>
-                                        <button className="w-10 h-10 flex items-center justify-center bg-black/50 backdrop-blur-md rounded-full text-white border border-white/10 hover:bg-primary/80 transition-colors shadow-lg">
-                                            <Maximize2 size={18} />
+                                        <button className="w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-xl rounded-2xl text-white border border-white/10 hover:bg-[#7AAACE] transition-all duration-300 shadow-2xl">
+                                            <Maximize2 size={20} />
                                         </button>
                                     </div>
                                 </div>
                             </>
                         ) : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/80 z-40">
-                                <WifiOff size={48} className="text-muted-foreground" />
-                                <div className="text-center">
-                                    <h4 className="font-semibold text-lg text-foreground mb-1">Câmera Desconectada</h4>
-                                    <p className="text-sm text-muted-foreground mb-6">Verifique a conexão ou a URL RTSP.</p>
-                                    <button
-                                        onClick={fetchCameras}
-                                        className="flex items-center justify-center gap-2 px-6 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg text-sm font-medium transition-colors"
-                                    >
-                                        <RefreshCw size={16} /> Tentar Novamente
-                                    </button>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-black/90 z-40 backdrop-blur-md">
+                                <WifiOff size={64} className="text-rose-500/50" />
+                                <div className="text-center space-y-2">
+                                    <h4 className="font-heading font-black text-2xl text-white uppercase tracking-tighter">Sinal Interrompido</h4>
+                                    <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">ERRO_DE_HANDSHAKE // VERIFIQUE O ENDEREÇO RTSP</p>
+                                    <div className="pt-8 px-10">
+                                        <button
+                                            onClick={fetchCameras}
+                                            className="flex items-center justify-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-white/10"
+                                        >
+                                            <RefreshCw size={16} /> RECONECTAR CANAL
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -178,76 +180,77 @@ export default function CamerasPage() {
                 </div>
 
                 {/* Sensors Sidebar */}
-                <div className="flex flex-col gap-4 min-h-0 bg-card glass-panel rounded-2xl p-4 border border-border/50">
-                    <div className="flex items-center justify-between border-b border-border/50 pb-3 mt-2 px-2">
-                        <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                            Câmeras Disponíveis
+                <div className="flex flex-col gap-6 min-h-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl rounded-[2.5rem] p-6 border border-[#E4E9D5] dark:border-white/5 shadow-xl ring-1 ring-black/5">
+                    <div className="flex items-center justify-between border-b border-[#E4E9D5] pb-4 mt-2 px-2">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#355872]/40 flex items-center gap-3">
+                            <Activity size={18} className="text-[#7AAACE]" />
+                            Matriz de Feeds
                         </h3>
-                        <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">{cameras.length}</span>
+                        <span className="text-[10px] font-black text-[#7AAACE] bg-[#7AAACE]/10 px-3 py-1 rounded-lg tabular-nums">{cameras.length} UNITS</span>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar-thin">
+                    <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar-thin">
                         {cameras.map(cam => (
                             <div
                                 key={cam.id}
                                 className={cn(
-                                    "p-4 cursor-pointer rounded-xl transition-all relative group overflow-hidden border",
+                                    "p-5 cursor-pointer rounded-2xl transition-all duration-500 relative group overflow-hidden border-2",
                                     selected?.id === cam.id
-                                        ? "bg-primary/5 border-primary shadow-sm"
-                                        : "border-border/40 hover:border-primary/50 hover:bg-muted/30 bg-background/50 grayscale-[0.5] hover:grayscale-0 shadow-sm"
+                                        ? "bg-white border-[#7AAACE] shadow-2xl shadow-[#7AAACE]/10"
+                                        : "bg-[#F7F8F0]/50 border-transparent hover:border-[#7AAACE]/30 hover:bg-white text-[#355872]/40 grayscale hover:grayscale-0 shadow-sm"
                                 )}
                                 onClick={() => setSelected(cam)}
                             >
-                                <div className="flex items-start justify-between gap-3">
+                                <div className="flex items-start justify-between gap-4">
                                     <div className="min-w-0">
                                         <p className={cn(
-                                            "font-semibold text-sm truncate transition-colors",
-                                            selected?.id === cam.id ? "text-primary" : "text-foreground group-hover:text-primary"
+                                            "font-heading font-black text-sm uppercase tracking-tight transition-colors",
+                                            selected?.id === cam.id ? "text-[#355872]" : "text-[#355872]/60 group-hover:text-[#355872]"
                                         )}>
                                             {cam.name}
                                         </p>
-                                        <p className="text-xs text-muted-foreground mt-1 truncate">ID: {cam.id.slice(0, 8)}</p>
+                                        <p className="text-[10px] font-black text-[#355872]/20 mt-1 uppercase tracking-widest">ID_{cam.id.slice(0, 8)}</p>
                                     </div>
                                     <div className={cn(
-                                        "w-2 h-2 rounded-full mt-1.5 shrink-0",
-                                        cam.is_active ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" : "bg-red-500/50"
+                                        "w-2.5 h-2.5 rounded-full mt-1 shrink-0 border-2 border-white",
+                                        cam.is_active ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" : "bg-rose-500/50"
                                     )} />
                                 </div>
 
-                                <div className="flex items-center justify-between mt-4">
-                                    <div className="flex gap-1">
-                                        {Array.from({ length: 3 }).map((_, i) => (
+                                <div className="flex items-center justify-between mt-6">
+                                    <div className="flex gap-1.5 px-3 py-1.5 bg-black/5 rounded-lg border border-black/5">
+                                        {[...Array(3)].map((_, i) => (
                                             <div
                                                 key={i}
                                                 className={cn(
-                                                    "w-4 h-1 rounded-full",
-                                                    cam.is_active ? "bg-primary/80" : "bg-muted",
-                                                    i > 1 ? "opacity-40" : ""
+                                                    "w-1.5 h-1.5 rounded-full shadow-inner",
+                                                    cam.is_active ? "bg-[#355872]" : "bg-[#355872]/10",
+                                                    i > 1 ? "opacity-20" : ""
                                                 )}
                                             />
                                         ))}
                                     </div>
-                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setEditingCamera(cam);
                                                 setIsModalOpen(true);
                                             }}
-                                            className="p-1.5 hover:bg-primary/20 rounded-md text-primary transition-colors"
-                                            title="Editar Câmera"
+                                            className="p-2 bg-white hover:bg-[#7AAACE] rounded-xl text-[#355872]/40 hover:text-white transition-all shadow-sm border border-[#E4E9D5]"
+                                            title="Configurar Parâmetros"
                                         >
-                                            <Edit3 size={16} />
+                                            <Edit3 size={14} />
                                         </button>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleDelete(cam.id, cam.name);
                                             }}
-                                            className="p-1.5 hover:bg-red-500/20 rounded-md text-red-500 transition-colors"
-                                            title="Excluir Câmera"
+                                            className="p-2 bg-white hover:bg-rose-500 rounded-xl text-rose-500/40 hover:text-white transition-all shadow-sm border border-[#E4E9D5]"
+                                            title="Desativar Unidade"
                                         >
-                                            <Trash2 size={16} />
+                                            <Trash2 size={14} />
                                         </button>
                                     </div>
                                 </div>

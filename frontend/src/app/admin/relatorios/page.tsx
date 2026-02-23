@@ -49,10 +49,10 @@ export default function RelatoriosPage() {
     const maxRevenue = Math.max(...revenueData, 1);
 
     const kpis = [
-        { label: 'Receita Operacional', value: `R$ ${stats?.totalIncome?.toFixed(2) || '0,00'}`, change: '+18.4%', up: true, icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-        { label: 'Matriz de Clientes', value: stats?.customerCount?.toString() || '0', change: '+7.2%', up: true, icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
-        { label: 'Volume de Serviços', value: stats?.transactionCount?.toString() || '0', change: '+12.1%', up: true, icon: ShoppingCart, color: 'text-primary', bg: 'bg-primary/10' },
-        { label: 'Índice de Fidelidade', value: '94.2', change: '-2.1%', up: false, icon: Star, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+        { label: 'Receita Operacional', value: `R$ ${stats?.totalIncome?.toFixed(2) || '0,00'}`, change: '+18.4%', up: true, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
+        { label: 'Matriz de Clientes', value: stats?.customerCount?.toString() || '0', change: '+7.2%', up: true, icon: Users, color: 'text-[#355872]', bg: 'bg-[#7AAACE]/10' },
+        { label: 'Volume de Serviços', value: stats?.transactionCount?.toString() || '0', change: '+12.1%', up: true, icon: ShoppingCart, color: 'text-[#355872]', bg: 'bg-[#7AAACE]/10' },
+        { label: 'Índice de Fidelidade', value: '94.2', change: '-2.1%', up: false, icon: Star, color: 'text-amber-600', bg: 'bg-amber-500/10' },
     ];
 
     const topServices = [
@@ -72,60 +72,60 @@ export default function RelatoriosPage() {
     }
 
     return (
-        <div className="p-8 space-y-8 bg-background/50 text-foreground min-h-screen">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-8 space-y-8 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-screen">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-                        <BarChart3 className="text-primary" size={28} />
-                        Relatórios e Métricas
+                    <h1 className="text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                        <BarChart3 className="text-[#7AAACE]" size={32} />
+                        Insights Operacionais
                     </h1>
-                    <p className="text-muted-foreground mt-1">
-                        Acompanhe o desempenho e os indicadores da sua clínica.
+                    <p className="text-[#355872]/60 font-medium mt-1">
+                        Acompanhe o desempenho e rentabilidade da sua marca <span className="text-[#7AAACE] font-bold">Clinical Trust</span>.
                     </p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-card border border-border/50 rounded-full text-sm font-medium text-foreground shadow-sm glass-panel">
-                    <Calendar size={16} className="text-muted-foreground" />
-                    Últimos 6 meses
+                <div className="flex items-center gap-2 px-6 py-2.5 bg-white dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-[10px] font-black text-[#355872] shadow-sm uppercase tracking-widest">
+                    <Calendar size={16} className="text-[#7AAACE]" />
+                    Jan - Fev 2024
                 </div>
             </header>
 
             {/* KPIs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {kpis.map((k, i) => (
-                    <div key={i} className="glass-panel p-6 bg-card border-border/50 hover:border-primary/30 transition-all group overflow-hidden relative">
+                    <div key={i} className="bg-white dark:bg-slate-900/40 backdrop-blur-md p-6 border border-[#E4E9D5] dark:border-white/5 rounded-3xl hover:border-[#7AAACE]/30 transition-all duration-500 group overflow-hidden relative shadow-sm">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <k.icon size={60} />
+                            <k.icon size={64} className="text-[#355872]" />
                         </div>
                         <div className="flex justify-between items-start mb-6">
-                            <div className={`${k.bg} p-3 rounded-xl border border-border/50 ${k.color}`}>
-                                <k.icon size={20} />
+                            <div className={`${k.bg} p-3 rounded-2xl border border-[#E4E9D5]/50 ${k.color}`}>
+                                <k.icon size={22} />
                             </div>
                             <span className={cn(
-                                "flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border",
-                                k.up ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' : 'text-red-500 bg-red-500/10 border-red-500/20'
+                                "flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest border",
+                                k.up ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : 'text-rose-600 bg-rose-50 border-rose-100'
                             )}>
                                 {k.up ? <ArrowUpRight size={14} /> : <TrendingDown size={14} />}
                                 {k.change}
                             </span>
                         </div>
-                        <p className="text-sm text-muted-foreground font-medium mb-1">{k.label}</p>
-                        <h3 className="text-3xl font-bold tracking-tight text-foreground transition-colors">{k.value}</h3>
+                        <p className="text-[10px] font-bold text-[#355872]/40 dark:text-slate-400 uppercase tracking-widest mb-1">{k.label}</p>
+                        <h3 className="text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white">{k.value}</h3>
                     </div>
                 ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 {/* HUD Chart */}
-                <div className="lg:col-span-3 glass-panel p-8 bg-card border-border/50 relative overflow-hidden group">
+                <div className="lg:col-span-3 bg-white dark:bg-slate-900/40 backdrop-blur-md p-8 border border-[#E4E9D5] dark:border-white/5 rounded-[2.5rem] relative overflow-hidden group shadow-2xl">
                     <div className="flex justify-between items-start mb-12">
                         <div>
-                            <h3 className="font-semibold text-lg text-foreground">Fluxo de Receita</h3>
-                            <p className="text-sm text-muted-foreground mt-1">Evolução mensal</p>
+                            <h3 className="font-heading font-black text-xl text-[#355872] dark:text-white tracking-tight">Fluxo de Receita</h3>
+                            <p className="text-sm font-medium text-[#355872]/40 mt-1">Análise de desempenho mensal</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-3xl font-bold tracking-tight">R$ {stats?.totalIncome?.toLocaleString() || '0,00'}</p>
-                            <p className="text-xs text-emerald-500 font-medium flex items-center justify-end gap-1 mt-1">
-                                <ArrowUpRight size={14} /> +18.4% vs mês anterior
+                            <p className="text-3xl font-heading font-black text-[#355872] dark:text-white tracking-tighter">R$ {stats?.totalIncome?.toLocaleString() || '0,00'}</p>
+                            <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center justify-end gap-1 mt-1">
+                                <ArrowUpRight size={14} /> +18.4% VS PREV
                             </p>
                         </div>
                     </div>
@@ -151,18 +151,18 @@ export default function RelatoriosPage() {
                                         </div>
                                         <div
                                             className={cn(
-                                                "w-full rounded-t-sm transition-all relative overflow-hidden",
-                                                isLast ? 'bg-primary/90 hover:bg-primary' : 'bg-primary/20 hover:bg-primary/40',
-                                                'group-hover/bar:shadow-lg'
+                                                "w-full rounded-t-2xl transition-all relative overflow-hidden",
+                                                isLast ? 'bg-[#355872] hover:bg-[#355872]/90' : 'bg-[#7AAACE]/20 hover:bg-[#7AAACE]/40',
+                                                'group-hover/bar:shadow-2xl'
                                             )}
                                             style={{ height: `${height}%` }}
                                         >
-                                            <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-white/10" />
                                         </div>
                                     </div>
                                     <span className={cn(
-                                        "text-xs font-medium transition-colors",
-                                        isLast ? "text-foreground" : "text-muted-foreground group-hover/bar:text-foreground"
+                                        "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                        isLast ? "text-[#355872]" : "text-[#355872]/30 group-hover/bar:text-[#355872]"
                                     )}>{months[i]}</span>
                                 </div>
                             );
@@ -171,32 +171,37 @@ export default function RelatoriosPage() {
                 </div>
 
                 {/* Top services */}
-                <div className="lg:col-span-2 glass-panel p-8 bg-card border-border/50 relative overflow-hidden group flex flex-col">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 text-primary">
-                            <Zap size={20} />
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900/40 backdrop-blur-md p-8 border border-[#E4E9D5] dark:border-white/5 rounded-[2.5rem] relative overflow-hidden group flex flex-col shadow-2xl">
+                    <div className="flex items-center gap-4 mb-10">
+                        <div className="w-12 h-12 rounded-2xl bg-[#7AAACE]/10 flex items-center justify-center border border-[#7AAACE]/20 text-[#7AAACE] shadow-sm">
+                            <Zap size={24} />
                         </div>
-                        <h3 className="font-semibold text-lg text-foreground">Serviços Mais Realizados</h3>
+                        <div>
+                            <h3 className="font-heading font-black text-xl text-[#355872] dark:text-white tracking-tight">Serviços Prime</h3>
+                            <p className="text-[10px] font-bold text-[#355872]/40 uppercase tracking-widest">Mais realizados</p>
+                        </div>
                     </div>
 
-                    <div className="space-y-6 flex-1">
+                    <div className="space-y-8 flex-1">
                         {topServices.map(s => (
                             <div key={s.name} className="group/item">
-                                <div className="flex justify-between items-end mb-2">
-                                    <span className="text-sm font-semibold text-foreground">{s.name}</span>
+                                <div className="flex justify-between items-end mb-3">
+                                    <div className="space-y-1">
+                                        <span className="text-sm font-black text-[#355872] dark:text-white tracking-tight">{s.name}</span>
+                                        <p className="text-[10px] font-bold text-[#355872]/40 uppercase tracking-widest">{s.count} atendimentos</p>
+                                    </div>
                                     <div className="text-right">
-                                        <p className="text-sm font-bold text-foreground">{s.revenue}</p>
-                                        <p className="text-xs text-muted-foreground">{s.count} agendamentos</p>
+                                        <p className="text-base font-heading font-black text-[#7AAACE] tracking-tighter">{s.revenue}</p>
                                     </div>
                                 </div>
-                                <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
+                                <div className="h-3 bg-[#E4E9D5]/30 dark:bg-slate-800 rounded-full overflow-hidden border border-[#E4E9D5]/50 dark:border-white/5">
                                     <div
-                                        className="h-full bg-primary rounded-full transition-all duration-1000 opacity-90"
+                                        className="h-full bg-gradient-to-r from-[#7AAACE] to-[#355872] rounded-full transition-all duration-1000 opacity-90 shadow-[0_0_10px_rgba(122,170,206,0.3)]"
                                         style={{ width: `${s.pct}%` }}
                                     />
                                 </div>
-                                <div className="flex justify-between items-center mt-2">
-                                    <p className="text-xs text-muted-foreground font-medium">{s.pct}% do total</p>
+                                <div className="flex justify-between items-center mt-2.5">
+                                    <p className="text-[10px] font-black text-[#355872]/60 uppercase tracking-tighter">{s.pct}% SHARE</p>
                                 </div>
                             </div>
                         ))}

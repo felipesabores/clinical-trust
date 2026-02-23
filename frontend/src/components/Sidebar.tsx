@@ -39,28 +39,28 @@ export function Sidebar() {
     const { config, loading } = useTenant();
 
     return (
-        <aside className="w-64 h-screen bg-white dark:bg-slate-900/40 backdrop-blur-xl border-r border-slate-200 dark:border-white/5 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out shadow-lg dark:shadow-2xl">
+        <aside className="w-64 h-screen bg-[#355872] dark:bg-slate-900 border-r border-[#2a465b] dark:border-white/5 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out shadow-2xl">
             {/* Subtle Gradient Glow Background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 via-transparent to-transparent opacity-50 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent opacity-30 pointer-events-none" />
 
             <div className="p-6 relative border-b border-white/5">
                 <div className="flex flex-col gap-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-400 p-[1px] shadow-lg shadow-indigo-500/20 shrink-0 overflow-hidden relative group">
-                                <div className="absolute inset-0 bg-white dark:bg-slate-900 rounded-[11px] flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-white/10 p-[1px] shadow-lg shadow-black/20 shrink-0 overflow-hidden relative group">
+                                <div className="absolute inset-0 bg-white dark:bg-slate-800 rounded-[11px] flex items-center justify-center">
                                     {config?.logo_url ? (
                                         <img src={config.logo_url} alt={config.name} className="w-full h-full object-cover rounded-[11px]" />
                                     ) : (
-                                        <Activity size={20} className="text-indigo-500" />
+                                        <Activity size={20} className="text-[#355872]" />
                                     )}
                                 </div>
                             </div>
                             <div className="min-w-0">
-                                <h1 className="font-heading font-bold text-base text-slate-900 dark:text-white tracking-tight leading-tight truncate">
+                                <h1 className="font-heading font-bold text-base text-white tracking-tight leading-tight truncate">
                                     {loading ? 'Carregando...' : (config?.name || 'Vivid Stream')}
                                 </h1>
-                                <p className="text-xs text-muted-foreground truncate">
+                                <p className="text-xs text-[#9CD5FF] truncate italic">
                                     {loading ? 'Aguarde' : 'Admin Workspace'}
                                 </p>
                             </div>
@@ -71,7 +71,7 @@ export function Sidebar() {
 
             <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto custom-scrollbar-thin relative z-10">
                 <div className="px-3 mb-2">
-                    <p className="text-xs font-heading font-semibold text-slate-500 uppercase tracking-wider">Gestão</p>
+                    <p className="text-xs font-heading font-semibold text-[#9CD5FF]/60 uppercase tracking-widest">Gestão</p>
                 </div>
                 {menuItems.map((item) => {
                     const isActive = pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path));
@@ -80,16 +80,16 @@ export function Sidebar() {
                             key={item.path}
                             href={item.path}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
+                                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 group relative",
                                 isActive
-                                    ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium"
-                                    : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200"
+                                    ? "bg-white/15 text-white font-semibold shadow-inner"
+                                    : "text-[#9CD5FF]/80 hover:bg-white/5 hover:text-white"
                             )}
                         >
                             {isActive && (
                                 <motion.div
                                     layoutId="active-nav-indicator"
-                                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-indigo-500 rounded-r-full"
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#9CD5FF] rounded-r-full shadow-[0_0_10px_rgba(156,213,255,0.8)]"
                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                 />
                             )}
@@ -97,7 +97,7 @@ export function Sidebar() {
                                 size={18}
                                 className={cn(
                                     "transition-colors duration-200",
-                                    isActive ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"
+                                    isActive ? "text-[#9CD5FF]" : "text-[#9CD5FF]/60 group-hover:text-white"
                                 )}
                             />
                             <span className="text-sm tracking-wide">{item.label}</span>
@@ -106,21 +106,21 @@ export function Sidebar() {
                 })}
             </nav>
 
-            <div className="p-4 mt-auto border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/40 relative z-10 flex flex-col gap-2">
-                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent">
-                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Tema</span>
+            <div className="p-4 mt-auto border-t border-white/10 bg-black/10 relative z-10 flex flex-col gap-2">
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-xs font-medium text-[#9CD5FF]">Tema</span>
                     <ThemeToggle />
                 </div>
                 <Link
                     href="/admin/configuracoes"
                     className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 group",
                         pathname === '/admin/configuracoes'
-                            ? "bg-indigo-500/10 text-indigo-400 font-medium"
-                            : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                            ? "bg-white/15 text-white font-medium"
+                            : "text-[#9CD5FF]/70 hover:bg-white/5 hover:text-white"
                     )}
                 >
-                    <Settings size={18} className={pathname === '/admin/configuracoes' ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300 transition-transform duration-300 group-hover:rotate-45'} />
+                    <Settings size={18} className={pathname === '/admin/configuracoes' ? 'text-[#9CD5FF]' : 'text-[#9CD5FF]/60 group-hover:text-white transition-all duration-500 group-hover:rotate-90'} />
                     <span className="text-sm tracking-wide">Configurações</span>
                 </Link>
             </div>

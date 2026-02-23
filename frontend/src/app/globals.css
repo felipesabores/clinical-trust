@@ -4,36 +4,36 @@
 
 @layer base {
   :root {
-    /* Premium Light Mode (Clean SaaS Aesthetic) */
-    --background: 210 30% 99%;
-    /* Extremely light ivory/grey-blue */
-    --foreground: 222 47% 11%;
-    /* Deep Slate text */
+    /* Premium Color Hunt Light Palette (SaaS Elite) */
+    --background: 69 31% 96%;
+    /* Pearl Off-White */
+    --foreground: 206 37% 33%;
+    /* Deep Slate Blue */
 
     --card: 0 0% 100%;
-    /* Pure White cards */
-    --card-foreground: 222 47% 11%;
+    /* Pure White cards for contrast */
+    --card-foreground: 206 37% 33%;
 
-    --primary: 238 82% 66%;
-    /* Indigo primary */
+    --primary: 206 46% 65%;
+    /* Soft Indigo Blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 96%;
-    /* Soft grey for secondary elements */
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 72 23% 92%;
+    /* Muted Pearl for secondary elements */
+    --secondary-foreground: 206 37% 33%;
 
-    --muted: 210 15% 95%;
-    /* Muted grey */
-    --muted-foreground: 215 16% 45%;
-    /* High contrast muted text */
+    --muted: 72 23% 92%;
+    /* Subtle muted elements */
+    --muted-foreground: 206 20% 50%;
 
-    --accent: 238 82% 66%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 206 100% 81%;
+    /* Sky Blue accent */
+    --accent-foreground: 206 37% 33%;
 
-    --border: 214 30% 92%;
-    /* Soft border color */
-    --radius: 0.85rem;
-    /* Slightly more rounded corner for premium feel */
+    --border: 72 23% 87%;
+    /* Refined subtle border */
+    --radius: 1rem;
+    /* Slightly more rounded for high-end SaaS feel */
   }
 
   .dark {

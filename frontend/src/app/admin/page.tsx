@@ -43,12 +43,12 @@ interface Appointment {
 }
 
 const COLUMN_CONFIG: Record<string, { title: string; color: string; icon: any }> = {
-    SCHEDULED: { title: 'Agendados', color: 'bg-slate-400 dark:bg-slate-500', icon: Clock },
-    RECEPTION: { title: 'Recepção', color: 'bg-indigo-400 dark:bg-indigo-500', icon: Users },
-    BATHING: { title: 'Banho', color: 'bg-cyan-500 dark:bg-cyan-600', icon: Droplets },
-    DRYING: { title: 'Secagem', color: 'bg-amber-400 dark:bg-amber-500', icon: Wind },
-    GROOMING: { title: 'Tosa', color: 'bg-emerald-500 dark:bg-emerald-600', icon: Scissors },
-    READY: { title: 'Prontos', color: 'bg-rose-500 dark:bg-rose-600', icon: CheckCircle2 },
+    SCHEDULED: { title: 'Agendados', color: 'bg-[#7AAACE]', icon: Clock },
+    RECEPTION: { title: 'Recepção', color: 'bg-[#355872]', icon: Users },
+    BATHING: { title: 'Banho', color: 'bg-[#9CD5FF]', icon: Droplets },
+    DRYING: { title: 'Secagem', color: 'bg-amber-400', icon: Wind },
+    GROOMING: { title: 'Tosa', color: 'bg-emerald-500', icon: Scissors },
+    READY: { title: 'Prontos', color: 'bg-rose-500', icon: CheckCircle2 },
 };
 
 export default function DashboardPage() {
@@ -188,12 +188,12 @@ export default function DashboardPage() {
             {/* Page Action Header (Sub-header since global App Bar handles the main title) */}
             <header className="flex justify-between items-center gap-4 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-foreground">Visão Geral</h2>
-                    <p className="text-sm text-muted-foreground mt-1">Bem-vindo(a) ao seu workspace do Vivid Stream.</p>
+                    <h2 className="text-2xl font-heading font-bold tracking-tight text-[#355872] dark:text-white">Visão Geral</h2>
+                    <p className="text-sm text-[#355872]/60 mt-1 font-medium">Bem-vindo(a) ao seu workspace do <span className="text-[#7AAACE] font-bold">Vivid Stream</span>.</p>
                 </div>
                 <div className="flex gap-3">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 shadow-sm backdrop-blur-md">
-                        <CalendarDays size={16} className="text-primary" />
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-xs font-bold text-[#355872] dark:text-slate-300 shadow-sm backdrop-blur-md">
+                        <CalendarDays size={16} className="text-[#7AAACE]" />
                         {today}
                     </div>
                 </div>
@@ -202,9 +202,9 @@ export default function DashboardPage() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 shrink-0">
                 {dashStats.map((stat, i) => (
-                    <div key={i} className="bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-100 dark:border-white/5 p-6 rounded-2xl group transition-all duration-300 hover:border-primary/30 shadow-sm hover:shadow-lg">
+                    <div key={i} className="bg-white dark:bg-slate-900/40 backdrop-blur-md border border-[#E4E9D5] dark:border-white/5 p-6 rounded-3xl group transition-all duration-300 hover:border-[#7AAACE]/30 shadow-sm hover:shadow-lg">
                         <div className="flex justify-between items-start mb-4">
-                            <div className="bg-primary/10 p-2.5 rounded-xl text-primary shadow-[0_0_15px_rgba(99,102,241,0.1)] group-hover:scale-110 transition-transform duration-300">
+                            <div className="bg-[#7AAACE]/10 p-2.5 rounded-xl text-[#355872] shadow-sm group-hover:scale-110 transition-transform duration-300">
                                 <stat.icon size={20} />
                             </div>
                             {stat.change && (
@@ -214,8 +214,8 @@ export default function DashboardPage() {
                             )}
                         </div>
                         <div className="min-w-0">
-                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">{stat.label}</p>
-                            <h3 className="text-3xl font-heading font-bold mt-1 text-slate-900 dark:text-white tracking-tight truncate" title={stat.value}>{stat.value}</h3>
+                            <p className="text-[10px] font-bold text-[#355872]/50 dark:text-slate-400 truncate uppercase tracking-widest">{stat.label}</p>
+                            <h3 className="text-3xl font-heading font-black mt-1 text-[#355872] dark:text-white tracking-tighter truncate" title={stat.value}>{stat.value}</h3>
                         </div>
                     </div>
                 ))}
@@ -241,8 +241,8 @@ export default function DashboardPage() {
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className={cn("w-2 h-2 rounded-full shadow-sm", config.color)} />
-                                                <h4 className="font-heading font-semibold text-sm text-slate-700 dark:text-slate-200">{config.title}</h4>
-                                                <span className="text-xs font-medium text-primary dark:text-indigo-300 bg-primary/10 dark:bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-primary/20 dark:border-indigo-500/20">
+                                                <h4 className="font-heading font-extrabold text-sm text-[#355872] dark:text-slate-200 uppercase tracking-tight">{config.title}</h4>
+                                                <span className="text-[10px] font-bold text-[#355872] dark:text-indigo-300 bg-[#7AAACE]/20 dark:bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-[#7AAACE]/30 dark:border-indigo-500/20">
                                                     {kanbanData[status]?.length || 0}
                                                 </span>
                                             </div>
@@ -274,8 +274,8 @@ export default function DashboardPage() {
                                                 {...provided.droppableProps}
                                                 ref={provided.innerRef}
                                                 className={cn(
-                                                    "flex-1 space-y-3 p-3 rounded-2xl border border-transparent transition-all overflow-y-auto custom-scrollbar-thin bg-slate-100/50 dark:bg-slate-900/20 backdrop-blur-sm shadow-inner",
-                                                    snapshot.isDraggingOver && "bg-primary/5 border-primary/20 ring-1 ring-inset ring-primary/10"
+                                                    "flex-1 space-y-3 p-3 rounded-3xl border border-transparent transition-all overflow-y-auto custom-scrollbar-thin bg-[#E4E9D5]/30 dark:bg-slate-900/20 backdrop-blur-sm",
+                                                    snapshot.isDraggingOver && "bg-[#7AAACE]/10 border-[#7AAACE]/20 ring-1 ring-inset ring-[#7AAACE]/10"
                                                 )}
                                             >
                                                 {kanbanData[status]?.map((app, index) => (
@@ -286,8 +286,8 @@ export default function DashboardPage() {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                                 className={cn(
-                                                                    "bg-white dark:bg-slate-800/80 backdrop-blur-md p-4 rounded-xl border border-slate-200 dark:border-white/5 shadow-sm group transition-all relative overflow-hidden",
-                                                                    snapshot.isDragging ? "shadow-2xl shadow-primary/10 scale-105 rotate-1 ring-2 ring-primary border-primary z-50 bg-white dark:bg-slate-800" : "hover:border-primary/30 hover:shadow-md"
+                                                                    "bg-white dark:bg-slate-800/80 backdrop-blur-md p-4 rounded-2xl border border-[#E4E9D5] dark:border-white/5 shadow-sm group transition-all relative overflow-hidden",
+                                                                    snapshot.isDragging ? "shadow-2xl shadow-[#7AAACE]/20 scale-105 rotate-1 ring-2 ring-[#7AAACE] border-[#7AAACE] z-50 bg-white dark:bg-slate-800" : "hover:border-[#7AAACE]/50 hover:shadow-md"
                                                                 )}
                                                             >
                                                                 {/* Side Color Indicator matching Column */}

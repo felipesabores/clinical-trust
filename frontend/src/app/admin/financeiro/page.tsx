@@ -79,20 +79,20 @@ export default function FinanceiroPage() {
     );
 
     return (
-        <div className="p-8 space-y-10 bg-background text-foreground min-h-screen">
+        <div className="p-8 space-y-10 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-screen">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
-                        <DollarSign className="text-indigo-400" size={24} />
-                        Financeiro
-                    </h2>
-                    <p className="text-sm text-slate-400 mt-1">
-                        Gerencie as receitas, despesas e o fluxo de caixa da clínica.
+                    <h1 className="text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                        <DollarSign className="text-[#7AAACE]" size={32} />
+                        Fluxo Financeiro
+                    </h1>
+                    <p className="text-[#355872]/60 font-medium mt-1">
+                        Gerencie as receitas, despesas e a saúde financeira da sua marca.
                     </p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20 flex items-center gap-2"
+                    className="flex items-center gap-2 px-8 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300"
                 >
                     <Plus size={18} />
                     Nova Transação
@@ -100,23 +100,22 @@ export default function FinanceiroPage() {
             </header>
 
             {/* KPI HUD */}
-            {/* KPI HUD */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: 'Saldo Atual', value: stats.balance, icon: DollarSign, color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
-                    { label: 'Total de Receitas', value: stats.total_income, icon: ArrowUpRight, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-                    { label: 'Total de Despesas', value: stats.total_expenses, icon: ArrowDownLeft, color: 'text-rose-400', bg: 'bg-rose-400/10' },
+                    { label: 'Saldo Atual', value: stats.balance, icon: DollarSign, color: 'text-[#355872]', bg: 'bg-[#7AAACE]/10', border: 'border-[#7AAACE]/20' },
+                    { label: 'Total de Receitas', value: stats.total_income, icon: ArrowUpRight, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+                    { label: 'Total de Despesas', value: stats.total_expenses, icon: ArrowDownLeft, color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-100' },
                 ].map((kpi, i) => (
-                    <div key={i} className="glass-panel p-6 relative overflow-hidden group">
-                        <div className="flex justify-between items-start mb-4">
-                            <p className="font-medium text-slate-400 text-sm">{kpi.label}</p>
-                            <div className={cn("p-2 rounded-lg", kpi.bg)}>
+                    <div key={i} className="bg-white dark:bg-slate-900/40 backdrop-blur-md p-6 rounded-[2rem] border border-[#E4E9D5] dark:border-white/5 relative overflow-hidden group hover:shadow-2xl transition-all duration-500 shadow-sm">
+                        <div className="flex justify-between items-start mb-6">
+                            <p className="text-[10px] font-black text-[#355872]/40 dark:text-slate-400 uppercase tracking-widest">{kpi.label}</p>
+                            <div className={cn("p-3 rounded-2xl border", kpi.bg, kpi.border)}>
                                 <kpi.icon size={20} className={kpi.color} />
                             </div>
                         </div>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-sm text-slate-500 font-medium">R$</span>
-                            <h3 className={cn("text-3xl font-heading font-semibold tracking-tight", kpi.color)}>
+                            <span className="text-sm text-[#355872]/40 font-black uppercase">BRL</span>
+                            <h3 className={cn("text-3xl font-heading font-black tracking-tighter", kpi.color)}>
                                 {kpi.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                             </h3>
                         </div>
@@ -125,24 +124,27 @@ export default function FinanceiroPage() {
             </div>
 
             {/* Main Ledger Table */}
-            <div className="glass-panel overflow-hidden flex flex-col">
-                <div className="p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-500/10 rounded-lg">
-                            <Activity className="text-indigo-400" size={20} />
+            <div className="bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] border border-[#E4E9D5] dark:border-white/5 overflow-hidden flex flex-col shadow-2xl">
+                <div className="p-8 border-b border-[#E4E9D5] dark:border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-[#7AAACE]/10 rounded-2xl border border-[#7AAACE]/20">
+                            <Activity className="text-[#355872]" size={24} />
                         </div>
-                        <h3 className="font-heading font-semibold text-lg text-slate-100">Histórico de Transações</h3>
+                        <div>
+                            <h3 className="font-heading font-black text-xl text-[#355872] dark:text-white tracking-tight">Registro de Operações</h3>
+                            <p className="text-sm font-medium text-[#355872]/40">Histórico completo de transações</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-3 w-full md:w-auto">
-                        <div className="relative group w-full md:w-64">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={16} />
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="relative group w-full md:w-80">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#355872]/30 group-focus-within:text-[#7AAACE] transition-colors" size={18} />
                             <input
-                                placeholder="Buscar transação..."
-                                className="w-full bg-slate-900/50 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
+                                placeholder="Buscar por descrição ou categoria..."
+                                className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl pl-12 pr-6 py-3 text-sm text-[#355872] dark:text-white placeholder:text-[#355872]/20 focus:border-[#7AAACE] focus:ring-4 focus:ring-[#7AAACE]/10 outline-none transition-all font-medium"
                             />
                         </div>
-                        <button className="p-2 bg-slate-800 border border-white/5 rounded-xl hover:bg-slate-700 transition-colors text-slate-400 hover:text-slate-200 flex-shrink-0">
-                            <Filter size={18} />
+                        <button className="p-3 bg-white dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl hover:bg-[#F7F8F0] transition-all text-[#355872]/40 hover:text-[#355872] shadow-sm">
+                            <Filter size={20} />
                         </button>
                     </div>
                 </div>
@@ -150,48 +152,52 @@ export default function FinanceiroPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-white/5 bg-slate-900/50">
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400">Data</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400">Categoria</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400">Descrição</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 text-right">Valor (R$)</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-slate-400 text-center">Status</th>
+                            <tr className="bg-[#F7F8F0]/50 dark:bg-slate-900/50">
+                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Data</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Categoria</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Descrição</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em] text-right">Valor Líquido</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em] text-center">Protocolo</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-[#E4E9D5] dark:divide-white/5">
                             {transactions.map((t: any) => (
-                                <tr key={t.id} className="hover:bg-slate-800/40 transition-colors group">
-                                    <td className="px-6 py-4 text-sm text-slate-300">
+                                <tr key={t.id} className="hover:bg-[#F7F8F0]/80 dark:hover:bg-slate-800/40 transition-all duration-300 group">
+                                    <td className="px-8 py-6 text-sm font-bold text-[#355872] tabular-nums">
                                         {new Date(t.date).toLocaleDateString('pt-BR')}
                                     </td>
-                                    <td className="px-6 py-4 text-sm">
-                                        <span className="bg-slate-800 border border-white/10 px-2.5 py-1 rounded-md text-xs font-medium text-slate-300">
-                                            {t.category === 'SERVICE' ? 'Serviço' :
-                                                t.category === 'PRODUCT' ? 'Produto' :
-                                                    t.category === 'RENT' ? 'Aluguel' :
-                                                        t.category === 'SALARY' ? 'Salário' :
-                                                            t.category === 'TAX' ? 'Impostos' :
-                                                                t.category === 'OTHER' ? 'Outros' : t.category}
+                                    <td className="px-8 py-6">
+                                        <span className="bg-[#7AAACE]/5 border border-[#7AAACE]/10 px-3 py-1.5 rounded-xl text-[10px] font-black text-[#355872]/60 uppercase tracking-widest">
+                                            {t.category === 'SERVICE' ? 'Procedimento' :
+                                                t.category === 'PRODUCT' ? 'Insumo' :
+                                                    t.category === 'RENT' ? 'Fixas' :
+                                                        t.category === 'SALARY' ? 'Pessoal' :
+                                                            t.category === 'TAX' ? 'Tributário' :
+                                                                t.category === 'OTHER' ? 'Diversos' : t.category}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-sm font-medium text-slate-200">
+                                    <td className="px-8 py-6 text-sm font-medium text-[#355872]/80 dark:text-slate-200">
                                         {t.description}
                                     </td>
                                     <td className={cn(
-                                        "px-6 py-4 text-sm font-semibold text-right tabular-nums",
-                                        t.type === 'INCOME' ? "text-emerald-400" : "text-rose-400"
+                                        "px-8 py-6 text-lg font-black text-right tabular-nums tracking-tighter",
+                                        t.type === 'INCOME' ? "text-emerald-600" : "text-rose-600"
                                     )}>
-                                        {t.type === 'INCOME' ? '+' : '-'} {t.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                        <span className="text-[10px] mr-1 opacity-50 font-black">R$</span>
+                                        {t.type === 'INCOME' ? '' : '-'} {t.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                     </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <div className="w-2 h-2 rounded-full mx-auto bg-emerald-500/20 border border-emerald-500/50 shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
+                                    <td className="px-8 py-6 text-center">
+                                        <div className={cn(
+                                            "w-2.5 h-2.5 rounded-full mx-auto border shadow-sm",
+                                            t.type === 'INCOME' ? "bg-emerald-500 border-emerald-300" : "bg-rose-500 border-rose-300"
+                                        )} />
                                     </td>
                                 </tr>
                             ))}
                             {transactions.length === 0 && !loading && (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-slate-500 text-sm">
-                                        Nenhuma transação encontrada.
+                                    <td colSpan={5} className="px-8 py-20 text-center">
+                                        <p className="text-[10px] font-black text-[#355872]/30 uppercase tracking-[0.3em]">Nenhum registro encontrado no período</p>
                                     </td>
                                 </tr>
                             )}
@@ -203,90 +209,91 @@ export default function FinanceiroPage() {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="glass-panel w-full max-w-lg relative p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-                        <h2 className="text-xl font-heading font-semibold text-white mb-6 flex items-center gap-3 shrink-0">
-                            <Plus className="text-indigo-400" />
-                            Nova Transação
+                    <div className="absolute inset-0 bg-[#355872]/60 backdrop-blur-xl" onClick={() => setShowModal(false)} />
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-lg relative p-10 shadow-[0_32px_128px_-12px_rgba(53,88,114,0.4)] rounded-[2.5rem] border border-[#7AAACE]/20 overflow-hidden flex flex-col max-h-[90vh]">
+                        <h2 className="text-3xl font-heading font-black text-[#355872] dark:text-white mb-8 flex items-center gap-4 shrink-0">
+                            <Plus className="text-[#7AAACE]" size={32} />
+                            Lançamento
                         </h2>
 
-                        <div className="space-y-6 overflow-y-auto custom-scrollbar-thin pr-2">
-                            <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-8 overflow-y-auto custom-scrollbar-thin pr-2 pb-2">
+                            <div className="flex p-1.5 bg-[#F7F8F0] dark:bg-slate-800 rounded-2xl gap-2">
                                 <button
                                     onClick={() => setNewTransaction({ ...newTransaction, type: 'INCOME' })}
                                     className={cn(
-                                        "py-3 rounded-xl text-sm font-medium border transition-all flex items-center justify-center gap-2",
-                                        newTransaction.type === 'INCOME' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-slate-800/50 border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                                        "flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2",
+                                        newTransaction.type === 'INCOME' ? "bg-[#355872] text-white" : "text-[#355872]/40 hover:text-[#355872]"
                                     )}
                                 >
-                                    <TrendingUp size={16} />
-                                    Receita
+                                    <TrendingUp size={14} /> Receita
                                 </button>
                                 <button
                                     onClick={() => setNewTransaction({ ...newTransaction, type: 'EXPENSE' })}
                                     className={cn(
-                                        "py-3 rounded-xl text-sm font-medium border transition-all flex items-center justify-center gap-2",
-                                        newTransaction.type === 'EXPENSE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-slate-800/50 border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                                        "flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2",
+                                        newTransaction.type === 'EXPENSE' ? "bg-rose-600 text-white" : "text-[#355872]/40 hover:text-rose-600"
                                     )}
                                 >
-                                    <TrendingDown size={16} />
-                                    Despesa
+                                    <TrendingDown size={14} /> Despesa
                                 </button>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-300 ml-1">Valor (R$)</label>
-                                <input
-                                    type="number"
-                                    value={newTransaction.amount}
-                                    onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value as any })}
-                                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-2xl font-semibold text-white focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none"
-                                />
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">Valor da Operação</label>
+                                <div className="relative">
+                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-lg font-black text-[#355872]/20">R$</span>
+                                    <input
+                                        type="number"
+                                        value={newTransaction.amount}
+                                        onChange={e => setNewTransaction({ ...newTransaction, amount: e.target.value as any })}
+                                        className="w-full bg-[#F7F8F0] dark:bg-slate-800 border-2 border-[#E4E9D5] dark:border-white/10 rounded-[1.5rem] pl-16 pr-6 py-5 text-4xl font-heading font-black text-[#355872] dark:text-white focus:border-[#7AAACE] outline-none transition-all tabular-nums"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300 ml-1">Descrição</label>
+                            <div className="space-y-6">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">Descrição</label>
                                     <input
                                         value={newTransaction.description}
                                         onChange={e => setNewTransaction({ ...newTransaction, description: e.target.value })}
-                                        placeholder="Ex: Consulta Dr. Silva"
-                                        className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all"
+                                        placeholder="Identifique a transação..."
+                                        className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-[#355872] dark:text-white placeholder:text-[#355872]/20 focus:border-[#7AAACE] outline-none transition-all"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-slate-300 ml-1">Categoria</label>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black text-[#355872]/40 uppercase tracking-widest ml-1">Categoria de Fluxo</label>
                                     <div className="relative">
                                         <select
                                             value={newTransaction.category}
                                             onChange={e => setNewTransaction({ ...newTransaction, category: e.target.value })}
-                                            className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all appearance-none pr-10"
+                                            className="w-full bg-[#F7F8F0] dark:bg-slate-800 border border-[#E4E9D5] dark:border-white/10 rounded-2xl px-6 py-4 text-sm font-black text-[#355872] dark:text-white focus:border-[#7AAACE] outline-none transition-all appearance-none pr-12"
                                         >
-                                            <option value="SERVICE">Serviço</option>
-                                            <option value="PRODUCT">Produto</option>
-                                            <option value="RENT">Aluguel</option>
-                                            <option value="SALARY">Salário</option>
-                                            <option value="TAX">Impostos</option>
-                                            <option value="OTHER">Outros</option>
+                                            <option value="SERVICE">Remuneração de Serviços</option>
+                                            <option value="PRODUCT">Venda de Produtos</option>
+                                            <option value="RENT">Aluguel e Infraestrutura</option>
+                                            <option value="SALARY">Folha de Pagamento</option>
+                                            <option value="TAX">Impostos e Taxas</option>
+                                            <option value="OTHER">Diversos / Outros</option>
                                         </select>
-                                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} />
+                                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-[#7AAACE] pointer-events-none" size={20} />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 pt-6 mt-4 border-t border-white/5 shrink-0">
+                        <div className="flex justify-end gap-4 pt-10 mt-6 border-t border-[#E4E9D5] dark:border-white/5 shrink-0">
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+                                className="px-8 py-3 rounded-2xl text-[10px] font-black text-[#355872]/40 hover:text-[#355872] transition-all uppercase tracking-widest"
                             >
-                                Cancelar
+                                Descartar
                             </button>
                             <button
                                 onClick={handleCreate}
-                                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition-all shadow-md shadow-indigo-500/20"
+                                className="px-12 py-3 bg-[#355872] hover:bg-[#7AAACE] text-white rounded-2xl font-black text-[11px] transition-all shadow-xl shadow-[#355872]/20 uppercase tracking-[0.2em]"
                             >
-                                Salvar Transação
+                                Confirmar Lançamento
                             </button>
                         </div>
                     </div>

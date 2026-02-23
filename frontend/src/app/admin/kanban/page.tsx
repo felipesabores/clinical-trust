@@ -26,12 +26,12 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const statuses = [
-    { id: 'SCHEDULED', label: 'Agendados', color: 'bg-slate-400 dark:bg-slate-500' },
-    { id: 'RECEPTION', label: 'Recepção', color: 'bg-indigo-400 dark:bg-indigo-500' },
-    { id: 'BATHING', label: 'Banho', color: 'bg-cyan-500 dark:bg-cyan-600' },
-    { id: 'GROOMING', label: 'Tosa', color: 'bg-emerald-500 dark:bg-emerald-600' },
-    { id: 'DRYING', label: 'Secagem', color: 'bg-amber-400 dark:bg-amber-500' },
-    { id: 'READY', label: 'Pronto', color: 'bg-rose-500 dark:bg-rose-600' },
+    { id: 'SCHEDULED', label: 'Agendados', color: 'bg-[#7AAACE]' },
+    { id: 'RECEPTION', label: 'Recepção', color: 'bg-[#355872]' },
+    { id: 'BATHING', label: 'Banho', color: 'bg-[#9CD5FF]' },
+    { id: 'GROOMING', label: 'Tosa', color: 'bg-emerald-500' },
+    { id: 'DRYING', label: 'Secagem', color: 'bg-amber-400' },
+    { id: 'READY', label: 'Pronto', color: 'bg-rose-500' },
 ] as const;
 
 import { API } from '@/config';
@@ -130,29 +130,29 @@ export default function KanbanPage() {
     if (!isMounted) return null;
 
     return (
-        <div className="p-8 h-screen flex flex-col bg-background">
+        <div className="p-8 h-screen flex flex-col bg-[#F7F8F0] dark:bg-slate-950 overflow-hidden">
             <AppointmentModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSuccess={fetchKanban}
             />
 
-            <header className="flex justify-between items-center mb-8">
+            <header className="flex justify-between items-center mb-10 shrink-0">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
-                        <KanbanIcon className="text-primary" size={28} />
-                        Kanban Operacional
+                    <h1 className="text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                        <KanbanIcon className="text-[#7AAACE]" size={32} />
+                        Fluxo Operacional
                     </h1>
-                    <p className="text-muted-foreground font-medium italic">Gerencie o fluxo dos pets em tempo real</p>
+                    <p className="text-[#355872]/60 font-medium mt-1">Monitore e gerencie o atendimento em tempo real com o <span className="text-[#7AAACE] font-bold">Vivid Stream</span>.</p>
                 </div>
 
-                <div className="flex gap-3">
-                    <button className="glass px-6 py-2.5 rounded-xl hover:bg-accent transition-all font-bold flex items-center gap-2">
-                        <Video size={18} /> Câmeras
+                <div className="flex gap-4">
+                    <button className="bg-white dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/5 px-6 py-2.5 rounded-2xl hover:bg-[#E4E9D5]/30 transition-all font-bold text-xs text-[#355872] flex items-center gap-2 shadow-sm">
+                        <Video size={18} className="text-[#7AAACE]" /> Câmeras Ativas
                     </button>
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-primary text-primary-foreground px-8 py-2.5 rounded-xl font-black hover:scale-105 transition-all shadow-lg shadow-primary/20"
+                        className="bg-[#7AAACE] hover:bg-[#355872] text-white px-8 py-2.5 rounded-2xl font-black text-sm hover:scale-105 transition-all shadow-xl shadow-[#7AAACE]/20"
                     >
                         NOVO AGENDAMENTO
                     </button>
@@ -194,8 +194,8 @@ export default function KanbanPage() {
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}
                                         className={cn(
-                                            "flex-1 bg-muted/30 rounded-3xl p-3 overflow-y-auto border border-border border-dashed space-y-3 transition-colors",
-                                            snapshot.isDraggingOver && "bg-muted/50 border-primary/30"
+                                            "flex-1 bg-[#E4E9D5]/20 dark:bg-slate-900/40 rounded-[2.5rem] p-3 overflow-y-auto custom-scrollbar-thin border border-[#E4E9D5] dark:border-white/5 border-dashed space-y-4 transition-all duration-300",
+                                            snapshot.isDraggingOver && "bg-[#7AAACE]/5 border-[#7AAACE]/30 scale-[1.01]"
                                         )}
                                     >
                                         {board[status.id]?.map((app: any, index: number) => (
@@ -205,10 +205,11 @@ export default function KanbanPage() {
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         className={cn(
-                                                            "bg-card border border-border p-4 rounded-2xl shadow-sm group hover:border-primary/50 transition-all hover:shadow-md",
-                                                            snapshot.isDragging && "shadow-2xl border-primary scale-105 z-50"
+                                                            "bg-white dark:bg-slate-800/80 backdrop-blur-md border border-[#E4E9D5] dark:border-white/5 p-4 rounded-3xl shadow-sm group hover:border-[#7AAACE]/50 transition-all hover:shadow-xl relative overflow-hidden",
+                                                            snapshot.isDragging && "shadow-2xl border-[#7AAACE] ring-2 ring-[#7AAACE]/20 scale-105 z-50 bg-white"
                                                         )}
                                                     >
+                                                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#7AAACE]/5 to-transparent rounded-bl-full pointer-events-none" />
                                                         <div className="flex justify-between items-start mb-3">
                                                             <div className="flex items-center gap-2">
                                                                 <div {...provided.dragHandleProps} className="text-muted-foreground/30 hover:text-primary transition-colors cursor-grab active:cursor-grabbing">

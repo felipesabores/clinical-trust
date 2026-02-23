@@ -111,7 +111,7 @@ export default function ClientesPage() {
     if (!isMounted) return null;
 
     return (
-        <div className="p-8 h-screen flex flex-col bg-background overflow-hidden text-foreground">
+        <div className="p-8 h-screen flex flex-col bg-[#F7F8F0] dark:bg-slate-950 overflow-hidden text-foreground">
             <CustomerModal
                 isOpen={isCustomerModalOpen}
                 onClose={() => {
@@ -141,17 +141,17 @@ export default function ClientesPage() {
 
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-foreground flex items-center gap-3">
-                        <UserPlus className="text-primary" size={24} />
+                    <h2 className="text-2xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                        <UserPlus className="text-[#7AAACE]" size={28} />
                         Diretório de Tutores
                     </h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Gerencie seus clientes e seus respectivos pets.
+                    <p className="text-sm text-[#355872]/60 mt-1 font-medium">
+                        Gerencie seus clientes e seus respectivos pets com precisão.
                     </p>
                 </div>
                 <button
                     onClick={() => setIsCustomerModalOpen(true)}
-                    className="flex items-center gap-2 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300"
                 >
                     <Plus size={18} /> Novo Registro
                 </button>
@@ -182,10 +182,10 @@ export default function ClientesPage() {
                                     key={customer.id}
                                     onClick={() => fetchDetail(customer.id)}
                                     className={cn(
-                                        "p-4 rounded-xl cursor-pointer transition-all flex items-center justify-between group border shadow-sm",
+                                        "p-4 rounded-3xl cursor-pointer transition-all flex items-center justify-between group border shadow-sm",
                                         selectedCustomer?.id === customer.id
-                                            ? "bg-primary/5 dark:bg-primary/10 border-primary/40 shadow-md shadow-primary/5"
-                                            : "bg-white dark:bg-slate-900/40 border-slate-200 dark:border-white/5 hover:border-primary/30 hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                                            ? "bg-white dark:bg-primary/10 border-[#7AAACE] shadow-xl shadow-[#7AAACE]/10"
+                                            : "bg-white/50 dark:bg-slate-900/40 border-[#E4E9D5] dark:border-white/5 hover:border-[#7AAACE]/30 hover:bg-white"
                                     )}
                                 >
                                     <div className="flex gap-4 items-center min-w-0">
@@ -250,9 +250,9 @@ export default function ClientesPage() {
                 {/* Detail Side */}
                 <div className="flex-1 min-w-0 h-full">
                     {selectedCustomer ? (
-                        <div className="h-full bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex flex-col overflow-hidden relative border border-slate-200 dark:border-white/10 shadow-xl">
+                        <div className="h-full bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-3xl flex flex-col overflow-hidden relative border border-[#E4E9D5] dark:border-white/10 shadow-2xl">
                             {/* Decorative background circle */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#7AAACE]/10 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
 
                             {/* Detail Header */}
                             <div className="p-8 pb-6 border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/60 relative z-10">
@@ -379,8 +379,8 @@ export default function ClientesPage() {
                                 </section>
                             </div>
 
-                            <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/30">
-                                <button className="w-full py-4 mt-6 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all flex items-center justify-center gap-3 group">
+                            <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-[#E4E9D5] dark:border-white/5 bg-[#F7F8F0]/50 dark:bg-slate-900/30">
+                                <button className="w-full py-4 mt-6 bg-[#355872] hover:bg-[#7AAACE] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#355872]/20 hover:shadow-[#7AAACE]/20 transition-all duration-500 flex items-center justify-center gap-3 group">
                                     <Calendar size={18} className="group-hover:scale-110 group-hover:rotate-12 transition-transform" />
                                     Agendar Procedimento
                                 </button>

@@ -24,11 +24,11 @@ import { API } from '@/config';
 const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
 const COLORS = [
-    { color: 'bg-primary dark:bg-primary', border: 'border-primary/30', light: 'bg-primary/5' },
-    { color: 'bg-emerald-500 dark:bg-emerald-600', border: 'border-emerald-500/30', light: 'bg-emerald-500/5' },
-    { color: 'bg-amber-500 dark:bg-amber-600', border: 'border-amber-500/30', light: 'bg-amber-500/5' },
-    { color: 'bg-rose-500 dark:bg-rose-600', border: 'border-rose-500/30', light: 'bg-rose-500/5' },
-    { color: 'bg-cyan-500 dark:bg-cyan-600', border: 'border-cyan-500/30', light: 'bg-cyan-500/5' },
+    { color: 'bg-[#7AAACE]', border: 'border-[#7AAACE]/30', light: 'bg-[#7AAACE]/5' },
+    { color: 'bg-emerald-500', border: 'border-emerald-500/30', light: 'bg-emerald-500/5' },
+    { color: 'bg-amber-500', border: 'border-amber-500/30', light: 'bg-amber-500/5' },
+    { color: 'bg-rose-500', border: 'border-rose-500/30', light: 'bg-rose-500/5' },
+    { color: 'bg-[#355872]', border: 'border-[#355872]/30', light: 'bg-[#355872]/5' },
 ];
 
 const statusBadgeClass: Record<string, string> = {
@@ -114,22 +114,22 @@ export default function AgendaPage() {
             {/* Header */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-foreground flex items-center gap-3">
-                        <CalendarIcon className="text-primary" size={24} />
-                        Agenda
+                    <h2 className="text-2xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                        <CalendarIcon className="text-[#7AAACE]" size={28} />
+                        Agenda Semanal
                     </h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Gerencie os agendamentos e horários da sua equipe.
+                    <p className="text-sm text-[#355872]/60 mt-1 font-medium">
+                        Coordene os atendimentos com uma visão premium da sua operação.
                     </p>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                    <div className="flex bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 p-1 rounded-lg gap-1 shadow-sm">
+                    <div className="flex bg-white dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/5 p-1 rounded-2xl gap-1 shadow-sm">
                         <button
                             onClick={() => setView('grid')}
                             className={cn(
-                                "p-2 rounded-md transition-all",
-                                view === 'grid' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                                "p-2 rounded-xl transition-all",
+                                view === 'grid' ? "bg-[#355872] text-white shadow-lg" : "text-[#355872]/60 hover:text-[#355872]"
                             )}
                         >
                             <LayoutGrid size={18} />
@@ -137,15 +137,15 @@ export default function AgendaPage() {
                         <button
                             onClick={() => setView('list')}
                             className={cn(
-                                "p-2 rounded-md transition-all",
-                                view === 'list' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                                "p-2 rounded-xl transition-all",
+                                view === 'list' ? "bg-[#355872] text-white shadow-lg" : "text-[#355872]/60 hover:text-[#355872]"
                             )}
                         >
                             <List size={18} />
                         </button>
                     </div>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
-                        <Filter size={16} /> Filtros
+                    <button className="flex items-center gap-2 px-6 py-2.5 bg-white dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-xs font-bold text-[#355872] dark:text-slate-300 hover:bg-[#E4E9D5]/30 transition-all shadow-sm">
+                        <Filter size={16} className="text-[#7AAACE]" /> Filtros
                     </button>
                     <button
                         onClick={() => {
@@ -153,7 +153,7 @@ export default function AgendaPage() {
                             setSelectedDateForNewAppt(currentDate);
                             setIsApptModalOpen(true);
                         }}
-                        className="flex items-center gap-2 px-8 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-medium shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all">
+                        className="flex items-center gap-2 px-8 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300">
                         <Plus size={18} /> Novo Agendamento
                     </button>
                 </div>
@@ -165,17 +165,17 @@ export default function AgendaPage() {
                         {/* Calendar Grid */}
                         <div className="xl:col-span-3 bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-white/10 overflow-hidden flex flex-col rounded-2xl shadow-xl">
                             {/* Toolbar */}
-                            <div className="p-6 border-b border-slate-200 dark:border-white/5 flex items-center justify-between flex-wrap gap-4 bg-slate-50/50 dark:bg-slate-900/40">
+                            <div className="p-6 border-b border-[#E4E9D5] dark:border-white/5 flex items-center justify-between flex-wrap gap-4 bg-[#F7F8F0]/80 dark:bg-slate-900/40 backdrop-blur-md">
                                 <div className="flex items-center gap-4">
-                                    <h3 className="text-lg font-heading font-semibold text-slate-900 dark:text-white capitalize">{formattedDisplayDate}</h3>
-                                    <div className="flex items-center gap-1 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 p-1 rounded-lg shadow-sm">
-                                        <button onClick={prevDay} className="p-1.5 hover:bg-primary/10 rounded-md transition-colors text-slate-400 hover:text-primary">
+                                    <h3 className="text-lg font-heading font-black text-[#355872] dark:text-white capitalize">{formattedDisplayDate}</h3>
+                                    <div className="flex items-center gap-1 bg-white dark:bg-slate-800/50 border border-[#E4E9D5] dark:border-white/5 p-1 rounded-xl shadow-sm">
+                                        <button onClick={prevDay} className="p-1.5 hover:bg-[#7AAACE]/10 rounded-lg transition-colors text-[#355872]/40 hover:text-[#7AAACE]">
                                             <ChevronLeft size={16} />
                                         </button>
-                                        <button onClick={today} className="px-3 py-1 hover:bg-primary/10 rounded-md transition-colors text-slate-600 dark:text-slate-300 text-xs font-medium hover:text-primary">
+                                        <button onClick={today} className="px-3 py-1 hover:bg-[#7AAACE]/10 rounded-lg transition-colors text-[#355872] dark:text-slate-300 text-[10px] font-black uppercase tracking-widest hover:text-[#7AAACE]">
                                             Hoje
                                         </button>
-                                        <button onClick={nextDay} className="p-1.5 hover:bg-primary/10 rounded-md transition-colors text-slate-400 hover:text-primary">
+                                        <button onClick={nextDay} className="p-1.5 hover:bg-[#7AAACE]/10 rounded-lg transition-colors text-[#355872]/40 hover:text-[#7AAACE]">
                                             <ChevronRight size={16} />
                                         </button>
                                     </div>
@@ -234,10 +234,10 @@ export default function AgendaPage() {
                                                                             setIsApptModalOpen(true);
                                                                         }}
                                                                         className={cn(
-                                                                            "absolute top-2 left-2 right-2 z-10 p-3 rounded-xl border border-slate-200 dark:border-white/5 shadow-md shadow-black/5 dark:shadow-black/20 transition-all cursor-pointer group/item bg-white dark:bg-slate-800/90 backdrop-blur-md hover:scale-[1.02] hover:shadow-lg"
+                                                                            "absolute top-2 left-2 right-2 z-10 p-3 rounded-3xl border border-[#E4E9D5] dark:border-white/5 shadow-xl shadow-black/5 dark:shadow-black/20 transition-all cursor-pointer group/item bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl hover:scale-[1.02] hover:shadow-2xl hover:border-[#7AAACE]/50"
                                                                         )}
                                                                     >
-                                                                        <div className={cn("absolute left-0 top-0 bottom-0 w-1 opacity-50 rounded-l-xl", p.color)} />
+                                                                        <div className={cn("absolute left-0 top-0 bottom-0 w-2 opacity-80 rounded-l-3xl", p.color)} />
 
                                                                         <div className="flex justify-between items-start gap-2 mb-2 pl-2">
                                                                             <h4 className="font-heading font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover/item:text-primary transition-colors">{a.pet?.name || 'Sem Pet'}</h4>
