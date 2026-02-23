@@ -55,7 +55,9 @@ export class AppointmentController {
                 pet_id,
                 pet_name,
                 pet_breed,
-                scheduled_at
+                scheduled_at,
+                staff_id,
+                duration_minutes
             } = req.body;
 
             console.log('Criando agendamento para tenant:', tenant_id);
@@ -83,20 +85,19 @@ export class AppointmentController {
             let finalCustomerId = customer_id;
             let finalPetId = pet_id;
 
-            // 1. Create Customer if not exists
-            if (!finalCustomerId) {
-                const customer = await prisma.customer.create({
-                    data: {
-                        tenant_id,
-                        name: customer_name,
-                        phone: customer_phone
-                    }
-                });
-                finalCustomerId = customer.id;
-            }
-
-            // 2. Create Pet if not exists
+            // 1. & 2. Create Customer and Pet if pet doesn't exist
             if (!finalPetId) {
+                if (!finalCustomerId) {
+                    const customer = await prisma.customer.create({
+                        data: {
+                            tenant_id,
+                            name: customer_name,
+                            phone: customer_phone
+                        }
+                    });
+                    finalCustomerId = customer.id;
+                }
+
                 const pet = await prisma.pet.create({
                     data: {
                         customer_id: finalCustomerId,
@@ -109,16 +110,23 @@ export class AppointmentController {
 
             // 3. Create Appointment
             const dateToSchedule = scheduled_at ? new Date(scheduled_at) : new Date();
+            let endTimeToSchedule: Date | null = null;
+            if (duration_minutes) {
+                endTimeToSchedule = new Date(dateToSchedule.getTime() + duration_minutes * 60000);
+            }
 
             const appointment = await prisma.appointment.create({
                 data: {
                     tenant_id,
                     pet_id: finalPetId,
                     status: 'SCHEDULED' as AppointmentStatus,
-                    scheduled_at: dateToSchedule
+                    scheduled_at: dateToSchedule,
+                    staff_id: staff_id || null,
+                    end_time: endTimeToSchedule
                 },
                 include: {
-                    pet: { include: { customer: true } }
+                    pet: { include: { customer: true } },
+                    staff: true
                 }
             });
 
@@ -143,7 +151,8 @@ export class AppointmentController {
                 where: { tenant_id: tenantId },
                 include: {
                     pet: { include: { customer: true } },
-                    camera: true
+                    camera: true,
+                    staff: true
                 },
                 orderBy: { scheduled_at: 'asc' }
             });
@@ -216,8 +225,86 @@ export class AppointmentController {
 
             res.json(updated);
         } catch (error) {
-            console.error(error);
+            console.error('Failed to update status:', error);
+            res.status(500).json({ error: 'Failed to update appointment status' });
+        }
+    }
+
+    // GET /api/appointments
+    static async getList(req: Request, res: Response) {
+        try {
+            const { tenantId, date } = req.query;
+            if (!tenantId) return res.status(400).json({ error: 'Tenant ID is required' });
+
+            let whereClause: any = { tenant_id: tenantId as string };
+
+            // If a specific date is requested, filter by that day
+            if (date) {
+                const queryDate = new Date(date as string);
+                const startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
+                const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
+
+                whereClause.scheduled_at = {
+                    gte: startOfDay,
+                    lte: endOfDay
+                };
+            }
+
+            const appointments = await prisma.appointment.findMany({
+                where: whereClause,
+                include: {
+                    pet: { include: { customer: true } },
+                    staff: true,
+                    camera: true
+                },
+                orderBy: { scheduled_at: 'asc' }
+            });
+
+            res.json(appointments);
+        } catch (error) {
+            console.error('Failed to fetch agenda data:', error);
+            res.status(500).json({ error: 'Failed to fetch appointments' });
+        }
+    }
+
+    // PATCH /api/appointments/:id
+    static async update(req: Request, res: Response) {
+        try {
+            const id = req.params.id as string;
+            const updateData = req.body;
+
+            // Protect against overwriting important fields blindly if needed
+            delete updateData.tenant_id;
+            delete updateData.id;
+
+            if (updateData.scheduled_at) {
+                updateData.scheduled_at = new Date(updateData.scheduled_at);
+            }
+            if (updateData.end_time) {
+                updateData.end_time = new Date(updateData.end_time);
+            }
+
+            const updated = await prisma.appointment.update({
+                where: { id },
+                data: updateData,
+                include: { pet: { include: { customer: true } }, staff: true }
+            });
+
+            res.json(updated);
+        } catch (error) {
+            console.error('Failed to update appointment:', error);
             res.status(500).json({ error: 'Failed to update appointment' });
+        }
+    }
+
+    // DELETE /api/appointments/:id
+    static async delete(req: Request, res: Response) {
+        try {
+            const id = req.params.id as string;
+            await prisma.appointment.delete({ where: { id } });
+            res.json({ success: true });
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to delete appointment' });
         }
     }
 }

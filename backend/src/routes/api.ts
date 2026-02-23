@@ -21,6 +21,9 @@ router.patch('/config', TenantController.updateConfig);
 router.get('/appointments/kanban', AppointmentController.getKanban);
 router.patch('/appointments/:id/status', AppointmentController.updateStatus);
 router.post('/appointments', AppointmentController.create);
+router.get('/appointments', AppointmentController.getList);
+router.patch('/appointments/:id', AppointmentController.update);
+router.delete('/appointments/:id', AppointmentController.delete);
 router.get('/customers/search', AppointmentController.searchCustomers);
 router.get('/pets/search', AppointmentController.searchPets);
 

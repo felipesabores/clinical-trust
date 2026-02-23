@@ -76,8 +76,11 @@ model Appointment {
   pet               Pet               @relation(fields: [pet_id], references: [id])
   camera_id         String?
   camera            Camera?           @relation(fields: [camera_id], references: [id])
+  staff_id          String?
+  staff             Staff?            @relation(fields: [staff_id], references: [id])
   status            AppointmentStatus @default(SCHEDULED)
   scheduled_at      DateTime
+  end_time          DateTime?
   access_token      String?           @unique // UUID for magic link
   token_expires_at DateTime?
   created_at        DateTime          @default(now())
@@ -95,6 +98,7 @@ model Staff {
   commission  Float?   @default(0)
   is_active   Boolean  @default(true)
   created_at  DateTime @default(now())
+  appointments Appointment[]
 }
 
 enum TransactionType {

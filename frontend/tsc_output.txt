@@ -1,0 +1,6 @@
+src/app/admin/agenda/page.tsx(265,102): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/admin/agenda/page.tsx(265,119): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/admin/agenda/page.tsx(422,21): error TS2322: Type '{ isOpen: true; onClose: () => void; onSaved: () => void; targetDate: Date | undefined; editingAppt: any; }' is not assignable to type 'IntrinsicAttributes & AppointmentModalProps'.
+  Property 'onSaved' does not exist on type 'IntrinsicAttributes & AppointmentModalProps'.
