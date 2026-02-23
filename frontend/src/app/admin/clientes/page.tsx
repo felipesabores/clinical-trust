@@ -339,7 +339,11 @@ export default function ClientesPage() {
                                                                 </div>
                                                             </div>
                                                             <p className="text-xs text-slate-400 mt-1 truncate">{pet.breed || 'SRD'}</p>
-                                                            <span className="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 bg-slate-800 text-slate-400 rounded-lg border border-white/5 uppercase tracking-wide">{pet.type}</span>
+                                                            <span className="inline-block mt-2 text-[10px] font-black px-2.5 py-1 bg-[#355872]/5 text-[#355872]/60 rounded-lg border border-[#E4E9D5] uppercase tracking-widest tabular-nums">
+                                                                {pet.type === 'DOG' ? 'CÃO' :
+                                                                    pet.type === 'CAT' ? 'GATO' :
+                                                                        pet.type === 'RABBIT' ? 'COELHO' : 'OUTRO'}
+                                                            </span>
                                                         </div>
                                                     </div>
 
