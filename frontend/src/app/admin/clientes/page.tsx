@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils';
 
 import CustomerModal from '@/components/CustomerModal';
 import PetModal from '@/components/PetModal';
+import AppointmentModal from '@/components/AppointmentModal';
 import { useTenant } from '@/context/TenantContext';
 
 import { API } from '@/config';
@@ -48,6 +49,7 @@ export default function ClientesPage() {
 
     const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
     const [isPetModalOpen, setIsPetModalOpen] = useState(false);
+    const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState<any>(null);
     const [editingPet, setEditingPet] = useState<any>(null);
 
@@ -136,6 +138,17 @@ export default function ClientesPage() {
                     onSuccess={() => fetchDetail(selectedCustomer.id)}
                     customerId={selectedCustomer.id}
                     customerName={selectedCustomer.name}
+                />
+            )}
+
+            {selectedCustomer && (
+                <AppointmentModal
+                    isOpen={isAppointmentModalOpen}
+                    onClose={() => setIsAppointmentModalOpen(false)}
+                    onSuccess={() => {
+                        // Refresh customer details to show any new appointments
+                        fetchDetail(selectedCustomer.id);
+                    }}
                 />
             )}
 
@@ -386,7 +399,10 @@ export default function ClientesPage() {
                             </div>
 
                             <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-[#E4E9D5] dark:border-white/5 bg-[#F7F8F0]/50 dark:bg-slate-900/30">
-                                <button className="w-full py-4 mt-6 bg-[#355872] hover:bg-[#7AAACE] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#355872]/20 hover:shadow-[#7AAACE]/20 transition-all duration-500 flex items-center justify-center gap-3 group">
+                                <button 
+                                    onClick={() => setIsAppointmentModalOpen(true)}
+                                    className="w-full py-4 mt-6 bg-[#355872] hover:bg-[#7AAACE] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#355872]/20 hover:shadow-[#7AAACE]/20 transition-all duration-500 flex items-center justify-center gap-3 group"
+                                >
                                     <Calendar size={18} className="group-hover:scale-110 group-hover:rotate-12 transition-transform" />
                                     Agendar Procedimento
                                 </button>
