@@ -47,7 +47,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
             {/* Mobile Close Button */}
             <button
                 onClick={onClose}
-                className="lg:hidden absolute top-6 right-[-50px] w-10 h-10 bg-[#355872] text-white rounded-full flex items-center justify-center shadow-xl border border-white/10"
+                className="lg:hidden absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-xl flex items-center justify-center transition-colors z-50 border border-white/10"
             >
                 <X size={20} />
             </button>

@@ -136,9 +136,9 @@ export default function EquipePage() {
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 space-y-10 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-[calc(100vh-64px)] overflow-x-hidden">
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shrink-0 mb-8 px-2">
                 <div>
-                    <h1 className="text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                    <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
                         <Users className="text-[#7AAACE]" size={32} />
                         Gestão de Talentos
                     </h1>
@@ -151,10 +151,10 @@ export default function EquipePage() {
                         resetForm();
                         setShowModal(true);
                     }}
-                    className="flex items-center gap-2 px-8 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300"
+                    className="flex items-center gap-2 px-4 sm:px-8 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300 w-full sm:w-auto justify-center shrink-0"
                 >
                     <UserPlus size={18} />
-                    Adicionar Colaborador
+                    <span>Adicionar Colaborador</span>
                 </button>
             </header>
 
@@ -228,8 +228,8 @@ export default function EquipePage() {
             {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
                     <div className="absolute inset-0 bg-[#355872]/60 backdrop-blur-xl" onClick={() => { setShowModal(false); resetForm(); }} />
-                    <div className="bg-white dark:bg-slate-900 w-full max-w-xl relative p-8 shadow-[0_32px_128px_-12px_rgba(53,88,114,0.3)] rounded-[3rem] border border-[#7AAACE]/20 overflow-hidden flex flex-col max-h-[95vh]">
-                        <div className="shrink-0 flex justify-between items-start mb-10">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-xl relative p-6 sm:p-8 shadow-[0_32px_128px_-12px_rgba(53,88,114,0.3)] rounded-[2rem] sm:rounded-[3rem] border border-[#7AAACE]/20 overflow-hidden flex flex-col max-h-[95vh]">
+                        <div className="shrink-0 flex justify-between items-start mb-6 sm:mb-10">
                             <div>
                                 <h1 className="text-3xl font-heading font-black text-[#355872] dark:text-white-8 flex items-center gap-3">
                                     <UserPlus className="text-[#7AAACE]" size={36} />

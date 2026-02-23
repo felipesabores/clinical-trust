@@ -12,15 +12,15 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
     const pageTitle = currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
 
     return (
-        <header className="sticky top-0 z-40 w-full bg-[#F7F8F0] dark:bg-slate-900 border-b border-[#E4E9D5] dark:border-white/5 px-4 sm:px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3 sm:gap-4 truncate">
+        <header className="sticky top-0 z-40 w-full bg-[#F7F8F0] dark:bg-slate-900 border-b border-[#E4E9D5] dark:border-white/5 px-4 py-3 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-2 sm:gap-4 truncate">
                 <button
                     onClick={onMenuClick}
-                    className="lg:hidden p-2 -ml-2 hover:bg-[#355872]/5 rounded-xl text-[#355872] transition-colors"
+                    className="lg:hidden p-2 -ml-2 hover:bg-[#355872]/10 rounded-xl text-[#355872] dark:text-[#7AAACE] transition-colors"
                 >
                     <Menu size={20} />
                 </button>
-                <h1 className="text-lg sm:text-xl font-heading font-bold text-[#355872] dark:text-white tracking-tight truncate">
+                <h1 className="text-base sm:text-lg lg:text-xl font-heading font-bold text-[#355872] dark:text-white tracking-tight truncate">
                     {pageTitle}
                 </h1>
             </div>

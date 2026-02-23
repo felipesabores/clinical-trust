@@ -149,21 +149,21 @@ export default function FinanceiroPage() {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <table className="w-full text-left border-collapse min-w-[600px] sm:min-w-0">
                         <thead>
                             <tr className="bg-[#F7F8F0]/50 dark:bg-slate-900/50">
-                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Data</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Categoria</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Descrição</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em] text-right">Valor Líquido</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em] text-center">Protocolo</th>
+                                <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Data</th>
+                                <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Categoria</th>
+                                <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em]">Descrição</th>
+                                <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em] text-right">Valor Líquido</th>
+                                <th className="px-4 sm:px-8 py-4 sm:py-5 text-[10px] font-black text-[#355872]/40 uppercase tracking-[0.2em] text-center">Protocolo</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#E4E9D5] dark:divide-white/5">
                             {transactions.map((t: any) => (
                                 <tr key={t.id} className="hover:bg-[#F7F8F0]/80 dark:hover:bg-slate-800/40 transition-all duration-300 group">
-                                    <td className="px-8 py-6 text-sm font-bold text-[#355872] tabular-nums">
+                                    <td className="px-4 sm:px-8 py-4 sm:py-6 text-sm font-bold text-[#355872] tabular-nums">
                                         {new Date(t.date).toLocaleDateString('pt-BR')}
                                     </td>
                                     <td className="px-8 py-6">

@@ -29,7 +29,7 @@ export default function AdminLayout({
                 "lg:ml-64" // Margin only on desktop
             )}>
                 <Header onMenuClick={() => setIsSidebarOpen(true)} />
-                <div className="flex-1 p-4 sm:p-6 flex flex-col min-w-0 overflow-x-hidden">
+                <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
                     {children}
                 </div>
             </main>

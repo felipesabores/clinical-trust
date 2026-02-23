@@ -186,13 +186,13 @@ export default function DashboardPage() {
     return (
         <div className="p-4 sm:p-6 lg:p-0 space-y-8 flex flex-col min-h-screen lg:min-h-0 min-w-0 overflow-x-hidden">
             {/* Page Action Header (Sub-header since global App Bar handles the main title) */}
-            <header className="flex justify-between items-center gap-4 shrink-0">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-bold tracking-tight text-[#355872] dark:text-white">Visão Geral</h2>
-                    <p className="text-sm text-[#355872]/60 mt-1 font-medium">Bem-vindo(a) ao seu workspace do <span className="text-[#7AAACE] font-bold">Vivid Stream</span>.</p>
+                    <h2 className="text-xl sm:text-2xl font-heading font-bold tracking-tight text-[#355872] dark:text-white">Visão Geral</h2>
+                    <p className="text-sm text-[#355872]/60 mt-1 font-medium italic">Bem-vindo(a) ao seu workspace do <span className="text-[#7AAACE] font-bold">Vivid Stream</span>.</p>
                 </div>
-                <div className="flex gap-3">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-xs font-bold text-[#355872] dark:text-slate-300 shadow-sm backdrop-blur-md">
+                <div className="flex gap-3 w-full sm:w-auto">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/5 rounded-2xl text-xs font-bold text-[#355872] dark:text-slate-300 shadow-sm backdrop-blur-md w-full sm:w-auto justify-center">
                         <CalendarDays size={16} className="text-[#7AAACE]" />
                         {today}
                     </div>

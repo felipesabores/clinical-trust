@@ -139,9 +139,9 @@ export default function ClientesPage() {
                 />
             )}
 
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 shrink-0">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
+                    <h2 className="text-xl sm:text-2xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
                         <UserPlus className="text-[#7AAACE]" size={28} />
                         Diretório de Tutores
                     </h2>
@@ -151,13 +151,14 @@ export default function ClientesPage() {
                 </div>
                 <button
                     onClick={() => setIsCustomerModalOpen(true)}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300"
+                    className="flex items-center gap-2 px-4 sm:px-6 py-2.5 bg-[#7AAACE] hover:bg-[#355872] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#7AAACE]/20 hover:shadow-[#355872]/20 transition-all duration-300 w-full sm:w-auto justify-center"
                 >
-                    <Plus size={18} /> Novo Registro
+                    <Plus size={18} />
+                    <span className="sm:inline">Novo Registro</span>
                 </button>
             </header>
 
-            <div className="flex flex-col lg:flex-row gap-8 flex-1 min-h-0">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 flex-1 min-h-0">
                 {/* List Side */}
                 <div className="flex-1 lg:max-w-md xl:max-w-lg flex flex-col min-w-0">
                     <div className="relative mb-6">
@@ -213,7 +214,7 @@ export default function ClientesPage() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                                    <div className="flex items-center gap-1.5 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:translate-x-2 lg:group-hover:translate-x-0">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -320,9 +321,10 @@ export default function ClientesPage() {
                                                             <div className="flex items-center justify-between gap-2">
                                                                 <p className="font-heading font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary transition-colors">{pet.name}</p>
 
-                                                                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <div className="flex items-center lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                                                                     <button
-                                                                        onClick={() => {
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
                                                                             setEditingPet(pet);
                                                                             setIsPetModalOpen(true);
                                                                         }}
