@@ -344,9 +344,9 @@ export default function ClientesPage() {
                                                     </div>
 
                                                     {pet.notes ? (
-                                                        <div className="text-xs text-slate-400 bg-slate-800/50 p-3 rounded-lg border border-white/5 leading-relaxed rounded-tl-sm relative">
-                                                            <div className="absolute top-0 left-0 w-0.5 h-full bg-indigo-500 rounded-l-lg" />
-                                                            <p className="italic">"{pet.notes}"</p>
+                                                        <div className="text-[10px] font-medium text-[#355872]/60 bg-[#F7F8F0] dark:bg-slate-800/50 p-4 rounded-xl border border-[#E4E9D5] dark:border-white/5 leading-relaxed relative overflow-hidden italic">
+                                                            <div className="absolute top-0 left-0 w-1 h-full bg-[#7AAACE]" />
+                                                            <p>"{pet.notes}"</p>
                                                         </div>
                                                     ) : (
                                                         <div className="flex items-center gap-1.5 text-xs text-slate-500 border-t border-white/5 pt-3">
