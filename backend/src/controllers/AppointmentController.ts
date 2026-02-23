@@ -315,6 +315,14 @@ export class AppointmentController {
 
             // Transformar IDs de relacionamento para o formato Prisma
             const prismaData: any = { ...updateData };
+
+            // Converter duration_minutes para end_time se fornecido
+            if (updateData.duration_minutes && updateData.scheduled_at) {
+                const startTime = new Date(updateData.scheduled_at);
+                const endTime = new Date(startTime.getTime() + (updateData.duration_minutes * 60 * 1000));
+                prismaData.end_time = endTime;
+                delete prismaData.duration_minutes;
+            }
             
             // Se pet_id foi fornecido, transformar para relação
             if (updateData.pet_id) {
