@@ -151,7 +151,7 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
                                         </div>
                                     )}
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <p className="text-[8px] font-black uppercase text-white tracking-widest">{uploading ? 'UPLOADING...' : 'CHANGE_PHOTO'}</p>
+                                        <p className="text-[8px] font-black uppercase text-white tracking-widest">{uploading ? 'CARREGANDO...' : 'ALTERAR FOTO'}</p>
                                     </div>
                                 </div>
                             </div>
