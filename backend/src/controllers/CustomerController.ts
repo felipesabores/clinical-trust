@@ -180,10 +180,23 @@ export class CustomerController {
     static async deletePet(req: Request, res: Response) {
         try {
             const petId = req.params.petId as string;
-            await prisma.pet.delete({ where: { id: petId } });
-            res.json({ message: 'Pet deleted successfully' });
+
+            await prisma.$transaction(async (tx) => {
+                // Delete all appointments associated with this pet
+                await tx.appointment.deleteMany({
+                    where: { pet_id: petId }
+                });
+
+                // Delete the pet
+                await tx.pet.delete({
+                    where: { id: petId }
+                });
+            });
+
+            res.json({ message: 'Pet e seus agendamentos excluídos com sucesso' });
         } catch (error) {
-            res.status(500).json({ error: 'Failed to delete pet. Ensure all appointments are removed first.' });
+            console.error('Failed to delete pet cascade:', error);
+            res.status(500).json({ error: 'Erro ao excluir o pet. Tente novamente mais tarde.' });
         }
     }
 }
