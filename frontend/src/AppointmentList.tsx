@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, Clock, User, Pet } from 'lucide-react';
+import { Calendar, Clock, User, Dog } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Appointment {
@@ -63,7 +63,7 @@ export default function AppointmentList({ appointments, onEdit }: AppointmentLis
                 >
                     <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
-                            <Pet className="w-4 h-4 text-gray-500" />
+                            <Dog className="w-4 h-4 text-gray-500" />
                             <span className="font-medium text-gray-800">{appointment.pet.name}</span>
                         </div>
                         <span className={cn(
