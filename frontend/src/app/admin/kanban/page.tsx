@@ -258,6 +258,15 @@ export default function KanbanPage() {
                                                                 <CheckCircle2 size={14} /> CONCLUÍDO
                                                             </div>
                                                         )}
+
+                                                        {(status.id === 'BATHING' || status.id === 'GROOMING' || status.id === 'DRYING') && (
+                                                            <button
+                                                                onClick={() => updateStatus(app.id, 'READY')}
+                                                                className="flex items-center justify-center w-full text-white py-2 rounded-xl gap-2 font-black text-[10px] bg-rose-500 hover:bg-rose-600 transition-colors"
+                                                            >
+                                                                <CheckCircle2 size={14} /> FINALIZAR ATENDIMENTO
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 )}
                                             </Draggable>
