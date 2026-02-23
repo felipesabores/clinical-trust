@@ -305,6 +305,7 @@ export class AppointmentController {
             delete updateData.tenant_id;
             delete updateData.id;
 
+            // Converter campos de data
             if (updateData.scheduled_at) {
                 updateData.scheduled_at = new Date(updateData.scheduled_at);
             }
@@ -312,9 +313,28 @@ export class AppointmentController {
                 updateData.end_time = new Date(updateData.end_time);
             }
 
+            // Transformar IDs de relacionamento para o formato Prisma
+            const prismaData: any = { ...updateData };
+            
+            // Se pet_id foi fornecido, transformar para relação
+            if (updateData.pet_id) {
+                prismaData.pet = {
+                    connect: { id: updateData.pet_id }
+                };
+                delete prismaData.pet_id;
+            }
+            
+            // Se staff_id foi fornecido, transformar para relação
+            if (updateData.staff_id) {
+                prismaData.staff = {
+                    connect: { id: updateData.staff_id }
+                };
+                delete prismaData.staff_id;
+            }
+
             const updated = await prisma.appointment.update({
                 where: { id },
-                data: updateData,
+                data: prismaData,
                 include: { pet: { include: { customer: true } }, staff: true }
             });
 
