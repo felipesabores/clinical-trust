@@ -105,13 +105,34 @@ export class CustomerController {
     static async delete(req: Request, res: Response) {
         try {
             const id = req.params.id as string;
-            // Note: Prisma will fail if there are dependent records (pets, appointments) unless cascade is configured.
-            // In our schema, we should handle deletions carefully.
-            await prisma.customer.delete({ where: { id } });
-            res.json({ message: 'Customer deleted successfully' });
+
+            await prisma.$transaction(async (tx) => {
+                // Delete all appointments associated with pets owned by this customer
+                await tx.appointment.deleteMany({
+                    where: {
+                        pet: {
+                            customer_id: id
+                        }
+                    }
+                });
+
+                // Delete all pets owned by this customer
+                await tx.pet.deleteMany({
+                    where: {
+                        customer_id: id
+                    }
+                });
+
+                // Finally, delete the customer
+                await tx.customer.delete({
+                    where: { id }
+                });
+            });
+
+            res.json({ message: 'Customer deleted successfully along with all associated pets and appointments' });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Failed to delete customer. Ensure all pets and appointments are removed first.' });
+            console.error('Failed to delete customer cascade:', error);
+            res.status(500).json({ error: 'Erro ao excluir o cliente. Tente novamente mais tarde.' });
         }
     }
 
