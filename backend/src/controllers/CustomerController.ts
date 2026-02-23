@@ -41,7 +41,6 @@ export class CustomerController {
                     pets: {
                         include: {
                             appointments: {
-                                take: 1,
                                 orderBy: { scheduled_at: 'desc' }
                             }
                         }

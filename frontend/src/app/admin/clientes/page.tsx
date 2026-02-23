@@ -27,6 +27,7 @@ import { cn } from '@/lib/utils';
 import CustomerModal from '@/components/CustomerModal';
 import PetModal from '@/components/PetModal';
 import AppointmentModal from '@/components/AppointmentModal';
+import AppointmentList from '@/AppointmentList';
 import { useTenant } from '@/context/TenantContext';
 
 import { API } from '@/config';
@@ -396,6 +397,18 @@ export default function ClientesPage() {
                                         O histórico completo de agendamentos e interações aparecerá aqui em tempo real. (Em construção)
                                     </p>
                                 </section>
+                            </div>
+
+                            {/* Seção de Agendamentos */}
+                            <div className="p-6 border-t border-[#E4E9D5] dark:border-white/5 bg-[#F7F8F0]/50 dark:bg-slate-900/30">
+                                <AppointmentList 
+                                    appointments={selectedCustomer.pets.flatMap((pet: any) => 
+                                        pet.appointments.map((appointment: any) => ({
+                                            ...appointment,
+                                            pet: { name: pet.name, type: pet.type }
+                                        }))
+                                    )}
+                                />
                             </div>
 
                             <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-[#E4E9D5] dark:border-white/5 bg-[#F7F8F0]/50 dark:bg-slate-900/30">
