@@ -17,6 +17,7 @@ import {
     Kanban,
     Activity,
     Lock,
+    X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -34,12 +35,22 @@ const menuItems = [
     { icon: BarChart3, label: 'Relatórios', path: '/admin/relatorios' },
 ];
 
-export function Sidebar() {
+export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const pathname = usePathname();
     const { config, loading } = useTenant();
 
     return (
-        <aside className="w-64 h-screen bg-[#355872] dark:bg-slate-900 border-r border-[#2a465b] dark:border-white/5 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out shadow-2xl">
+        <aside className={cn(
+            "w-64 h-screen bg-[#355872] dark:bg-slate-900 border-r border-[#2a465b] dark:border-white/5 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out shadow-2xl",
+            isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        )}>
+            {/* Mobile Close Button */}
+            <button
+                onClick={onClose}
+                className="lg:hidden absolute top-6 right-[-50px] w-10 h-10 bg-[#355872] text-white rounded-full flex items-center justify-center shadow-xl border border-white/10"
+            >
+                <X size={20} />
+            </button>
             {/* Subtle Gradient Glow Background */}
             <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent opacity-30 pointer-events-none" />
 

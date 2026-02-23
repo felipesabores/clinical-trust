@@ -1,9 +1,9 @@
 'use client';
 
-import { Bell, Search, User } from 'lucide-react';
+import { Bell, Search, User, Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-export function Header() {
+export function Header({ onMenuClick }: { onMenuClick: () => void }) {
     const pathname = usePathname();
 
     // Simple breadcrumb logic based on pathname
@@ -12,9 +12,15 @@ export function Header() {
     const pageTitle = currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
 
     return (
-        <header className="sticky top-0 z-40 w-full bg-[#F7F8F0] dark:bg-slate-900 border-b border-[#E4E9D5] dark:border-white/5 px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-4 truncate">
-                <h1 className="text-xl font-heading font-bold text-[#355872] dark:text-white tracking-tight truncate">
+        <header className="sticky top-0 z-40 w-full bg-[#F7F8F0] dark:bg-slate-900 border-b border-[#E4E9D5] dark:border-white/5 px-4 sm:px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3 sm:gap-4 truncate">
+                <button
+                    onClick={onMenuClick}
+                    className="lg:hidden p-2 -ml-2 hover:bg-[#355872]/5 rounded-xl text-[#355872] transition-colors"
+                >
+                    <Menu size={20} />
+                </button>
+                <h1 className="text-lg sm:text-xl font-heading font-bold text-[#355872] dark:text-white tracking-tight truncate">
                     {pageTitle}
                 </h1>
             </div>

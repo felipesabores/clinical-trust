@@ -67,7 +67,7 @@ export default function CamerasPage() {
     const onlineCount = cameras.filter(c => c.is_active).length;
 
     return (
-        <div className="p-8 space-y-10 h-screen flex flex-col bg-[#F7F8F0] dark:bg-slate-950 text-foreground overflow-hidden">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-10 min-h-[calc(100vh-64px)] flex flex-col bg-[#F7F8F0] dark:bg-slate-950 text-foreground overflow-x-hidden">
             <CameraModal
                 isOpen={isModalOpen}
                 onClose={() => {

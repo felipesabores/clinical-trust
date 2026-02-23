@@ -111,7 +111,7 @@ export default function ClientesPage() {
     if (!isMounted) return null;
 
     return (
-        <div className="p-8 h-screen flex flex-col bg-[#F7F8F0] dark:bg-slate-950 overflow-hidden text-foreground">
+        <div className="p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-64px)] flex flex-col bg-[#F7F8F0] dark:bg-slate-950 overflow-x-hidden text-foreground">
             <CustomerModal
                 isOpen={isCustomerModalOpen}
                 onClose={() => {

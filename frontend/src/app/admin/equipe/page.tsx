@@ -135,7 +135,7 @@ export default function EquipePage() {
     );
 
     return (
-        <div className="p-8 space-y-10 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-screen">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-10 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-[calc(100vh-64px)] overflow-x-hidden">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
                     <h1 className="text-3xl font-heading font-black tracking-tight text-[#355872] dark:text-white flex items-center gap-3">
