@@ -207,19 +207,35 @@ export class AppointmentController {
 
             // Automation: Generate Magic Link when starting procedures
             if (status === 'BATHING' || status === 'GROOMING') {
-                const token = uuidv4();
-                updateData.access_token = token;
-                updateData.token_expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
+                try {
+                    const token = uuidv4();
+                    updateData.access_token = token;
+                    updateData.token_expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
 
-                const frontendUrl = process.env.FRONTEND_CLIENT_URL || 'http://localhost:3000';
-                const magicLink = `${frontendUrl}/live/${token}`;
+                    const frontendUrl = process.env.FRONTEND_CLIENT_URL || 'http://localhost:3000';
+                    const magicLink = `${frontendUrl}/live/${token}`;
 
-                await WebhookService.sendLiveLink({
-                    petName: currentAppointment.pet.name,
-                    customerPhone: currentAppointment.pet.customer.phone,
-                    magicLink: magicLink,
-                    tenantName: currentAppointment.tenant.name
-                });
+                    // Validar dados antes de enviar webhook
+                    if (currentAppointment?.pet?.customer?.phone && currentAppointment?.pet?.name && currentAppointment?.tenant?.name) {
+                        await WebhookService.sendLiveLink({
+                            petName: currentAppointment.pet.name,
+                            customerPhone: currentAppointment.pet.customer.phone,
+                            magicLink: magicLink,
+                            tenantName: currentAppointment.tenant.name
+                        });
+                    } else {
+                        console.warn('[AppointmentController] Dados incompletos para webhook:', {
+                            hasPet: !!currentAppointment?.pet,
+                            hasCustomer: !!currentAppointment?.pet?.customer,
+                            hasPhone: !!currentAppointment?.pet?.customer?.phone,
+                            hasTenant: !!currentAppointment?.tenant,
+                            hasTenantName: !!currentAppointment?.tenant?.name
+                        });
+                    }
+                } catch (webhookError) {
+                    console.error('[AppointmentController] Erro ao processar webhook:', webhookError);
+                    // Não interromper o fluxo principal se o webhook falhar
+                }
             }
 
             // Cleanup: Revoke token when finished

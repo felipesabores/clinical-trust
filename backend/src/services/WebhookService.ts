@@ -16,6 +16,17 @@ export class WebhookService {
             return;
         }
 
+        // Validar dados obrigatórios
+        if (!data.petName || !data.customerPhone || !data.magicLink || !data.tenantName) {
+            console.warn('[WebhookService] Dados incompletos para webhook:', {
+                petName: !!data.petName,
+                customerPhone: !!data.customerPhone,
+                magicLink: !!data.magicLink,
+                tenantName: !!data.tenantName
+            });
+            return;
+        }
+
         try {
             await axios.post(this.WEBHOOK_URL, {
                 event: 'LIVE_LINK_GENERATED',
@@ -27,8 +38,11 @@ export class WebhookService {
                     message: `Olá! Seu pet ${data.petName} começou o procedimento. Acompanhe ao vivo aqui: ${data.magicLink}`
                 }
             });
+            console.log('[WebhookService] Webhook enviado com sucesso');
         } catch (error) {
             console.error('[WebhookService] Error sending webhook:', error);
+            // Re-throw para que o chamador saiba que falhou
+            throw error;
         }
     }
 }
