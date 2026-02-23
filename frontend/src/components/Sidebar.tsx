@@ -39,7 +39,7 @@ export function Sidebar() {
     const { config, loading } = useTenant();
 
     return (
-        <aside className="w-64 h-screen bg-slate-900/40 backdrop-blur-xl border-r border-white/5 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out shadow-2xl">
+        <aside className="w-64 h-screen bg-white dark:bg-slate-900/40 backdrop-blur-xl border-r border-slate-200 dark:border-white/5 flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out shadow-lg dark:shadow-2xl">
             {/* Subtle Gradient Glow Background */}
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 via-transparent to-transparent opacity-50 pointer-events-none" />
 
@@ -48,16 +48,16 @@ export function Sidebar() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-400 p-[1px] shadow-lg shadow-indigo-500/20 shrink-0 overflow-hidden relative group">
-                                <div className="absolute inset-0 bg-slate-900 rounded-[11px] flex items-center justify-center">
+                                <div className="absolute inset-0 bg-white dark:bg-slate-900 rounded-[11px] flex items-center justify-center">
                                     {config?.logo_url ? (
                                         <img src={config.logo_url} alt={config.name} className="w-full h-full object-cover rounded-[11px]" />
                                     ) : (
-                                        <Activity size={20} className="text-indigo-400" />
+                                        <Activity size={20} className="text-indigo-500" />
                                     )}
                                 </div>
                             </div>
                             <div className="min-w-0">
-                                <h1 className="font-heading font-bold text-base text-white tracking-tight leading-tight truncate">
+                                <h1 className="font-heading font-bold text-base text-slate-900 dark:text-white tracking-tight leading-tight truncate">
                                     {loading ? 'Carregando...' : (config?.name || 'Vivid Stream')}
                                 </h1>
                                 <p className="text-xs text-muted-foreground truncate">
@@ -82,8 +82,8 @@ export function Sidebar() {
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
                                 isActive
-                                    ? "bg-indigo-500/10 text-indigo-400 font-medium"
-                                    : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                                    ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium"
+                                    : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200"
                             )}
                         >
                             {isActive && (
@@ -106,9 +106,9 @@ export function Sidebar() {
                 })}
             </nav>
 
-            <div className="p-4 mt-auto border-t border-white/5 bg-slate-900/40 relative z-10 flex flex-col gap-2">
-                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5">
-                    <span className="text-sm font-medium text-slate-300">Tema</span>
+            <div className="p-4 mt-auto border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/40 relative z-10 flex flex-col gap-2">
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-transparent">
+                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Tema</span>
                     <ThemeToggle />
                 </div>
                 <Link

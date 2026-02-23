@@ -24,11 +24,11 @@ import { API } from '@/config';
 const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
 const COLORS = [
-    { color: 'bg-primary', border: 'border-primary/30', light: 'bg-primary/5' },
-    { color: 'bg-emerald-500', border: 'border-emerald-500/30', light: 'bg-emerald-500/5' },
-    { color: 'bg-amber-500', border: 'border-amber-500/30', light: 'bg-amber-500/5' },
-    { color: 'bg-rose-500', border: 'border-rose-500/30', light: 'bg-rose-500/5' },
-    { color: 'bg-indigo-500', border: 'border-indigo-500/30', light: 'bg-indigo-500/5' },
+    { color: 'bg-primary dark:bg-primary', border: 'border-primary/30', light: 'bg-primary/5' },
+    { color: 'bg-emerald-500 dark:bg-emerald-600', border: 'border-emerald-500/30', light: 'bg-emerald-500/5' },
+    { color: 'bg-amber-500 dark:bg-amber-600', border: 'border-amber-500/30', light: 'bg-amber-500/5' },
+    { color: 'bg-rose-500 dark:bg-rose-600', border: 'border-rose-500/30', light: 'bg-rose-500/5' },
+    { color: 'bg-cyan-500 dark:bg-cyan-600', border: 'border-cyan-500/30', light: 'bg-cyan-500/5' },
 ];
 
 const statusBadgeClass: Record<string, string> = {
@@ -114,22 +114,22 @@ export default function AgendaPage() {
             {/* Header */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
-                        <CalendarIcon className="text-indigo-400" size={24} />
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-foreground flex items-center gap-3">
+                        <CalendarIcon className="text-primary" size={24} />
                         Agenda
                     </h2>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                         Gerencie os agendamentos e horários da sua equipe.
                     </p>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                    <div className="flex bg-slate-900/50 border border-white/5 p-1 rounded-lg gap-1">
+                    <div className="flex bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 p-1 rounded-lg gap-1 shadow-sm">
                         <button
                             onClick={() => setView('grid')}
                             className={cn(
                                 "p-2 rounded-md transition-all",
-                                view === 'grid' ? "bg-indigo-500 text-white shadow-md shadow-indigo-500/20" : "text-slate-400 hover:text-white"
+                                view === 'grid' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-slate-400 hover:text-slate-600 dark:hover:text-white"
                             )}
                         >
                             <LayoutGrid size={18} />
@@ -138,13 +138,13 @@ export default function AgendaPage() {
                             onClick={() => setView('list')}
                             className={cn(
                                 "p-2 rounded-md transition-all",
-                                view === 'list' ? "bg-indigo-500 text-white shadow-md shadow-indigo-500/20" : "text-slate-400 hover:text-white"
+                                view === 'list' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-slate-400 hover:text-slate-600 dark:hover:text-white"
                             )}
                         >
                             <List size={18} />
                         </button>
                     </div>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-slate-900/50 border border-white/5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors">
+                    <button className="flex items-center gap-2 px-6 py-2 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
                         <Filter size={16} /> Filtros
                     </button>
                     <button
@@ -163,19 +163,19 @@ export default function AgendaPage() {
                 {view === 'grid' ? (
                     <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 h-full">
                         {/* Calendar Grid */}
-                        <div className="xl:col-span-3 glass-panel overflow-hidden flex flex-col rounded-2xl">
+                        <div className="xl:col-span-3 bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-white/10 overflow-hidden flex flex-col rounded-2xl shadow-xl">
                             {/* Toolbar */}
-                            <div className="p-6 border-b border-white/5 flex items-center justify-between flex-wrap gap-4 bg-slate-900/40">
+                            <div className="p-6 border-b border-slate-200 dark:border-white/5 flex items-center justify-between flex-wrap gap-4 bg-slate-50/50 dark:bg-slate-900/40">
                                 <div className="flex items-center gap-4">
-                                    <h3 className="text-lg font-heading font-semibold text-white capitalize">{formattedDisplayDate}</h3>
-                                    <div className="flex items-center gap-1 bg-slate-800/50 border border-white/5 p-1 rounded-lg">
-                                        <button onClick={prevDay} className="p-1.5 hover:bg-indigo-500/20 rounded-md transition-colors text-slate-400 hover:text-indigo-300">
+                                    <h3 className="text-lg font-heading font-semibold text-slate-900 dark:text-white capitalize">{formattedDisplayDate}</h3>
+                                    <div className="flex items-center gap-1 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 p-1 rounded-lg shadow-sm">
+                                        <button onClick={prevDay} className="p-1.5 hover:bg-primary/10 rounded-md transition-colors text-slate-400 hover:text-primary">
                                             <ChevronLeft size={16} />
                                         </button>
-                                        <button onClick={today} className="px-3 py-1 hover:bg-indigo-500/20 rounded-md transition-colors text-slate-300 text-xs font-medium hover:text-indigo-300">
+                                        <button onClick={today} className="px-3 py-1 hover:bg-primary/10 rounded-md transition-colors text-slate-600 dark:text-slate-300 text-xs font-medium hover:text-primary">
                                             Hoje
                                         </button>
-                                        <button onClick={nextDay} className="p-1.5 hover:bg-indigo-500/20 rounded-md transition-colors text-slate-400 hover:text-indigo-300">
+                                        <button onClick={nextDay} className="p-1.5 hover:bg-primary/10 rounded-md transition-colors text-slate-400 hover:text-primary">
                                             <ChevronRight size={16} />
                                         </button>
                                     </div>
@@ -184,7 +184,7 @@ export default function AgendaPage() {
                                     {professionals.map(p => (
                                         <div key={p.name} className="flex items-center gap-2">
                                             <div className={cn("w-2.5 h-2.5 rounded-full shadow-sm", p.color)} />
-                                            <span className="text-xs font-medium text-slate-400">{p.name}</span>
+                                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{p.name}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -194,10 +194,10 @@ export default function AgendaPage() {
                             <div className="flex-1 overflow-auto custom-scrollbar">
                                 <div className="min-w-[800px]">
                                     {/* Header row */}
-                                    <div className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-white/5 bg-slate-900/60 font-medium text-xs text-slate-400 sticky top-0 z-20">
-                                        <div className="p-4 border-r border-white/5 text-center">Horário</div>
+                                    <div className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-slate-200 dark:border-white/5 bg-slate-100/50 dark:bg-slate-900/60 font-medium text-xs text-slate-500 dark:text-slate-400 sticky top-0 z-20">
+                                        <div className="p-4 border-r border-slate-200 dark:border-white/5 text-center">Horário</div>
                                         {professionals.map(p => (
-                                            <div key={p.name} className="p-4 border-r border-white/5 last:border-r-0 text-center">
+                                            <div key={p.name} className="p-4 border-r border-slate-200 dark:border-white/5 last:border-r-0 text-center">
                                                 {p.name}
                                             </div>
                                         ))}
@@ -206,8 +206,8 @@ export default function AgendaPage() {
                                     {/* Time Slots */}
                                     <div className="relative">
                                         {timeSlots.map(time => (
-                                            <div key={time} className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-white/5 last:border-b-0 min-h-[120px]">
-                                                <div className="p-4 border-r border-white/5 bg-slate-900/20 text-xs font-medium text-slate-500 flex items-start justify-center pt-4 tabular-nums">
+                                            <div key={time} className="grid grid-cols-[100px_1fr_1fr_1fr] border-b border-slate-100 dark:border-white/5 last:border-b-0 min-h-[120px]">
+                                                <div className="p-4 border-r border-slate-100 dark:border-white/5 bg-slate-50/30 dark:bg-slate-900/20 text-xs font-medium text-slate-400 dark:text-slate-500 flex items-start justify-center pt-4 tabular-nums">
                                                     {time}
                                                 </div>
                                                 {professionals.map(p => {
@@ -219,7 +219,7 @@ export default function AgendaPage() {
                                                     });
 
                                                     return (
-                                                        <div key={p.name} className="p-2 border-r border-white/5 last:border-r-0 relative group transition-colors hover:bg-indigo-500/5">
+                                                        <div key={p.name} className="p-2 border-r border-slate-100 dark:border-white/5 last:border-r-0 relative group transition-colors hover:bg-primary/5">
                                                             {appts.map(a => {
                                                                 const start = new Date(a.scheduled_at);
                                                                 const end = a.end_time ? new Date(a.end_time) : new Date(start.getTime() + 60 * 60000); // default 1h
@@ -234,21 +234,21 @@ export default function AgendaPage() {
                                                                             setIsApptModalOpen(true);
                                                                         }}
                                                                         className={cn(
-                                                                            "absolute top-2 left-2 right-2 z-10 p-3 rounded-xl border border-white/5 shadow-md shadow-black/20 transition-all cursor-pointer group/item bg-slate-800/90 backdrop-blur-md hover:scale-[1.02] hover:shadow-lg"
+                                                                            "absolute top-2 left-2 right-2 z-10 p-3 rounded-xl border border-slate-200 dark:border-white/5 shadow-md shadow-black/5 dark:shadow-black/20 transition-all cursor-pointer group/item bg-white dark:bg-slate-800/90 backdrop-blur-md hover:scale-[1.02] hover:shadow-lg"
                                                                         )}
                                                                     >
                                                                         <div className={cn("absolute left-0 top-0 bottom-0 w-1 opacity-50 rounded-l-xl", p.color)} />
 
                                                                         <div className="flex justify-between items-start gap-2 mb-2 pl-2">
-                                                                            <h4 className="font-heading font-semibold text-sm text-slate-100 group-hover/item:text-indigo-400 transition-colors">{a.pet?.name || 'Sem Pet'}</h4>
+                                                                            <h4 className="font-heading font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover/item:text-primary transition-colors">{a.pet?.name || 'Sem Pet'}</h4>
                                                                             <span className={cn(
                                                                                 "text-[10px] font-medium px-2 py-0.5 rounded-full border whitespace-nowrap",
-                                                                                statusBadgeClass[a.status] || "bg-slate-800 text-slate-400 border-white/10"
+                                                                                statusBadgeClass[a.status] || "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/10 shadow-sm"
                                                                             )}>
                                                                                 {a.status}
                                                                             </span>
                                                                         </div>
-                                                                        <p className="text-xs text-slate-400 mb-2 truncate pl-2">{a.pet?.customer?.name || 'Cliente'}</p>
+                                                                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 truncate pl-2">{a.pet?.customer?.name || 'Cliente'}</p>
                                                                         <div className="flex items-center gap-2 text-xs font-medium text-slate-500 border-t border-white/5 pt-2 pl-2 mt-auto">
                                                                             <ArrowRight size={12} className="text-indigo-400" />
                                                                             {a.pet?.breed || 'Sem Raça'}
@@ -267,8 +267,8 @@ export default function AgendaPage() {
                                                                         setEditingAppt(undefined);
                                                                         setIsApptModalOpen(true);
                                                                     }}
-                                                                    className="w-8 h-8 rounded-full bg-indigo-500/20 backdrop-blur-sm flex items-center justify-center border border-indigo-500/30 shadow-lg pointer-events-auto">
-                                                                    <Plus size={16} className="text-indigo-400" />
+                                                                    className="w-8 h-8 rounded-full bg-primary/20 backdrop-blur-sm flex items-center justify-center border border-primary/30 shadow-lg pointer-events-auto">
+                                                                    <Plus size={16} className="text-primary" />
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -283,39 +283,39 @@ export default function AgendaPage() {
 
                         {/* Sidebar panel */}
                         <div className="space-y-6 flex flex-col min-h-0 overflow-y-auto custom-scrollbar pr-2">
-                            <div className="glass-panel p-6 rounded-2xl border-l-4 border-l-indigo-500">
-                                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6 flex items-center justify-between">
+                            <div className="bg-white dark:bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border-l-4 border-l-primary border border-slate-200 dark:border-white/5 shadow-lg">
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6 flex items-center justify-between">
                                     Resumo da Operação
                                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                                 </h4>
                                 <div className="space-y-4">
                                     {[
-                                        { label: 'Confirmados', value: '12', color: 'text-white' },
-                                        { label: 'Finalizados', value: '08', color: 'text-emerald-400' },
-                                        { label: 'Em Atraso', value: '02', color: 'text-rose-400' },
+                                        { label: 'Confirmados', value: '12', color: 'text-slate-900 dark:text-white' },
+                                        { label: 'Finalizados', value: '08', color: 'text-emerald-600 dark:text-emerald-400' },
+                                        { label: 'Em Atraso', value: '02', color: 'text-rose-600 dark:text-rose-400' },
                                     ].map(item => (
-                                        <div key={item.label} className="bg-slate-900/40 border border-white/5 p-4 rounded-xl flex justify-between items-center group hover:bg-slate-800/60 transition-all">
-                                            <span className="text-xs font-medium text-slate-400">{item.label}</span>
+                                        <div key={item.label} className="bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 p-4 rounded-xl flex justify-between items-center group hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all shadow-sm">
+                                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{item.label}</span>
                                             <span className={cn("font-heading font-bold text-xl tabular-nums", item.color)}>{item.value}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="glass-panel p-6 rounded-2xl bg-indigo-500/5 relative overflow-hidden group border-indigo-500/10">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full -mr-16 -mt-16 blur-3xl" />
-                                <h4 className="text-sm font-semibold text-indigo-400 mb-4 flex items-center gap-2">
+                            <div className="bg-primary/5 dark:bg-indigo-500/5 p-6 rounded-2xl relative overflow-hidden group border border-primary/10 dark:border-indigo-500/10 shadow-sm">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 dark:bg-indigo-500/10 rounded-full -mr-16 -mt-16 blur-3xl opacity-50" />
+                                <h4 className="text-sm font-semibold text-primary dark:text-indigo-400 mb-4 flex items-center gap-2">
                                     <Clock size={16} />
                                     Lembrete da Equipe
                                 </h4>
-                                <p className="text-sm text-slate-300 leading-relaxed italic relative z-10">
+                                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed italic relative z-10">
                                     "Confirmar agendamentos de amanhã via canal WhatsApp até o fechamento."
                                 </p>
                             </div>
 
                             {/* Next appointments */}
-                            <div className="glass-panel p-6 rounded-2xl flex-1 min-h-[300px]">
-                                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6">Fila de Entrada</h4>
+                            <div className="bg-white dark:bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl flex-1 min-h-[300px] border border-slate-200 dark:border-white/5 shadow-lg">
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">Fila de Entrada</h4>
                                 <div className="space-y-4">
                                     {appointments.slice(0, 5).map(a => {
                                         const date = new Date(a.scheduled_at);
@@ -327,19 +327,19 @@ export default function AgendaPage() {
                                                     setEditingAppt(a);
                                                     setIsApptModalOpen(true);
                                                 }}
-                                                className="flex items-center gap-4 group cursor-pointer border-b border-white/5 pb-4 last:border-0 hover:border-indigo-500/30 transition-colors">
-                                                <div className="w-12 h-12 rounded-xl bg-slate-900/60 border border-white/5 flex items-center justify-center shrink-0 text-xs font-semibold text-slate-400 group-hover:bg-indigo-500/10 group-hover:text-indigo-400 group-hover:border-indigo-500/30 transition-all tabular-nums">
+                                                className="flex items-center gap-4 group cursor-pointer border-b border-slate-100 dark:border-white/5 pb-4 last:border-0 hover:border-primary/30 dark:hover:border-indigo-500/30 transition-colors">
+                                                <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 flex items-center justify-center shrink-0 text-xs font-semibold text-slate-500 dark:text-slate-400 group-hover:bg-primary/10 group-hover:text-primary dark:group-hover:text-indigo-400 group-hover:border-primary/30 transition-all tabular-nums shadow-sm">
                                                     {timeLabel}
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="font-heading font-semibold text-sm text-slate-200 truncate group-hover:text-indigo-400 transition-colors">{a.pet?.name}</p>
+                                                    <p className="font-heading font-semibold text-sm text-slate-900 dark:text-slate-200 truncate group-hover:text-primary transition-colors">{a.pet?.name}</p>
                                                     <p className="text-xs text-slate-500 truncate mt-0.5">
                                                         {a.pet?.customer?.name} · {a.staff?.name || 'N/A'}
                                                     </p>
                                                 </div>
                                                 <div className={cn(
                                                     "w-1.5 h-6 rounded-full shrink-0",
-                                                    a.status === 'RECEPTION' ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]' : a.status === 'SCHEDULED' ? 'bg-slate-500' : 'bg-emerald-500'
+                                                    a.status === 'RECEPTION' ? 'bg-primary dark:bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]' : a.status === 'SCHEDULED' ? 'bg-slate-300 dark:bg-slate-500' : 'bg-emerald-500'
                                                 )} />
                                             </div>
                                         )
@@ -350,11 +350,11 @@ export default function AgendaPage() {
                     </div>
                 ) : (
                     /* List view */
-                    <div className="glass-panel overflow-hidden rounded-2xl">
+                    <div className="bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-200 dark:border-white/10 overflow-hidden rounded-2xl shadow-xl">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
-                                <thead className="border-b border-white/5 bg-slate-900/40">
-                                    <tr className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                                <thead className="border-b border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/40">
+                                    <tr className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                         <th className="p-5">Horário</th>
                                         <th className="p-5">Pet / Raça</th>
                                         <th className="p-5">Tutor Responsável</th>
@@ -363,7 +363,7 @@ export default function AgendaPage() {
                                         <th className="p-5" />
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                                     {appointments.map(a => {
                                         const prof = professionals.find(p => p.id === a.staff_id);
                                         const date = new Date(a.scheduled_at);
@@ -375,33 +375,33 @@ export default function AgendaPage() {
                                                     setEditingAppt(a);
                                                     setIsApptModalOpen(true);
                                                 }}
-                                                className="hover:bg-slate-800/40 transition-colors group cursor-pointer border-l-2 border-transparent hover:border-indigo-500">
-                                                <td className="p-5 font-semibold text-sm tabular-nums text-slate-300">{timeLabel}</td>
+                                                className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group cursor-pointer border-l-2 border-transparent hover:border-primary">
+                                                <td className="p-5 font-semibold text-sm tabular-nums text-slate-700 dark:text-slate-300">{timeLabel}</td>
                                                 <td className="p-5">
-                                                    <p className="font-heading font-semibold text-sm text-slate-200 group-hover:text-indigo-400 transition-colors">{a.pet?.name}</p>
+                                                    <p className="font-heading font-semibold text-sm text-slate-900 dark:text-slate-200 group-hover:text-primary transition-colors">{a.pet?.name}</p>
                                                     <p className="text-xs text-slate-500 mt-0.5">{a.pet?.breed}</p>
                                                 </td>
-                                                <td className="p-5 font-medium text-sm text-slate-300">{a.pet?.customer?.name}</td>
+                                                <td className="p-5 font-medium text-sm text-slate-700 dark:text-slate-300">{a.pet?.customer?.name}</td>
                                                 <td className="p-5">
-                                                    <span className="flex items-center gap-2 text-sm font-medium text-slate-300">
-                                                        <div className={cn("w-2 h-2 rounded-full", prof?.color || "bg-slate-700")} />
+                                                    <span className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                                                        <div className={cn("w-2 h-2 rounded-full", prof?.color || "bg-slate-300 dark:bg-slate-700")} />
                                                         {a.staff?.name || 'Não atribuído'}
                                                     </span>
                                                 </td>
                                                 <td className="p-5">
                                                     <div className="flex justify-center">
                                                         <span className={cn(
-                                                            "text-xs font-medium px-3 py-1 rounded-full border whitespace-nowrap",
-                                                            a.status === 'Confirmado' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                                a.status === 'CheckedIn' ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' :
-                                                                    "bg-slate-800 text-slate-400 border-white/10"
+                                                            "text-xs font-medium px-3 py-1 rounded-full border whitespace-nowrap shadow-sm",
+                                                            a.status === 'Confirmado' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20' :
+                                                                a.status === 'CheckedIn' ? 'bg-primary/5 dark:bg-indigo-500/10 text-primary dark:text-indigo-400 border-primary/20 dark:border-indigo-500/20' :
+                                                                    "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/10"
                                                         )}>
                                                             {a.status}
                                                         </span>
                                                     </div>
                                                 </td>
                                                 <td className="p-5 text-right">
-                                                    <button className="p-2 text-slate-500 hover:text-indigo-400 transition-colors">
+                                                    <button className="p-2 text-slate-400 hover:text-primary transition-colors">
                                                         <User size={16} />
                                                     </button>
                                                 </td>

@@ -43,12 +43,12 @@ interface Appointment {
 }
 
 const COLUMN_CONFIG: Record<string, { title: string; color: string; icon: any }> = {
-    SCHEDULED: { title: 'Agendados', color: 'bg-slate-400', icon: Clock },
-    RECEPTION: { title: 'Recepção', color: 'bg-sky-400', icon: Users },
-    BATHING: { title: 'Banho', color: 'bg-blue-500', icon: Droplets },
-    DRYING: { title: 'Secagem', color: 'bg-amber-400', icon: Wind },
-    GROOMING: { title: 'Tosa', color: 'bg-emerald-600', icon: Scissors },
-    READY: { title: 'Prontos', color: 'bg-green-500', icon: CheckCircle2 },
+    SCHEDULED: { title: 'Agendados', color: 'bg-slate-400 dark:bg-slate-500', icon: Clock },
+    RECEPTION: { title: 'Recepção', color: 'bg-indigo-400 dark:bg-indigo-500', icon: Users },
+    BATHING: { title: 'Banho', color: 'bg-cyan-500 dark:bg-cyan-600', icon: Droplets },
+    DRYING: { title: 'Secagem', color: 'bg-amber-400 dark:bg-amber-500', icon: Wind },
+    GROOMING: { title: 'Tosa', color: 'bg-emerald-500 dark:bg-emerald-600', icon: Scissors },
+    READY: { title: 'Prontos', color: 'bg-rose-500 dark:bg-rose-600', icon: CheckCircle2 },
 };
 
 export default function DashboardPage() {
@@ -188,12 +188,12 @@ export default function DashboardPage() {
             {/* Page Action Header (Sub-header since global App Bar handles the main title) */}
             <header className="flex justify-between items-center gap-4 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white">Visão Geral</h2>
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-foreground">Visão Geral</h2>
                     <p className="text-sm text-muted-foreground mt-1">Bem-vindo(a) ao seu workspace do Vivid Stream.</p>
                 </div>
                 <div className="flex gap-3">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-slate-900/50 border border-white/5 rounded-lg text-sm font-medium text-slate-300 shadow-sm backdrop-blur-md">
-                        <CalendarDays size={16} className="text-indigo-400" />
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 shadow-sm backdrop-blur-md">
+                        <CalendarDays size={16} className="text-primary" />
                         {today}
                     </div>
                 </div>
@@ -202,20 +202,20 @@ export default function DashboardPage() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 shrink-0">
                 {dashStats.map((stat, i) => (
-                    <div key={i} className="glass-panel p-6 rounded-2xl group transition-all duration-300 hover:border-indigo-500/30">
+                    <div key={i} className="bg-white dark:bg-slate-900/40 backdrop-blur-md border border-slate-100 dark:border-white/5 p-6 rounded-2xl group transition-all duration-300 hover:border-primary/30 shadow-sm hover:shadow-lg">
                         <div className="flex justify-between items-start mb-4">
-                            <div className="bg-indigo-500/10 p-2.5 rounded-xl text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.1)] group-hover:scale-110 transition-transform duration-300">
+                            <div className="bg-primary/10 p-2.5 rounded-xl text-primary shadow-[0_0_15px_rgba(99,102,241,0.1)] group-hover:scale-110 transition-transform duration-300">
                                 <stat.icon size={20} />
                             </div>
                             {stat.change && (
-                                <span className="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/20">
+                                <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-200 dark:border-emerald-400/20">
                                     {stat.change} ↑
                                 </span>
                             )}
                         </div>
                         <div className="min-w-0">
-                            <p className="text-sm font-medium text-slate-400 truncate">{stat.label}</p>
-                            <h3 className="text-3xl font-heading font-bold mt-1 text-white tracking-tight truncate" title={stat.value}>{stat.value}</h3>
+                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">{stat.label}</p>
+                            <h3 className="text-3xl font-heading font-bold mt-1 text-slate-900 dark:text-white tracking-tight truncate" title={stat.value}>{stat.value}</h3>
                         </div>
                     </div>
                 ))}
@@ -241,12 +241,12 @@ export default function DashboardPage() {
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
                                                 <div className={cn("w-2 h-2 rounded-full shadow-sm", config.color)} />
-                                                <h4 className="font-heading font-semibold text-sm text-slate-200">{config.title}</h4>
-                                                <span className="text-xs font-medium text-indigo-300 bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-indigo-500/20">
+                                                <h4 className="font-heading font-semibold text-sm text-slate-700 dark:text-slate-200">{config.title}</h4>
+                                                <span className="text-xs font-medium text-primary dark:text-indigo-300 bg-primary/10 dark:bg-indigo-500/10 px-2.5 py-0.5 rounded-full border border-primary/20 dark:border-indigo-500/20">
                                                     {kanbanData[status]?.length || 0}
                                                 </span>
                                             </div>
-                                            {isLiveColumn && <Video size={16} className="text-indigo-400/50" />}
+                                            {isLiveColumn && <Video size={16} className="text-primary dark:text-indigo-400/50" />}
                                         </div>
 
                                         {isLiveColumn && (
@@ -254,7 +254,7 @@ export default function DashboardPage() {
                                                 <Video className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none group-hover/select:text-indigo-400 transition-colors" />
                                                 <select
                                                     id={`cam-select-${status}`}
-                                                    className="w-full bg-slate-900/50 border border-white/5 rounded-lg text-xs pl-9 pr-4 py-2 text-slate-300 font-medium outline-none focus:border-indigo-500/50 focus:bg-slate-800/80 transition-all appearance-none cursor-pointer"
+                                                    className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-lg text-xs pl-9 pr-4 py-2 text-slate-600 dark:text-slate-300 font-medium outline-none focus:border-primary/50 dark:focus:border-indigo-500/50 focus:bg-slate-50 dark:focus:bg-slate-800/80 transition-all appearance-none cursor-pointer shadow-sm"
                                                     onChange={(e) => {
                                                         (window as any)[`selected_cam_${status}`] = e.target.value;
                                                     }}
@@ -274,8 +274,8 @@ export default function DashboardPage() {
                                                 {...provided.droppableProps}
                                                 ref={provided.innerRef}
                                                 className={cn(
-                                                    "flex-1 space-y-3 p-3 rounded-2xl border border-transparent transition-all overflow-y-auto custom-scrollbar-thin bg-slate-900/20 backdrop-blur-sm",
-                                                    snapshot.isDraggingOver && "bg-indigo-500/5 border-indigo-500/20 ring-1 ring-inset ring-indigo-500/10"
+                                                    "flex-1 space-y-3 p-3 rounded-2xl border border-transparent transition-all overflow-y-auto custom-scrollbar-thin bg-slate-100/50 dark:bg-slate-900/20 backdrop-blur-sm shadow-inner",
+                                                    snapshot.isDraggingOver && "bg-primary/5 border-primary/20 ring-1 ring-inset ring-primary/10"
                                                 )}
                                             >
                                                 {kanbanData[status]?.map((app, index) => (
@@ -286,8 +286,8 @@ export default function DashboardPage() {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                                 className={cn(
-                                                                    "bg-slate-800/80 backdrop-blur-md p-4 rounded-xl border border-white/5 shadow-sm group transition-all relative overflow-hidden",
-                                                                    snapshot.isDragging ? "shadow-2xl shadow-indigo-500/10 scale-105 rotate-1 ring-2 ring-indigo-500 border-indigo-500 z-50 bg-slate-800" : "hover:border-indigo-500/30 hover:shadow-md"
+                                                                    "bg-white dark:bg-slate-800/80 backdrop-blur-md p-4 rounded-xl border border-slate-200 dark:border-white/5 shadow-sm group transition-all relative overflow-hidden",
+                                                                    snapshot.isDragging ? "shadow-2xl shadow-primary/10 scale-105 rotate-1 ring-2 ring-primary border-primary z-50 bg-white dark:bg-slate-800" : "hover:border-primary/30 hover:shadow-md"
                                                                 )}
                                                             >
                                                                 {/* Side Color Indicator matching Column */}
@@ -295,8 +295,8 @@ export default function DashboardPage() {
 
                                                                 <div className="flex justify-between items-start mb-3">
                                                                     <div className="min-w-0 pr-2 pl-2">
-                                                                        <h5 className="font-heading font-semibold text-sm text-slate-100 truncate">{app.pet.name}</h5>
-                                                                        <p className="text-xs text-slate-400 mt-0.5 truncate">
+                                                                        <h5 className="font-heading font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{app.pet.name}</h5>
+                                                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
                                                                             {app.pet.breed || 'SRD'}
                                                                         </p>
                                                                     </div>
@@ -306,7 +306,7 @@ export default function DashboardPage() {
                                                                             <span className="text-[10px] font-medium text-rose-500 tracking-wide">AO VIVO</span>
                                                                         </div>
                                                                     ) : (
-                                                                        <div className="p-1.5 bg-white/5 rounded-lg text-slate-500 group-hover:text-indigo-400 transition-colors">
+                                                                        <div className="p-1.5 bg-slate-100 dark:bg-white/5 rounded-lg text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">
                                                                             {(() => {
                                                                                 const Icon = COLUMN_CONFIG[status]?.icon || Clock;
                                                                                 return <Icon size={16} />;
@@ -316,18 +316,18 @@ export default function DashboardPage() {
                                                                 </div>
 
                                                                 <div className="flex items-center gap-3 pl-2 mb-4">
-                                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-xs font-semibold text-indigo-300 border border-indigo-500/20 group-hover:border-indigo-500/40 transition-colors shrink-0">
+                                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-indigo-500/20 flex items-center justify-center text-xs font-semibold text-primary dark:text-indigo-300 border border-primary/20 group-hover:border-primary/40 transition-colors shrink-0">
                                                                         {app.pet.customer.name[0]?.toUpperCase() || '?'}
                                                                     </div>
                                                                     <div className="min-w-0">
-                                                                        <p className="text-xs font-medium text-slate-300 truncate">{app.pet.customer.name}</p>
+                                                                        <p className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">{app.pet.customer.name}</p>
                                                                         <p className="text-[10px] text-slate-500">Tutor Responsável</p>
                                                                     </div>
                                                                 </div>
 
-                                                                <div className="pt-3 border-t border-white/5 flex items-center justify-between gap-2 pl-2">
-                                                                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
-                                                                        <Clock size={12} className="text-slate-500" />
+                                                                <div className="pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between gap-2 pl-2">
+                                                                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                                        <Clock size={12} className="text-slate-400 dark:text-slate-500" />
                                                                         {new Date(app.scheduled_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                                                     </div>
 
@@ -335,21 +335,21 @@ export default function DashboardPage() {
                                                                         <div className="flex gap-1.5">
                                                                             <button
                                                                                 onClick={(e) => { e.stopPropagation(); handleCopyToken(app.access_token!, app.id); }}
-                                                                                className="p-1.5 bg-white/5 hover:bg-indigo-500/20 hover:text-indigo-400 border border-white/5 rounded-md transition-all"
+                                                                                className="p-1.5 bg-slate-100 dark:bg-white/5 hover:bg-primary/20 hover:text-primary border border-slate-200 dark:border-white/5 rounded-md transition-all text-slate-600 dark:text-slate-400"
                                                                                 title="Copiar Link"
                                                                             >
-                                                                                {copiedId === app.id ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                                                                                {copiedId === app.id ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
                                                                             </button>
                                                                             <button
                                                                                 onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(app); }}
-                                                                                className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500 hover:text-white border border-emerald-500/20 rounded-md text-emerald-400 transition-all"
+                                                                                className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500 hover:text-white border border-emerald-500/20 rounded-md text-emerald-600 dark:text-emerald-400 transition-all font-semibold"
                                                                                 title="Enviar WhatsApp"
                                                                             >
                                                                                 <MessageCircle size={14} />
                                                                             </button>
                                                                         </div>
                                                                     ) : (
-                                                                        <button className="text-slate-500 hover:text-indigo-400 p-1 transition-colors">
+                                                                        <button className="text-slate-400 dark:text-slate-500 hover:text-primary p-1 transition-colors">
                                                                             <MoreVertical size={16} />
                                                                         </button>
                                                                     )}

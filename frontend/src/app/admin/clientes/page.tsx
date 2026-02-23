@@ -141,11 +141,11 @@ export default function ClientesPage() {
 
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 shrink-0">
                 <div>
-                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-white flex items-center gap-3">
-                        <UserPlus className="text-indigo-400" size={24} />
+                    <h2 className="text-2xl font-heading font-semibold tracking-tight text-foreground flex items-center gap-3">
+                        <UserPlus className="text-primary" size={24} />
                         Diretório de Tutores
                     </h2>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                         Gerencie seus clientes e seus respectivos pets.
                     </p>
                 </div>
@@ -161,12 +161,12 @@ export default function ClientesPage() {
                 {/* List Side */}
                 <div className="flex-1 lg:max-w-md xl:max-w-lg flex flex-col min-w-0">
                     <div className="relative mb-6">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                         <input
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Pesquisar por nome ou celular..."
-                            className="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-white/10 rounded-xl focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all outline-none text-sm text-white placeholder:text-slate-500"
+                            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all outline-none text-sm text-foreground placeholder:text-muted-foreground shadow-sm"
                         />
                     </div>
 
@@ -182,18 +182,18 @@ export default function ClientesPage() {
                                     key={customer.id}
                                     onClick={() => fetchDetail(customer.id)}
                                     className={cn(
-                                        "p-4 rounded-xl cursor-pointer transition-all flex items-center justify-between group border",
+                                        "p-4 rounded-xl cursor-pointer transition-all flex items-center justify-between group border shadow-sm",
                                         selectedCustomer?.id === customer.id
-                                            ? "bg-indigo-500/10 border-indigo-500/40 shadow-md shadow-indigo-500/10"
-                                            : "bg-slate-900/40 border-white/5 hover:border-indigo-500/30 hover:bg-slate-800/60"
+                                            ? "bg-primary/5 dark:bg-primary/10 border-primary/40 shadow-md shadow-primary/5"
+                                            : "bg-white dark:bg-slate-900/40 border-slate-200 dark:border-white/5 hover:border-primary/30 hover:bg-slate-50 dark:hover:bg-slate-800/60"
                                     )}
                                 >
                                     <div className="flex gap-4 items-center min-w-0">
                                         <div className={cn(
                                             "w-12 h-12 rounded-xl flex items-center justify-center text-lg font-semibold transition-all shrink-0 overflow-hidden",
                                             selectedCustomer?.id === customer.id
-                                                ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/30"
-                                                : "bg-slate-800 text-slate-400 border border-white/5 group-hover:text-indigo-400"
+                                                ? "bg-primary text-white shadow-lg shadow-primary/30"
+                                                : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/5 group-hover:text-primary"
                                         )}>
                                             {customer.avatar_url ? (
                                                 <img src={customer.avatar_url} className="w-full h-full object-cover" alt={customer.name} />
@@ -202,7 +202,7 @@ export default function ClientesPage() {
                                             )}
                                         </div>
                                         <div className="min-w-0">
-                                            <h4 className="font-heading font-semibold text-slate-200 truncate group-hover:text-indigo-400 transition-colors">{customer.name}</h4>
+                                            <h4 className="font-heading font-semibold text-slate-900 dark:text-slate-200 truncate group-hover:text-primary transition-colors">{customer.name}</h4>
                                             <div className="flex items-center gap-3 mt-1">
                                                 <p className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
                                                     <Phone size={12} className="text-slate-500" /> {customer.phone}
@@ -250,36 +250,36 @@ export default function ClientesPage() {
                 {/* Detail Side */}
                 <div className="flex-1 min-w-0 h-full">
                     {selectedCustomer ? (
-                        <div className="h-full glass-panel rounded-2xl flex flex-col overflow-hidden relative border border-white/10 shadow-xl">
+                        <div className="h-full bg-white dark:bg-slate-900/40 backdrop-blur-md rounded-2xl flex flex-col overflow-hidden relative border border-slate-200 dark:border-white/10 shadow-xl">
                             {/* Decorative background circle */}
                             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
 
                             {/* Detail Header */}
-                            <div className="p-8 pb-6 border-b border-white/5 bg-slate-900/60 relative z-10">
+                            <div className="p-8 pb-6 border-b border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/60 relative z-10">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                                    <div className="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center border border-white/5 overflow-hidden shrink-0 shadow-lg relative group">
+                                    <div className="w-24 h-24 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-200 dark:border-white/5 overflow-hidden shrink-0 shadow-lg relative group">
                                         {selectedCustomer.avatar_url ? (
                                             <img src={selectedCustomer.avatar_url} className="w-full h-full object-cover" />
                                         ) : (
-                                            <span className="text-4xl font-semibold text-slate-500">{selectedCustomer.name[0]?.toUpperCase()}</span>
+                                            <span className="text-4xl font-semibold text-slate-300 dark:text-slate-500">{selectedCustomer.name[0]?.toUpperCase()}</span>
                                         )}
-                                        <div className="absolute inset-0 ring-4 ring-indigo-500/0 group-hover:ring-indigo-500/20 transition-all rounded-2xl" />
+                                        <div className="absolute inset-0 ring-4 ring-primary/0 group-hover:ring-primary/20 transition-all rounded-2xl" />
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <div className="flex items-center gap-3 mb-2">
-                                            <span className="text-xs flex items-center gap-1 font-medium text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
+                                            <span className="text-xs flex items-center gap-1 font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
                                                 <UserPlus size={12} /> Cliente Registrado
                                             </span>
-                                            <span className="text-xs font-mono text-slate-500">ID: {selectedCustomer.id.slice(0, 8)}</span>
+                                            <span className="text-xs font-mono text-muted-foreground">ID: {selectedCustomer.id.slice(0, 8)}</span>
                                         </div>
-                                        <h3 className="text-2xl sm:text-3xl font-heading font-bold text-white mb-3 truncate">{selectedCustomer.name}</h3>
+                                        <h3 className="text-2xl sm:text-3xl font-heading font-bold text-foreground mb-3 truncate">{selectedCustomer.name}</h3>
                                         <div className="flex items-center gap-4">
-                                            <div className="flex items-center gap-2 text-sm text-slate-300 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-white/5">
-                                                <Phone size={14} className="text-slate-500" />
+                                            <div className="flex items-center gap-2 text-sm text-foreground bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm">
+                                                <Phone size={14} className="text-primary" />
                                                 {selectedCustomer.phone}
                                             </div>
                                             {(selectedCustomer.pets?.length ?? 0) > 0 && (
-                                                <div className="flex items-center gap-2 text-sm text-emerald-400 font-medium">
+                                                <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 font-medium">
                                                     <ShieldCheck size={16} /> Verificado
                                                 </div>
                                             )}
@@ -291,13 +291,13 @@ export default function ClientesPage() {
                             <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar relative z-10">
                                 <section>
                                     <div className="flex justify-between items-center mb-6">
-                                        <div className="flex items-center gap-2 text-indigo-400 font-medium">
+                                        <div className="flex items-center gap-2 text-primary font-medium">
                                             <Dog size={18} />
                                             <h5 className="text-sm">Pets Vinculados</h5>
                                         </div>
                                         <button
                                             onClick={() => setIsPetModalOpen(true)}
-                                            className="px-4 py-1.5 bg-indigo-500/10 text-indigo-400 text-sm font-medium rounded-lg hover:bg-indigo-500 hover:text-white transition-all border border-indigo-500/20"
+                                            className="px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-lg hover:bg-primary hover:text-white transition-all border border-primary/20"
                                         >
                                             Novo Pet
                                         </button>
@@ -307,18 +307,18 @@ export default function ClientesPage() {
                                         {selectedCustomer.pets?.map((pet: any) => {
                                             const PetIcon = petIconMap[pet.type] || Info;
                                             return (
-                                                <div key={pet.id} className="bg-slate-900/40 border border-white/5 rounded-2xl p-5 relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+                                                <div key={pet.id} className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 rounded-2xl p-5 relative overflow-hidden group hover:border-primary/30 transition-all shadow-sm">
                                                     <div className="flex gap-4 items-start mb-4">
-                                                        <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center overflow-hidden shrink-0 border border-white/5 group-hover:border-indigo-500/20 group-hover:shadow-md transition-all">
+                                                        <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center overflow-hidden shrink-0 border border-slate-100 dark:border-white/5 group-hover:border-primary/20 group-hover:shadow-md transition-all">
                                                             {pet.avatar_url ? (
                                                                 <img src={pet.avatar_url} className="w-full h-full object-cover" />
                                                             ) : (
-                                                                <PetIcon size={20} className="text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                                                                <PetIcon size={20} className="text-slate-400 group-hover:text-primary transition-colors" />
                                                             )}
                                                         </div>
                                                         <div className="min-w-0 flex-1">
                                                             <div className="flex items-center justify-between gap-2">
-                                                                <p className="font-heading font-semibold text-slate-100 truncate group-hover:text-indigo-400 transition-colors">{pet.name}</p>
+                                                                <p className="font-heading font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary transition-colors">{pet.name}</p>
 
                                                                 <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                                     <button
@@ -365,11 +365,11 @@ export default function ClientesPage() {
                                     </div>
                                 </section>
 
-                                <section className="p-6 bg-slate-900/30 border border-white/5 rounded-2xl relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                                <section className="p-6 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-white/5 rounded-2xl relative overflow-hidden group shadow-inner">
+                                    <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10">
                                         <HistoryIcon size={64} className="text-slate-500 group-hover:rotate-12 transition-transform duration-700" />
                                     </div>
-                                    <div className="flex items-center gap-2 mb-3 text-slate-300 font-medium">
+                                    <div className="flex items-center gap-2 mb-3 text-slate-600 dark:text-slate-300 font-medium">
                                         <HistoryIcon size={16} className="text-slate-400" />
                                         <h6 className="text-sm">Logs de Atividade Recentes</h6>
                                     </div>
@@ -379,7 +379,7 @@ export default function ClientesPage() {
                                 </section>
                             </div>
 
-                            <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-white/5 bg-slate-900/30">
+                            <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/30">
                                 <button className="w-full py-4 mt-6 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all flex items-center justify-center gap-3 group">
                                     <Calendar size={18} className="group-hover:scale-110 group-hover:rotate-12 transition-transform" />
                                     Agendar Procedimento

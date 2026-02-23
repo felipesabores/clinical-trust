@@ -26,12 +26,12 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const statuses = [
-    { id: 'SCHEDULED', label: 'Agendados', color: 'bg-slate-500' },
-    { id: 'RECEPTION', label: 'Recepção', color: 'bg-sky-500' },
-    { id: 'BATHING', label: 'Banho', color: 'bg-blue-600' },
-    { id: 'GROOMING', label: 'Tosa', color: 'bg-emerald-600' },
-    { id: 'DRYING', label: 'Secagem', color: 'bg-teal-500' },
-    { id: 'READY', label: 'Pronto', color: 'bg-green-500' },
+    { id: 'SCHEDULED', label: 'Agendados', color: 'bg-slate-400 dark:bg-slate-500' },
+    { id: 'RECEPTION', label: 'Recepção', color: 'bg-indigo-400 dark:bg-indigo-500' },
+    { id: 'BATHING', label: 'Banho', color: 'bg-cyan-500 dark:bg-cyan-600' },
+    { id: 'GROOMING', label: 'Tosa', color: 'bg-emerald-500 dark:bg-emerald-600' },
+    { id: 'DRYING', label: 'Secagem', color: 'bg-amber-400 dark:bg-amber-500' },
+    { id: 'READY', label: 'Pronto', color: 'bg-rose-500 dark:bg-rose-600' },
 ] as const;
 
 import { API } from '@/config';
