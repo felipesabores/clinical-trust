@@ -57,17 +57,33 @@ export class CustomerController {
 
     static async create(req: Request, res: Response) {
         try {
-            const { tenant_id, name, phone, avatar_url } = req.body;
+            const { tenant_id, name, phone, avatar_url, pets } = req.body;
+
+            if (!tenant_id || !name) {
+                return res.status(400).json({ error: 'Tenant ID and Name are required' });
+            }
+
             const customer = await prisma.customer.create({
                 data: {
                     tenant_id,
                     name,
                     phone,
-                    avatar_url
-                }
+                    avatar_url,
+                    pets: {
+                        create: Array.isArray(pets) ? pets.map((p: any) => ({
+                            name: p.name,
+                            breed: p.breed,
+                            weight: p.weight,
+                            notes: p.notes,
+                            type: p.type || 'DOG'
+                        })) : []
+                    }
+                },
+                include: { pets: true }
             });
             res.status(201).json(customer);
         } catch (error) {
+            console.error('Customer creation error:', error);
             res.status(500).json({ error: 'Failed to create customer' });
         }
     }
@@ -103,6 +119,12 @@ export class CustomerController {
         try {
             const customer_id = req.params.customer_id as string;
             const { name, breed, type, avatar_url, notes } = req.body;
+
+            const customer = await prisma.customer.findUnique({ where: { id: customer_id } });
+            if (!customer) {
+                return res.status(404).json({ error: 'Customer not found' });
+            }
+
             const pet = await prisma.pet.create({
                 data: {
                     customer_id,
@@ -115,6 +137,7 @@ export class CustomerController {
             });
             res.status(201).json(pet);
         } catch (error) {
+            console.error('Failed to add pet:', error);
             res.status(500).json({ error: 'Failed to add pet' });
         }
     }

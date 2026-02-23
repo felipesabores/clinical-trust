@@ -145,10 +145,22 @@ export class AppointmentController {
     static async getKanban(req: Request, res: Response) {
         try {
             const tenantId = req.query.tenantId as string;
+            const dateStr = req.query.date as string;
+
             if (!tenantId) return res.status(400).json({ error: 'Tenant ID is required' });
 
+            const queryDate = dateStr ? new Date(dateStr) : new Date();
+            const startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
+            const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
+
             const appointments = await prisma.appointment.findMany({
-                where: { tenant_id: tenantId },
+                where: {
+                    tenant_id: tenantId,
+                    scheduled_at: {
+                        gte: startOfDay,
+                        lte: endOfDay
+                    }
+                },
                 include: {
                     pet: { include: { customer: true } },
                     camera: true,

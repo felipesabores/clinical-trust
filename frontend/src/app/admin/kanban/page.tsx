@@ -240,13 +240,15 @@ export default function KanbanPage() {
                                                                     {copiedId === app.id ? <Check size={12} className="text-green-500" /> : <Copy size={12} />}
                                                                     {copiedId === app.id ? 'COPIADO' : 'LINK'}
                                                                 </button>
-                                                                <button
-                                                                    onClick={() => handleWhatsAppShare(app)}
-                                                                    className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-600 rounded-lg text-[10px] font-black transition-colors"
-                                                                >
-                                                                    <MessageCircle size={12} />
-                                                                    WHATSAPP
-                                                                </button>
+                                                                {app.pet?.customer?.phone && (
+                                                                    <button
+                                                                        onClick={() => handleWhatsAppShare(app)}
+                                                                        className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-600 rounded-lg text-[10px] font-black transition-colors"
+                                                                    >
+                                                                        <MessageCircle size={12} />
+                                                                        WHATSAPP
+                                                                    </button>
+                                                                )}
                                                             </div>
                                                         )}
 
