@@ -80,6 +80,18 @@ export default function KanbanPage() {
         }
     };
 
+    const deleteAppointment = async (appId: string) => {
+        if (confirm('Tem certeza que deseja finalizar este atendimento? Esta ação não pode ser desfeita.')) {
+            try {
+                await axios.delete(`${API}/api/appointments/${appId}`);
+                fetchKanban();
+            } catch (e) {
+                console.error('Erro ao deletar agendamento', e);
+                fetchKanban();
+            }
+        }
+    };
+
     useEffect(() => {
         setIsMounted(true);
         fetchKanban();
@@ -254,15 +266,9 @@ export default function KanbanPage() {
                                                         )}
 
                                                         {status.id === 'READY' && (
-                                                            <div className="flex items-center justify-center w-full text-green-500 py-2 rounded-xl gap-2 font-black text-[10px] bg-green-500/10">
-                                                                <CheckCircle2 size={14} /> CONCLUÍDO
-                                                            </div>
-                                                        )}
-
-                                                        {(status.id === 'BATHING' || status.id === 'GROOMING' || status.id === 'DRYING') && (
                                                             <button
-                                                                onClick={() => updateStatus(app.id, 'READY')}
-                                                                className="flex items-center justify-center w-full text-white py-2 rounded-xl gap-2 font-black text-[10px] bg-rose-500 hover:bg-rose-600 transition-colors"
+                                                                onClick={() => deleteAppointment(app.id)}
+                                                                className="flex items-center justify-center w-full text-white py-2 rounded-xl gap-2 font-black text-[10px] bg-green-600 hover:bg-green-700 transition-colors"
                                                             >
                                                                 <CheckCircle2 size={14} /> FINALIZAR ATENDIMENTO
                                                             </button>
