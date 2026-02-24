@@ -159,6 +159,9 @@ export class AppointmentController {
                     scheduled_at: {
                         gte: startOfDay,
                         lte: endOfDay
+                    },
+                    status: {
+                        not: 'DONE' // Não incluir atendimentos concluídos no Kanban
                     }
                 },
                 include: {
@@ -176,7 +179,8 @@ export class AppointmentController {
                 BATHING: [],
                 GROOMING: [],
                 DRYING: [],
-                READY: []
+                READY: [],
+                DONE: []
             };
 
             appointments.forEach(app => {
@@ -361,6 +365,31 @@ export class AppointmentController {
             res.json({ success: true });
         } catch (error) {
             res.status(500).json({ error: 'Failed to delete appointment' });
+        }
+    }
+
+    // GET /api/appointments/history - Buscar histórico de atendimentos concluídos
+    static async getHistory(req: Request, res: Response) {
+        try {
+            const { tenantId, limit = 50 } = req.query;
+            
+            const appointments = await prisma.appointment.findMany({
+                where: {
+                    tenant_id: tenantId as string,
+                    status: 'DONE'
+                },
+                include: {
+                    pet: { include: { customer: true } },
+                    camera: true,
+                    staff: true
+                },
+                orderBy: { scheduled_at: 'desc' },
+                take: parseInt(limit as string)
+            });
+
+            res.json(appointments);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to fetch appointment history' });
         }
     }
 }

@@ -24,6 +24,7 @@ router.post('/appointments', AppointmentController.create);
 router.get('/appointments', AppointmentController.getList);
 router.patch('/appointments/:id', AppointmentController.update);
 router.delete('/appointments/:id', AppointmentController.delete);
+router.get('/appointments/history', AppointmentController.getHistory);
 router.get('/customers/search', AppointmentController.searchCustomers);
 router.get('/pets/search', AppointmentController.searchPets);
 

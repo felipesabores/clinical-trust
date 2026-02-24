@@ -66,6 +66,7 @@ enum AppointmentStatus {
   GROOMING
   DRYING
   READY
+  DONE
 }
 
 model Appointment {

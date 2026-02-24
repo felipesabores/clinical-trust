@@ -32,6 +32,7 @@ const statuses = [
     { id: 'GROOMING', label: 'Tosa', color: 'bg-emerald-500' },
     { id: 'DRYING', label: 'Secagem', color: 'bg-amber-400' },
     { id: 'READY', label: 'Pronto', color: 'bg-rose-500' },
+    { id: 'DONE', label: 'Concluído', color: 'bg-green-600' },
 ] as const;
 
 import { API } from '@/config';
@@ -80,13 +81,12 @@ export default function KanbanPage() {
         }
     };
 
-    const deleteAppointment = async (appId: string) => {
-        if (confirm('Tem certeza que deseja finalizar este atendimento? Esta ação não pode ser desfeita.')) {
+    const finishAppointment = async (appId: string) => {
+        if (confirm('Tem certeza que deseja finalizar este atendimento?')) {
             try {
-                await axios.delete(`${API}/api/appointments/${appId}`);
-                fetchKanban();
+                await updateStatus(appId, 'DONE');
             } catch (e) {
-                console.error('Erro ao deletar agendamento', e);
+                console.error('Erro ao finalizar agendamento', e);
                 fetchKanban();
             }
         }
@@ -267,7 +267,7 @@ export default function KanbanPage() {
 
                                                         {status.id === 'READY' && (
                                                             <button
-                                                                onClick={() => deleteAppointment(app.id)}
+                                                                onClick={() => updateStatus(app.id, 'DONE')}
                                                                 className="flex items-center justify-center w-full text-white py-2 rounded-xl gap-2 font-black text-[10px] bg-green-600 hover:bg-green-700 transition-colors"
                                                             >
                                                                 <CheckCircle2 size={14} /> FINALIZAR ATENDIMENTO
