@@ -29,6 +29,7 @@ const statusColors = {
     GROOMING: 'bg-pink-100 text-pink-800',
     DRYING: 'bg-orange-100 text-orange-800',
     READY: 'bg-green-100 text-green-800',
+    DONE: 'bg-emerald-100 text-emerald-800',
 };
 
 const statusLabels = {
@@ -38,6 +39,7 @@ const statusLabels = {
     GROOMING: 'Tosa',
     DRYING: 'Secagem',
     READY: 'Pronto',
+    DONE: 'Concluído',
 };
 
 export default function AppointmentList({ appointments, onEdit }: AppointmentListProps) {

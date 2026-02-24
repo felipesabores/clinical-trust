@@ -386,16 +386,45 @@ export default function ClientesPage() {
                                 </section>
 
                                 <section className="p-6 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-white/5 rounded-2xl relative overflow-hidden group shadow-inner">
-                                    <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10">
-                                        <HistoryIcon size={64} className="text-slate-500 group-hover:rotate-12 transition-transform duration-700" />
-                                    </div>
                                     <div className="flex items-center gap-2 mb-3 text-slate-600 dark:text-slate-300 font-medium">
                                         <HistoryIcon size={16} className="text-slate-400" />
-                                        <h6 className="text-sm">Logs de Atividade Recentes</h6>
+                                        <h6 className="text-sm">Histórico de Procedimentos</h6>
                                     </div>
-                                    <p className="text-sm text-slate-500 leading-relaxed italic relative z-10 max-w-lg">
-                                        O histórico completo de agendamentos e interações aparecerá aqui em tempo real. (Em construção)
-                                    </p>
+                                    {(() => {
+                                        const concluded = selectedCustomer.pets?.flatMap((pet: any) =>
+                                            pet.appointments
+                                                .filter((a: any) => a.status === 'DONE')
+                                                .map((a: any) => ({ ...a, petName: pet.name, tutorName: selectedCustomer.name }))
+                                        ) || [];
+                                        if (concluded.length === 0) {
+                                            return (
+                                                <div className="p-4 text-center text-slate-500 bg-white/50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-white/10">
+                                                    Nenhum procedimento concluído para este tutor.
+                                                </div>
+                                            );
+                                        }
+                                        return (
+                                            <div className="space-y-3">
+                                                {concluded.map((a: any) => (
+                                                    <div key={a.id} className="p-4 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/10 rounded-xl hover:border-primary/30 transition-all shadow-sm">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="min-w-0">
+                                                                <p className="font-heading font-semibold text-slate-900 dark:text-slate-100 truncate">
+                                                                    {a.petName} · {a.tutorName}
+                                                                </p>
+                                                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                                    {new Date(a.scheduled_at).toLocaleString('pt-BR')}
+                                                                </p>
+                                                            </div>
+                                                            <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                                                Concluído
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        );
+                                    })()}
                                 </section>
                             </div>
 

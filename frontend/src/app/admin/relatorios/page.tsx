@@ -26,6 +26,8 @@ export default function RelatoriosPage() {
     const { config } = useTenant();
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [history, setHistory] = useState<any[]>([]);
+    const [loadingHistory, setLoadingHistory] = useState(false);
 
     const fetchStats = async () => {
         if (!config?.id) return;
@@ -40,8 +42,24 @@ export default function RelatoriosPage() {
         }
     };
 
+    const fetchHistory = async () => {
+        if (!config?.id) return;
+        try {
+            setLoadingHistory(true);
+            const res = await axios.get(`${API}/api/appointments/history?tenantId=${config.id}&limit=50`);
+            setHistory(res.data || []);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoadingHistory(false);
+        }
+    };
+
     useEffect(() => {
         fetchStats();
+    }, [config?.id]);
+    useEffect(() => {
+        fetchHistory();
     }, [config?.id]);
 
     const revenueData = stats?.monthlyRevenue || [0, 0, 0, 0, 0, 0];
@@ -206,6 +224,59 @@ export default function RelatoriosPage() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div className="lg:col-span-3 bg-white dark:bg-slate-900/40 backdrop-blur-md p-8 border border-[#E4E9D5] dark:border-white/5 rounded-[2.5rem] relative overflow-hidden group shadow-2xl">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-[#7AAACE]/10 flex items-center justify-center border border-[#7AAACE]/20 text-[#7AAACE] shadow-sm">
+                            <Activity size={24} />
+                        </div>
+                        <div>
+                            <h3 className="font-heading font-black text-xl text-[#355872] dark:text-white tracking-tight">Histórico de Procedimentos</h3>
+                            <p className="text-sm font-medium text-[#355872]/40 mt-1">Últimos atendimentos concluídos</p>
+                        </div>
+                    </div>
+                    {loadingHistory ? (
+                        <div className="flex items-center justify-center p-12 text-muted-foreground">
+                            <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                            Carregando histórico...
+                        </div>
+                    ) : history.length === 0 ? (
+                        <div className="p-6 text-center text-[#355872]/60 bg-[#F7F8F0] dark:bg-slate-900/50 rounded-2xl border border-[#E4E9D5] dark:border-white/10">
+                            Nenhum procedimento concluído encontrado.
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {history.map((app) => (
+                                <div key={app.id} className="p-4 bg-[#F7F8F0] dark:bg-slate-900/50 border border-[#E4E9D5] dark:border-white/10 rounded-2xl hover:border-[#7AAACE]/30 transition-all shadow-sm">
+                                    <div className="flex items-center justify-between">
+                                        <div className="min-w-0">
+                                            <p className="font-heading font-semibold text-[#355872] dark:text-slate-100 truncate">
+                                                {app.pet?.name} · {app.pet?.customer?.name}
+                                            </p>
+                                            <div className="text-xs text-[#355872]/50 dark:text-slate-400 mt-1 flex items-center gap-3">
+                                                <span className="flex items-center gap-1">
+                                                    <Calendar size={12} className="text-[#7AAACE]" />
+                                                    {new Date(app.scheduled_at).toLocaleString('pt-BR')}
+                                                </span>
+                                                {app.staff?.name && (
+                                                    <span className="flex items-center gap-1">
+                                                        <Activity size={12} className="text-[#7AAACE]" />
+                                                        {app.staff.name}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className="px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                            Concluído
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
