@@ -31,11 +31,12 @@ interface AppointmentModalProps {
 
 const statusOptions = [
     { value: 'SCHEDULED', label: 'Agendado' },
-    { value: 'CONFIRMED', label: 'Confirmado' },
     { value: 'RECEPTION', label: 'Recepção' },
-    { value: 'IN_PROGRESS', label: 'Em Andamento' },
+    { value: 'BATHING', label: 'Banho' },
+    { value: 'GROOMING', label: 'Tosa' },
+    { value: 'DRYING', label: 'Secagem' },
+    { value: 'READY', label: 'Pronto' },
     { value: 'DONE', label: 'Finalizado' },
-    { value: 'CANCELLED', label: 'Cancelado' },
 ];
 
 export default function AppointmentModal({ isOpen, onClose, onSuccess, targetDate, initialData }: AppointmentModalProps) {
