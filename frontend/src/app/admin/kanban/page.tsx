@@ -32,7 +32,6 @@ const statuses = [
     { id: 'GROOMING', label: 'Tosa', color: 'bg-emerald-500' },
     { id: 'DRYING', label: 'Secagem', color: 'bg-amber-400' },
     { id: 'READY', label: 'Pronto', color: 'bg-rose-500' },
-    { id: 'DONE', label: 'Concluído', color: 'bg-green-600' },
 ] as const;
 
 import { API } from '@/config';
