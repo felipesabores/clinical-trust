@@ -53,7 +53,6 @@ jobs:
           exit 1
 
       - name: E2E validate DONE flow (optional)
-        if: env.RUN_E2E == 'true'
         env:
           RUN_E2E: ${{ secrets.RUN_E2E }}
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
@@ -73,6 +72,8 @@ jobs:
           echo "Checking history"
           HIST=$(curl -s "$API/appointments/history?tenantId=$TENANT&limit=10")
           echo "$HIST" | jq -e --arg id "$ID" 'map(.id) | index($id) != null'
+          echo "Cleaning up test appointment"
+          curl -s -X DELETE "$API/appointments/$ID" -o /tmp/delete.json -w "%{http_code}"
       # Example: Deploy via SSH
       # - name: Deploy via SSH
       #   uses: appleboy/ssh-action@master
