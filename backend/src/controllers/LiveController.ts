@@ -26,7 +26,7 @@ export class LiveController {
 
             // Security: Mask RTSP URL. We return a conversion URL (HLS/WebRTC provided by MediaMTX)
             // Example: http://mediamtx:8888/stream_id/index.m3u8
-            const mediaServerUrl = process.env.MEDIA_SERVER_BASE_URL || 'http://localhost:8888';
+            const mediaServerUrl = (process.env.MEDIA_SERVER_BASE_URL || 'http://localhost:8888').trim().replace(/^[`'"]+|[`'"]+$/g, '');
             const streamUrl = `${mediaServerUrl}/${appointment.camera?.id}/index.m3u8`;
 
             res.json({

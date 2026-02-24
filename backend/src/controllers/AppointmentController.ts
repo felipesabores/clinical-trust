@@ -221,7 +221,7 @@ export class AppointmentController {
                     updateData.token_expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
                     updateData.camera_id = camera_id || null;
 
-                    const frontendUrl = process.env.FRONTEND_CLIENT_URL || 'http://localhost:3000';
+                    const frontendUrl = (process.env.FRONTEND_CLIENT_URL || 'http://localhost:3000').trim().replace(/^[`'"]+|[`'"]+$/g, '');
                     const magicLink = `${frontendUrl}/live/${token}`;
 
                     // Validar dados antes de enviar webhook
