@@ -160,9 +160,7 @@ export class AppointmentController {
                         gte: startOfDay,
                         lte: endOfDay
                     },
-                    status: {
-                        not: 'DONE' // Não incluir atendimentos concluídos no Kanban
-                    }
+                    end_time: null
                 },
                 include: {
                     pet: { include: { customer: true } },
@@ -179,8 +177,7 @@ export class AppointmentController {
                 BATHING: [],
                 GROOMING: [],
                 DRYING: [],
-                READY: [],
-                DONE: []
+                READY: []
             };
 
             appointments.forEach(app => {
@@ -199,6 +196,11 @@ export class AppointmentController {
             const id = req.params.id as string;
             const { status, camera_id } = req.body;
 
+            const allowedStatuses = ['SCHEDULED','RECEPTION','BATHING','GROOMING','DRYING','READY','DONE'];
+            if (!status || !allowedStatuses.includes(status)) {
+                return res.status(400).json({ error: 'Invalid status' });
+            }
+
             const currentAppointment = await prisma.appointment.findUnique({
                 where: { id },
                 include: { pet: { include: { customer: true } }, tenant: true }
@@ -207,7 +209,6 @@ export class AppointmentController {
             if (!currentAppointment) return res.status(404).json({ error: 'Appointment not found' });
 
             const updateData: any = { status };
-            if (camera_id) updateData.camera_id = camera_id;
 
             // Automation: Generate Magic Link when starting procedures
             if (status === 'BATHING' || status === 'GROOMING') {
@@ -215,6 +216,7 @@ export class AppointmentController {
                     const token = uuidv4();
                     updateData.access_token = token;
                     updateData.token_expires_at = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
+                    updateData.camera_id = camera_id || null;
 
                     const frontendUrl = process.env.FRONTEND_CLIENT_URL || 'http://localhost:3000';
                     const magicLink = `${frontendUrl}/live/${token}`;
@@ -242,8 +244,14 @@ export class AppointmentController {
                 }
             }
 
-            // Cleanup: Revoke token when finished
-            if (status === 'READY' || status === 'RECEPTION' || status === 'SCHEDULED') {
+            // Cleanup / finalização
+            if (status === 'DONE') {
+                updateData.status = 'READY';
+                updateData.end_time = new Date();
+                updateData.access_token = null;
+                updateData.camera_id = null;
+                updateData.token_expires_at = null;
+            } else if (status !== 'BATHING' && status !== 'GROOMING') {
                 updateData.access_token = null;
                 updateData.camera_id = null;
                 updateData.token_expires_at = null;
@@ -376,14 +384,14 @@ export class AppointmentController {
             const appointments = await prisma.appointment.findMany({
                 where: {
                     tenant_id: tenantId as string,
-                    status: 'DONE'
+                    end_time: { not: null }
                 },
                 include: {
                     pet: { include: { customer: true } },
                     camera: true,
                     staff: true
                 },
-                orderBy: { scheduled_at: 'desc' },
+                orderBy: { end_time: 'desc' },
                 take: parseInt(limit as string)
             });
 
