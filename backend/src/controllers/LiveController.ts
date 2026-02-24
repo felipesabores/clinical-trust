@@ -31,7 +31,11 @@ export class LiveController {
                 process.env.MEDIA_SERVER_BASE_URL ||
                 'http://localhost:8888'
             ).trim().replace(/^[`'"]+|[`'"]+$/g, '');
-            const streamUrl = `${mediaServerUrl}/${appointment.camera?.id}/index.m3u8`;
+            const candidate = (appointment.camera?.rtsp_url || '').trim().replace(/^[`'"]+|[`'"]+$/g, '');
+            const useExternalHls = /^https?:\/\/.+\.m3u8(\?.*)?$/.test(candidate);
+            const streamUrl = useExternalHls
+                ? candidate
+                : `${mediaServerUrl}/${appointment.camera?.id}/index.m3u8`;
 
             res.json({
                 pet: appointment.pet,
