@@ -160,7 +160,9 @@ export class AppointmentController {
                         gte: startOfDay,
                         lte: endOfDay
                     },
-                    end_time: null
+                    status: {
+                        not: 'DONE'
+                    }
                 },
                 include: {
                     pet: { include: { customer: true } },
@@ -177,7 +179,8 @@ export class AppointmentController {
                 BATHING: [],
                 GROOMING: [],
                 DRYING: [],
-                READY: []
+                READY: [],
+                DONE: []
             };
 
             appointments.forEach(app => {
@@ -246,7 +249,6 @@ export class AppointmentController {
 
             // Cleanup / finalização
             if (status === 'DONE') {
-                updateData.status = 'READY';
                 updateData.end_time = new Date();
                 updateData.access_token = null;
                 updateData.camera_id = null;
@@ -384,14 +386,14 @@ export class AppointmentController {
             const appointments = await prisma.appointment.findMany({
                 where: {
                     tenant_id: tenantId as string,
-                    end_time: { not: null }
+                    status: 'DONE'
                 },
                 include: {
                     pet: { include: { customer: true } },
                     camera: true,
                     staff: true
                 },
-                orderBy: { end_time: 'desc' },
+                orderBy: { scheduled_at: 'desc' },
                 take: parseInt(limit as string)
             });
 
