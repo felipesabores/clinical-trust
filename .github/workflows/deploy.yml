@@ -33,6 +33,46 @@ jobs:
           echo "Response: $(cat /tmp/dokploy_response.txt)"
           test "$(cat /tmp/http_code.txt)" -ge 200 -a "$(cat /tmp/http_code.txt)" -lt 300
 
+      - name: Wait for API health
+        env:
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          URL="${HEALTHCHECK_URL:-https://core.carvalhodev.com.br/api/health}"
+          echo "Polling health at $URL"
+          for i in $(seq 1 20); do
+            CODE=$(curl -s -o /tmp/health.json -w "%{http_code}" "$URL")
+            echo "Attempt $i: HTTP $CODE"
+            if [ "$CODE" = "200" ] && grep -q '"status":"UP"' /tmp/health.json; then
+              echo "API is UP"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "API did not reach UP state"
+          cat /tmp/health.json || true
+          exit 1
+
+      - name: E2E validate DONE flow (optional)
+        if: env.RUN_E2E == 'true'
+        env:
+          RUN_E2E: ${{ secrets.RUN_E2E }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+        run: |
+          API="${API_BASE_URL:-https://core.carvalhodev.com.br/api}"
+          TENANT="${TENANT_ID:-test-tenant-123}"
+          echo "Creating appointment for tenant $TENANT"
+          APPT=$(jq -n --arg t "$TENANT" --arg name "Cliente Deploy CI" --arg phone "5511999997777" --arg pet "Rex" --arg breed "SRD" --arg sched "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{tenant_id:$t,customer_name:$name,customer_phone:$phone,pet_name:$pet,pet_breed:$breed,scheduled_at:$sched}')
+          CREATE=$(curl -s -X POST -H "Content-Type: application/json" -d "$APPT" "$API/appointments")
+          ID=$(echo "$CREATE" | jq -r '.id')
+          echo "Appointment ID: $ID"
+          test "$ID" != "null"
+          echo "Marking DONE"
+          DONE=$(curl -s -X PATCH -H "Content-Type: application/json" -d '{"status":"DONE"}' "$API/appointments/$ID/status")
+          echo "$DONE" | jq -e '.status=="DONE"'
+          echo "Checking history"
+          HIST=$(curl -s "$API/appointments/history?tenantId=$TENANT&limit=10")
+          echo "$HIST" | jq -e --arg id "$ID" 'map(.id) | index($id) != null'
       # Example: Deploy via SSH
       # - name: Deploy via SSH
       #   uses: appleboy/ssh-action@master
