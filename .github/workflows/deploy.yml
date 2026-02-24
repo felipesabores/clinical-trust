@@ -28,7 +28,7 @@ jobs:
         run: |
           BRANCH="${DOKPLOY_BRANCH:-main}"
           echo "Triggering Dokploy deploy for branch: $BRANCH"
-          curl -s -o /tmp/dokploy_response.txt -w "%{http_code}" -X POST "${DOKPLOY_COMPOSE_WEBHOOK_URL}?branch=${BRANCH}" > /tmp/http_code.txt
+          curl -s -o /tmp/dokploy_response.txt -w "%{http_code}" -X POST -H "Content-Type: application/json" -d "{\"branch\":\"${BRANCH}\"}" "${DOKPLOY_COMPOSE_WEBHOOK_URL}" > /tmp/http_code.txt
           echo "HTTP code: $(cat /tmp/http_code.txt)"
           echo "Response: $(cat /tmp/dokploy_response.txt)"
           test "$(cat /tmp/http_code.txt)" -ge 200 -a "$(cat /tmp/http_code.txt)" -lt 300
