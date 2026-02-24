@@ -319,6 +319,14 @@ export class AppointmentController {
             delete updateData.tenant_id;
             delete updateData.id;
 
+            // Validate status against allowed enum
+            if (updateData.status) {
+                const allowedStatuses = ['SCHEDULED','RECEPTION','BATHING','GROOMING','DRYING','READY','DONE'];
+                if (!allowedStatuses.includes(updateData.status)) {
+                    return res.status(400).json({ error: 'Invalid status' });
+                }
+            }
+
             // Converter campos de data
             if (updateData.scheduled_at) {
                 updateData.scheduled_at = new Date(updateData.scheduled_at);
