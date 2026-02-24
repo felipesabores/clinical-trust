@@ -20,10 +20,16 @@ jobs:
       # Trigger Dokploy Webhook para Docker Compose
       - name: Trigger Dokploy Compose Deploy
         if: env.DOKPLOY_COMPOSE_WEBHOOK_URL != ''
-        run: |
-          curl -X POST ${{ secrets.DOKPLOY_COMPOSE_WEBHOOK_URL }}
         env:
           DOKPLOY_COMPOSE_WEBHOOK_URL: ${{ secrets.DOKPLOY_COMPOSE_WEBHOOK_URL }}
+          DOKPLOY_BRANCH: ${{ secrets.DOKPLOY_BRANCH }}
+        run: |
+          BRANCH="${DOKPLOY_BRANCH:-main}"
+          echo "Triggering Dokploy deploy for branch: $BRANCH"
+          curl -s -o /tmp/dokploy_response.txt -w "%{http_code}" -X POST "${DOKPLOY_COMPOSE_WEBHOOK_URL}?branch=${BRANCH}" > /tmp/http_code.txt
+          echo "HTTP code: $(cat /tmp/http_code.txt)"
+          echo "Response: $(cat /tmp/dokploy_response.txt)"
+          test "$(cat /tmp/http_code.txt)" -ge 200 -a "$(cat /tmp/http_code.txt)" -lt 300
 
       # Example: Deploy via SSH
       # - name: Deploy via SSH
