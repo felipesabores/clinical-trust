@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { X, Dog, Cat, Rabbit, Loader2, Save, Info, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
@@ -11,6 +10,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+import { apiClient } from '@/lib/apiClient';
 import { API } from '@/config';
 
 interface PetModalProps {
@@ -70,7 +70,7 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
 
         try {
             setUploading(true);
-            const res = await axios.post(`${API}/api/upload/avatar`, fd, {
+            const res = await apiClient.post(`/api/upload/avatar`, fd, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setFormData(prev => ({ ...prev, avatar_url: res.data.url }));
@@ -87,9 +87,9 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
         setLoading(true);
         try {
             if (initialData) {
-                await axios.patch(`${API}/api/pets/${initialData.id}`, formData);
+                await apiClient.patch(`/api/pets/${initialData.id}`, formData);
             } else {
-                await axios.post(`${API}/api/customers/${customerId}/pets`, formData);
+                await apiClient.post(`/api/customers/${customerId}/pets`, formData);
             }
             onSuccess();
             onClose();

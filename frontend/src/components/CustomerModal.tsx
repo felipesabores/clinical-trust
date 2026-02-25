@@ -1,13 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { X, UserPlus, Phone, Loader2, Save, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { useTenant } from '@/context/TenantContext';
-
-import { API } from '@/config';
+import { apiClient } from '@/lib/apiClient';
 
 interface CustomerModalProps {
     isOpen: boolean;
@@ -22,7 +19,6 @@ interface CustomerModalProps {
 }
 
 export default function CustomerModal({ isOpen, onClose, onSuccess, initialData }: CustomerModalProps) {
-    const { config } = useTenant();
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({
@@ -52,7 +48,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, initialData 
 
         try {
             setUploading(true);
-            const res = await axios.post(`${API}/api/upload/avatar`, fd, {
+            const res = await apiClient.post(`/api/upload/avatar`, fd, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setFormData(prev => ({ ...prev, avatar_url: res.data.url }));
@@ -69,13 +65,10 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, initialData 
         setLoading(true);
         try {
             if (initialData) {
-                await axios.patch(`${API}/api/customers/${initialData.id}`, formData);
+                await apiClient.patch(`/api/customers/${initialData.id}`, formData);
                 onSuccess(initialData.id);
             } else {
-                const res = await axios.post(`${API}/api/customers`, {
-                    ...formData,
-                    tenant_id: config?.id
-                });
+                const res = await apiClient.post(`/api/customers`, formData);
                 onSuccess(res.data.id);
             }
             onClose();

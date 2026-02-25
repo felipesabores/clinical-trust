@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
     UserPlus,
     Search,
@@ -31,6 +30,7 @@ import AppointmentList from '@/AppointmentList';
 import { useTenant } from '@/context/TenantContext';
 
 import { API } from '@/config';
+import { apiClient } from '@/lib/apiClient';
 
 const petIconMap: Record<string, any> = {
     DOG: Dog,
@@ -58,7 +58,7 @@ export default function ClientesPage() {
         if (!tenantId) return;
         try {
             setLoading(true);
-            const res = await axios.get(`${API}/api/customers?tenantId=${tenantId}&q=${q}`);
+            const res = await apiClient.get(`/api/customers?q=${q}`);
             setCustomers(res.data || []);
             if (res.data.length > 0 && !selectedCustomer) {
                 fetchDetail(res.data[0].id);
@@ -72,7 +72,7 @@ export default function ClientesPage() {
 
     const fetchDetail = async (id: string) => {
         try {
-            const res = await axios.get(`${API}/api/customers/${id}`);
+            const res = await apiClient.get(`/api/customers/${id}`);
             setSelectedCustomer(res.data);
         } catch (e) {
             console.error(e);
@@ -82,7 +82,7 @@ export default function ClientesPage() {
     const handleDeleteCustomer = async (id: string, name: string) => {
         if (!confirm(`Tem certeza que deseja excluir o tutor ${name}? Isso removerá todos os seus pets e agendamentos.`)) return;
         try {
-            await axios.delete(`${API}/api/customers/${id}`);
+            await apiClient.delete(`/api/customers/${id}`);
             if (selectedCustomer?.id === id) setSelectedCustomer(null);
             fetchCustomers(searchQuery);
         } catch (e: any) {
@@ -93,7 +93,7 @@ export default function ClientesPage() {
     const handleDeletePet = async (petId: string, petName: string) => {
         if (!confirm(`Excluir o pet ${petName}?`)) return;
         try {
-            await axios.delete(`${API}/api/pets/${petId}`);
+            await apiClient.delete(`/api/pets/${petId}`);
             if (selectedCustomer) fetchDetail(selectedCustomer.id);
             fetchCustomers(searchQuery);
         } catch (e: any) {
@@ -430,8 +430,8 @@ export default function ClientesPage() {
 
                             {/* Seção de Agendamentos */}
                             <div className="p-6 border-t border-[#E4E9D5] dark:border-white/5 bg-[#F7F8F0]/50 dark:bg-slate-900/30">
-                                <AppointmentList 
-                                    appointments={selectedCustomer.pets.flatMap((pet: any) => 
+                                <AppointmentList
+                                    appointments={selectedCustomer.pets.flatMap((pet: any) =>
                                         pet.appointments.map((appointment: any) => ({
                                             ...appointment,
                                             pet: { name: pet.name, type: pet.type }
@@ -441,7 +441,7 @@ export default function ClientesPage() {
                             </div>
 
                             <div className="p-6 pt-0 mt-auto shrink-0 relative z-10 border-t border-[#E4E9D5] dark:border-white/5 bg-[#F7F8F0]/50 dark:bg-slate-900/30">
-                                <button 
+                                <button
                                     onClick={() => setIsAppointmentModalOpen(true)}
                                     className="w-full py-4 mt-6 bg-[#355872] hover:bg-[#7AAACE] text-white rounded-2xl text-sm font-bold shadow-xl shadow-[#355872]/20 hover:shadow-[#7AAACE]/20 transition-all duration-500 flex items-center justify-center gap-3 group"
                                 >

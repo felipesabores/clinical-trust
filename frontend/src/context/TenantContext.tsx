@@ -20,6 +20,7 @@ interface TenantContextType {
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
 import { API } from '@/config';
+import { setTenantId } from '@/lib/apiClient';
 
 export function TenantProvider({ children }: { children: React.ReactNode }) {
     const [config, setConfig] = useState<TenantConfig | null>(null);
@@ -28,8 +29,14 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const fetchConfig = async () => {
             try {
+                // /api/config é rota pública — usa axios direto (sem x-tenant-id)
                 const res = await axios.get(`${API}/api/config`);
                 setConfig(res.data);
+
+                // Configura o header x-tenant-id para todos os requests protegidos
+                if (res.data?.id) {
+                    setTenantId(res.data.id);
+                }
 
                 // Dynamically update CSS variables for colors
                 if (res.data.primary_color) {
@@ -60,7 +67,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
                         }
                         h /= 6;
                     }
-                    const hslStr = `${(h * 360).toFixed(1)} ${(s * 100).toFixed(1)}% ${(l * 100).toFixed(1)}%`;
+                    const hslStr = `${(h * 360).toFixed(1)} ${(s! * 100).toFixed(1)}% ${(l * 100).toFixed(1)}%`;
                     document.documentElement.style.setProperty('--primary', hslStr);
                 }
             } catch (error) {
