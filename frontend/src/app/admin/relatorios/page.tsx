@@ -17,10 +17,10 @@ import {
 import { cn } from '@/lib/utils';
 
 import { useTenant } from '@/context/TenantContext';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import { useState, useEffect } from 'react';
 
-import { API } from '@/config';
+
 
 export default function RelatoriosPage() {
     const { config } = useTenant();
@@ -30,10 +30,9 @@ export default function RelatoriosPage() {
     const [loadingHistory, setLoadingHistory] = useState(false);
 
     const fetchStats = async () => {
-        if (!config?.id) return;
         try {
             setLoading(true);
-            const res = await axios.get(`${API}/api/transactions/stats?tenantId=${config.id}`);
+            const res = await apiClient.get(`/api/transactions/stats`);
             setStats(res.data);
         } catch (e) {
             console.error(e);
@@ -43,10 +42,9 @@ export default function RelatoriosPage() {
     };
 
     const fetchHistory = async () => {
-        if (!config?.id) return;
         try {
             setLoadingHistory(true);
-            const res = await axios.get(`${API}/api/appointments/history?tenantId=${config.id}&limit=50`);
+            const res = await apiClient.get(`/api/appointments/history?limit=50`);
             setHistory(res.data || []);
         } catch (e) {
             console.error(e);
@@ -55,12 +53,8 @@ export default function RelatoriosPage() {
         }
     };
 
-    useEffect(() => {
-        fetchStats();
-    }, [config?.id]);
-    useEffect(() => {
-        fetchHistory();
-    }, [config?.id]);
+    useEffect(() => { fetchStats(); }, []);
+    useEffect(() => { fetchHistory(); }, []);
 
     const revenueData = stats?.monthlyRevenue || [0, 0, 0, 0, 0, 0];
     const months = ['SET', 'OUT', 'NOV', 'DEZ', 'JAN', 'FEV'];
@@ -226,7 +220,7 @@ export default function RelatoriosPage() {
                     </div>
                 </div>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-3 bg-white dark:bg-slate-900/40 backdrop-blur-md p-8 border border-[#E4E9D5] dark:border-white/5 rounded-[2.5rem] relative overflow-hidden group shadow-2xl">
                     <div className="flex items-center gap-3 mb-8">
