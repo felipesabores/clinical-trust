@@ -5,25 +5,28 @@ const prisma = new PrismaClient();
 
 export class TenantController {
     static async getConfig(req: Request, res: Response) {
-        const tenantId = req.tenantId;
+        // On protected routes, tenantId comes from middleware.
+        // On the public /config bootstrap route, fall back to env var or first tenant in DB.
+        const tenantId = req.tenantId
+            || process.env.TENANT_ID
+            || process.env.NEXT_PUBLIC_TENANT_ID;
 
         try {
-            console.log(`[WhiteLabel] Fetching config for tenant: ${tenantId}`);
-            let tenant = await prisma.tenant.findUnique({
-                where: { id: tenantId }
-            });
+            let tenant = null;
+
+            if (tenantId) {
+                console.log(`[WhiteLabel] Fetching config for tenant: ${tenantId}`);
+                tenant = await prisma.tenant.findUnique({ where: { id: tenantId } });
+            }
+
+            // Public bootstrap: return the first tenant if no specific one found
+            if (!tenant) {
+                console.log(`[WhiteLabel] No tenantId, fetching first available tenant...`);
+                tenant = await prisma.tenant.findFirst({ orderBy: { created_at: 'asc' } });
+            }
 
             if (!tenant) {
-                console.log(`[WhiteLabel] Tenant ${tenantId} not found, bootstrapping...`);
-                tenant = await prisma.tenant.create({
-                    data: {
-                        id: tenantId,
-                        name: 'Clinical Trust',
-                        document: `DOC-${tenantId}`, // More unique than a static string
-                        description: 'Pet Boutique',
-                        primary_color: '#3b82f6'
-                    }
-                });
+                return res.status(404).json({ error: 'No tenant configured' });
             }
 
             res.json(tenant);
