@@ -21,11 +21,11 @@ import {
     ExternalLink,
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
 
-import { API } from '@/config';
+
 
 interface Appointment {
     id: string;
@@ -82,11 +82,10 @@ export default function DashboardPage() {
     }, [tenantId]);
 
     const fetchStats = async () => {
-        if (!tenantId) return;
         try {
             const [finRes, staffRes] = await Promise.all([
-                axios.get(`${API}/api/transactions/stats?tenantId=${tenantId}`),
-                axios.get(`${API}/api/staff?tenantId=${tenantId}`)
+                apiClient.get(`/api/transactions/stats`),
+                apiClient.get(`/api/staff`)
             ]);
 
             setDashStats([
@@ -101,9 +100,8 @@ export default function DashboardPage() {
     };
 
     const fetchKanban = async () => {
-        if (!tenantId) return;
         try {
-            const res = await axios.get(`${API}/api/appointments/kanban?tenantId=${tenantId}`);
+            const res = await apiClient.get(`/api/appointments/kanban`);
             setKanbanData(res.data);
         } catch (error) {
             console.error('Failed to fetch kanban', error);
@@ -113,9 +111,8 @@ export default function DashboardPage() {
     };
 
     const fetchCameras = async () => {
-        if (!tenantId) return;
         try {
-            const res = await axios.get(`${API}/api/cameras?tenantId=${tenantId}`);
+            const res = await apiClient.get(`/api/cameras`);
             setCameras(res.data || []);
         } catch (error) {
             console.error('Failed to fetch cameras', error);
@@ -124,11 +121,11 @@ export default function DashboardPage() {
 
     const updateStatus = async (appId: string, newStatus: string, cameraId?: string) => {
         try {
-            await axios.patch(`${API}/api/appointments/${appId}/status`, {
+            await apiClient.patch(`/api/appointments/${appId}/status`, {
                 status: newStatus,
                 camera_id: cameraId || undefined
             });
-            fetchKanban(); // Refresh to get access token if generated
+            fetchKanban();
         } catch (error) {
             console.error('Failed to update status', error);
             fetchKanban();

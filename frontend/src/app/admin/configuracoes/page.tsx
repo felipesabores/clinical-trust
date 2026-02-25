@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import {
     Settings,
     Building2,
@@ -20,7 +20,7 @@ import {
 import { useTenant } from '@/context/TenantContext';
 import { cn } from '@/lib/utils';
 
-import { API } from '@/config';
+
 
 export default function ConfiguracoesPage() {
     const { config, loading: contextLoading } = useTenant();
@@ -49,7 +49,7 @@ export default function ConfiguracoesPage() {
     const handleSave = async () => {
         try {
             setLoading(true);
-            await axios.patch(`${API}/api/config`, formData);
+            await apiClient.patch(`/api/config`, formData);
             alert('Configurações salvas com sucesso!');
             window.location.reload();
         } catch (error: any) {

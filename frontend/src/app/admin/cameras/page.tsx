@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import {
     Video,
     Plus,
@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CameraModal from '@/components/CameraModal';
 import { useTenant } from '@/context/TenantContext';
 
-import { API } from '@/config';
+
 
 export default function CamerasPage() {
     const { config } = useTenant();
@@ -34,10 +34,9 @@ export default function CamerasPage() {
     const [editingCamera, setEditingCamera] = useState<any>(null);
 
     const fetchCameras = async () => {
-        if (!config?.id) return;
         try {
             setLoading(true);
-            const res = await axios.get(`${API}/api/cameras?tenantId=${config.id}`);
+            const res = await apiClient.get(`/api/cameras`);
             setCameras(res.data || []);
             if (res.data.length > 0 && !selected) {
                 setSelected(res.data[0]);
@@ -52,7 +51,7 @@ export default function CamerasPage() {
     const handleDelete = async (id: string, name: string) => {
         if (!confirm(`Excluir a câmera "${name}"?`)) return;
         try {
-            await axios.delete(`${API}/api/cameras/${id}`);
+            await apiClient.delete(`/api/cameras/${id}`);
             if (selected?.id === id) setSelected(null);
             fetchCameras();
         } catch (e) {

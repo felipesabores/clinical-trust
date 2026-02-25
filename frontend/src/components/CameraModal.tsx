@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import { X, Video, Link, Loader2, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { useTenant } from '@/context/TenantContext';
 
-import { API } from '@/config';
+
+
 
 interface CameraModalProps {
     isOpen: boolean;
@@ -21,7 +21,6 @@ interface CameraModalProps {
 }
 
 export default function CameraModal({ isOpen, onClose, onSuccess, initialData }: CameraModalProps) {
-    const { config } = useTenant();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -44,12 +43,9 @@ export default function CameraModal({ isOpen, onClose, onSuccess, initialData }:
         setLoading(true);
         try {
             if (initialData) {
-                await axios.patch(`${API}/api/cameras/${initialData.id}`, formData);
+                await apiClient.patch(`/api/cameras/${initialData.id}`, formData);
             } else {
-                await axios.post(`${API}/api/cameras`, {
-                    ...formData,
-                    tenant_id: config?.id
-                });
+                await apiClient.post(`/api/cameras`, formData);
             }
             onSuccess();
             onClose();

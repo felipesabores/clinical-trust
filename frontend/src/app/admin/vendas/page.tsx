@@ -14,7 +14,7 @@ import {
     Loader2
 } from 'lucide-react';
 import { useTenant } from '@/context/TenantContext';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -30,7 +30,7 @@ const StatusIcon = ({ status }: { status: string }) => {
     return <XCircle size={12} />;
 };
 
-import { API } from '@/config';
+
 
 export default function VendasPage() {
     const { config } = useTenant();
@@ -45,10 +45,9 @@ export default function VendasPage() {
     ];
 
     const fetchSales = async () => {
-        if (!config?.id) return;
         try {
             setLoading(true);
-            const res = await axios.get(`${API}/api/transactions?tenantId=${config.id}&type=INCOME`);
+            const res = await apiClient.get(`/api/transactions?type=INCOME`);
             setSales(res.data || []);
         } catch (e) {
             console.error(e);
@@ -57,9 +56,7 @@ export default function VendasPage() {
         }
     };
 
-    useEffect(() => {
-        fetchSales();
-    }, [config?.id]);
+    useEffect(() => { fetchSales(); }, []);
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center p-12 min-h-[400px] text-muted-foreground">
