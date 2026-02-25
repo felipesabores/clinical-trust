@@ -74,6 +74,10 @@ export default function EstoquePage() {
         }
     };
     const lowStock = items.filter(i => i.stock <= i.min).length;
+    const totalValue = items.reduce((sum: number, i: any) => sum + (i.price * i.stock || 0), 0);
+    const totalValueStr = totalValue > 0
+        ? `R$ ${totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}`
+        : 'R$ —';
 
     return (
         <div className="p-8 space-y-10 bg-[#F7F8F0] dark:bg-slate-950 text-foreground min-h-screen">
@@ -101,9 +105,9 @@ export default function EstoquePage() {
             {/* Metrics Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Itens Totais', value: '142', icon: Tag, color: 'text-[#355872]', bg: 'bg-[#7AAACE]/10', border: 'border-[#7AAACE]/20' },
-                    { label: 'Valor em Estoque', value: 'R$ 12.450', icon: BarChart2, color: 'text-emerald-600', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-                    { label: 'Saídas (Hoje)', value: '24', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
+                    { label: 'Itens Totais', value: items.length.toString(), icon: Tag, color: 'text-[#355872]', bg: 'bg-[#7AAACE]/10', border: 'border-[#7AAACE]/20' },
+                    { label: 'Valor em Estoque', value: totalValueStr, icon: BarChart2, color: 'text-emerald-600', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+                    { label: 'Saídas (Hoje)', value: '—', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
                     { label: 'Alertas', value: lowStock.toString(), icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-500/10', border: 'border-rose-500/20' },
                 ].map((stat, i) => (
                     <div key={i} className="bg-white dark:bg-slate-900/40 backdrop-blur-md p-5 rounded-3xl flex items-center gap-4 border border-[#E4E9D5] dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-500">
