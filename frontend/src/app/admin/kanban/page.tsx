@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState, useRef } from 'react';
 import {
     Dog,
     Video,
@@ -18,6 +17,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { useTenant } from '@/context/TenantContext';
+import { apiClient } from '@/lib/apiClient';
 
 import AppointmentModal from '@/components/AppointmentModal';
 
@@ -34,8 +34,6 @@ const statuses = [
     { id: 'READY', label: 'Pronto', color: 'bg-rose-500' },
 ] as const;
 
-import { API } from '@/config';
-
 export default function KanbanPage() {
     const [board, setBoard] = useState<Record<string, any[]>>({});
     const [cameras, setCameras] = useState<any[]>([]);
@@ -45,10 +43,14 @@ export default function KanbanPage() {
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const { config } = useTenant();
 
+    // Track if a drag is in progress to avoid polling reset during drag
+    const isDragging = useRef(false);
+
     const fetchKanban = async () => {
-        if (!config?.id) return;
+        // Don't refresh while user is dragging — prevents scroll reset
+        if (isDragging.current) return;
         try {
-            const res = await axios.get(`${API}/api/appointments/kanban?tenantId=${config.id}`);
+            const res = await apiClient.get(`/api/appointments/kanban`);
             setBoard(res.data || {});
         } catch (e) {
             console.error('Erro ao carregar kanban', e);
@@ -58,9 +60,8 @@ export default function KanbanPage() {
     };
 
     const fetchCameras = async () => {
-        if (!config?.id) return;
         try {
-            const res = await axios.get(`${API}/api/cameras?tenantId=${config.id}`);
+            const res = await apiClient.get(`/api/cameras`);
             setCameras(res.data || []);
         } catch (e) {
             console.error('Erro ao carregar câmeras', e);
@@ -69,13 +70,15 @@ export default function KanbanPage() {
 
     const updateStatus = async (appId: string, newStatus: string, cameraId?: string) => {
         try {
-            await axios.patch(`${API}/api/appointments/${appId}/status`, {
+            await apiClient.patch(`/api/appointments/${appId}/status`, {
                 status: newStatus,
                 camera_id: cameraId || undefined,
             });
-            fetchKanban(); // We refresh to get the access_token if it was generated
+            // Only refresh to get access_token if generated (BATHING/GROOMING transitions)
+            // Not triggered by drag (onDragEnd handles optimistic update already)
         } catch (e) {
             console.error('Erro ao atualizar status', e);
+            // On error, refresh to restore correct state
             fetchKanban();
         }
     };
@@ -83,7 +86,11 @@ export default function KanbanPage() {
     const finishAppointment = async (appId: string) => {
         if (confirm('Tem certeza que deseja finalizar este atendimento?')) {
             try {
-                await updateStatus(appId, 'DONE');
+                // Optimistically remove from READY column
+                const newBoard = { ...board };
+                newBoard['READY'] = (newBoard['READY'] || []).filter((a: any) => a.id !== appId);
+                setBoard(newBoard);
+                await apiClient.patch(`/api/appointments/${appId}/status`, { status: 'DONE' });
             } catch (e) {
                 console.error('Erro ao finalizar agendamento', e);
                 fetchKanban();
@@ -99,12 +106,27 @@ export default function KanbanPage() {
         return () => clearInterval(inter);
     }, []);
 
+    // Re-fetch when config loads (first render may have no tenantId yet)
+    useEffect(() => {
+        if (config?.id) {
+            fetchKanban();
+            fetchCameras();
+        }
+    }, [config?.id]);
+
+    const onDragStart = () => {
+        isDragging.current = true;
+    };
+
     const onDragEnd = (result: DropResult) => {
+        isDragging.current = false;
+
         const { source, destination, draggableId } = result;
 
         if (!destination) return;
         if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
+        // Optimistic update — move card locally, NO fetchKanban to avoid scroll reset
         const newBoard = { ...board };
         const sourceList = [...(newBoard[source.droppableId] || [])];
         const destList = source.droppableId === destination.droppableId
@@ -120,8 +142,16 @@ export default function KanbanPage() {
 
         setBoard(newBoard);
 
+        // If moving to BATHING/GROOMING, fetch after delay to get access_token
+        const needsToken = destination.droppableId === 'BATHING' || destination.droppableId === 'GROOMING';
+
         const selectedCam = (window as any)[`selected_cam_${destination.droppableId}`];
-        updateStatus(draggableId, destination.droppableId, selectedCam);
+        updateStatus(draggableId, destination.droppableId, selectedCam).then(() => {
+            if (needsToken) {
+                // Small delay then refresh just the moved card's column to get access_token
+                setTimeout(() => fetchKanban(), 1500);
+            }
+        });
     };
 
     const handleCopyToken = (token: string, appId: string) => {
@@ -170,7 +200,7 @@ export default function KanbanPage() {
                 </div>
             </header>
 
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
                 <div className="grid grid-cols-6 gap-5 flex-1 min-h-0 overflow-x-auto pb-4">
                     {statuses.map((status) => (
                         <div key={status.id} className="flex flex-col min-w-[260px] h-full">
@@ -266,7 +296,7 @@ export default function KanbanPage() {
 
                                                         {status.id === 'READY' && (
                                                             <button
-                                                                onClick={() => updateStatus(app.id, 'DONE')}
+                                                                onClick={() => finishAppointment(app.id)}
                                                                 className="flex items-center justify-center w-full text-white py-2 rounded-xl gap-2 font-black text-[10px] bg-green-600 hover:bg-green-700 transition-colors"
                                                             >
                                                                 <CheckCircle2 size={14} /> FINALIZAR ATENDIMENTO
