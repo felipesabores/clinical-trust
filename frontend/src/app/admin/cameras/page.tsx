@@ -34,6 +34,7 @@ export default function CamerasPage() {
     const [editingCamera, setEditingCamera] = useState<any>(null);
 
     const fetchCameras = async () => {
+        if (!config?.id) return;
         try {
             setLoading(true);
             const res = await apiClient.get(`/api/cameras`);
@@ -61,7 +62,7 @@ export default function CamerasPage() {
 
     useEffect(() => {
         fetchCameras();
-    }, []);
+    }, [config?.id]);
 
     const onlineCount = cameras.filter(c => c.is_active).length;
 

@@ -45,6 +45,7 @@ export default function VendasPage() {
     ];
 
     const fetchSales = async () => {
+        if (!config?.id) return;
         try {
             setLoading(true);
             const res = await apiClient.get(`/api/transactions?type=INCOME`);
@@ -56,7 +57,7 @@ export default function VendasPage() {
         }
     };
 
-    useEffect(() => { fetchSales(); }, []);
+    useEffect(() => { fetchSales(); }, [config?.id]);
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center p-12 min-h-[400px] text-muted-foreground">
