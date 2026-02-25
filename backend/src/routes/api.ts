@@ -22,12 +22,14 @@ router.get('/live/:token', LiveController.getLiveSession);
 // Health Check
 router.get('/health', (req, res) => res.json({ status: 'ok', service: 'Clinical Trust Backend' }));
 
+// Tenant Config — public bootstrap route (frontend uses this to get tenantId)
+router.get('/config', TenantController.getConfig);
+
 // ─── Protected Routes (tenant required) ───────────────────────────────────────
 // All routes below require x-tenant-id header or tenantId query param
 router.use(tenantMiddleware);
 
-// Config / White Label
-router.get('/config', TenantController.getConfig);
+// Config / White Label (PATCH only — write requires tenant auth)
 router.patch('/config', TenantController.updateConfig);
 
 // Appointment / Kanban Routes
