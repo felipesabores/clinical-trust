@@ -10,10 +10,10 @@ export class AppointmentController {
     // SEARCH Customers
     static async searchCustomers(req: Request, res: Response) {
         try {
-            const { q, tenantId } = req.query;
+            const { q } = req.query;
             const customers = await prisma.customer.findMany({
                 where: {
-                    tenant_id: tenantId as string,
+                    tenant_id: req.tenantId,
                     OR: [
                         { name: { contains: q as string, mode: 'insensitive' } },
                         { phone: { contains: q as string } }
@@ -144,10 +144,7 @@ export class AppointmentController {
     // GET /api/appointments/kanban
     static async getKanban(req: Request, res: Response) {
         try {
-            const tenantId = req.query.tenantId as string;
             const dateStr = req.query.date as string;
-
-            if (!tenantId) return res.status(400).json({ error: 'Tenant ID is required' });
 
             const queryDate = dateStr ? new Date(dateStr) : new Date();
             const startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
@@ -155,7 +152,7 @@ export class AppointmentController {
 
             const appointments = await prisma.appointment.findMany({
                 where: {
-                    tenant_id: tenantId,
+                    tenant_id: req.tenantId,
                     scheduled_at: {
                         gte: startOfDay,
                         lte: endOfDay
@@ -199,7 +196,7 @@ export class AppointmentController {
             const id = req.params.id as string;
             const { status, camera_id } = req.body;
 
-            const allowedStatuses = ['SCHEDULED','RECEPTION','BATHING','GROOMING','DRYING','READY','DONE'];
+            const allowedStatuses = ['SCHEDULED', 'RECEPTION', 'BATHING', 'GROOMING', 'DRYING', 'READY', 'DONE'];
             if (!status || !allowedStatuses.includes(status)) {
                 return res.status(400).json({ error: 'Invalid status' });
             }
@@ -275,10 +272,9 @@ export class AppointmentController {
     // GET /api/appointments
     static async getList(req: Request, res: Response) {
         try {
-            const { tenantId, date } = req.query;
-            if (!tenantId) return res.status(400).json({ error: 'Tenant ID is required' });
+            const { date } = req.query;
 
-            let whereClause: any = { tenant_id: tenantId as string };
+            let whereClause: any = { tenant_id: req.tenantId };
 
             // If a specific date is requested, filter by that day
             if (date) {
@@ -321,7 +317,7 @@ export class AppointmentController {
 
             // Validate status against allowed enum
             if (updateData.status) {
-                const allowedStatuses = ['SCHEDULED','RECEPTION','BATHING','GROOMING','DRYING','READY','DONE'];
+                const allowedStatuses = ['SCHEDULED', 'RECEPTION', 'BATHING', 'GROOMING', 'DRYING', 'READY', 'DONE'];
                 if (!allowedStatuses.includes(updateData.status)) {
                     return res.status(400).json({ error: 'Invalid status' });
                 }
@@ -345,7 +341,7 @@ export class AppointmentController {
                 prismaData.end_time = endTime;
                 delete prismaData.duration_minutes;
             }
-            
+
             // Se pet_id foi fornecido, transformar para relação
             if (updateData.pet_id) {
                 prismaData.pet = {
@@ -353,7 +349,7 @@ export class AppointmentController {
                 };
                 delete prismaData.pet_id;
             }
-            
+
             // Se staff_id foi fornecido, transformar para relação
             if (updateData.staff_id) {
                 prismaData.staff = {
@@ -389,11 +385,11 @@ export class AppointmentController {
     // GET /api/appointments/history - Buscar histórico de atendimentos concluídos
     static async getHistory(req: Request, res: Response) {
         try {
-            const { tenantId, limit = 50 } = req.query;
-            
+            const { limit = 50 } = req.query;
+
             const appointments = await prisma.appointment.findMany({
                 where: {
-                    tenant_id: tenantId as string,
+                    tenant_id: req.tenantId,
                     status: 'DONE'
                 },
                 include: {

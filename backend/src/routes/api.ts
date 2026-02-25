@@ -8,10 +8,23 @@ import { StaffController } from '../controllers/StaffController';
 import { TransactionController } from '../controllers/TransactionController';
 import { ProductController } from '../controllers/ProductController';
 import { UploadController } from '../controllers/UploadController';
+import { tenantMiddleware } from '../middlewares/tenantMiddleware';
 import multer from 'multer';
 
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage() });
+
+// ─── Public Routes (no tenant required) ───────────────────────────────────────
+
+// Public Live Route — magic link for customers to watch their pet
+router.get('/live/:token', LiveController.getLiveSession);
+
+// Health Check
+router.get('/health', (req, res) => res.json({ status: 'ok', service: 'Clinical Trust Backend' }));
+
+// ─── Protected Routes (tenant required) ───────────────────────────────────────
+// All routes below require x-tenant-id header or tenantId query param
+router.use(tenantMiddleware);
 
 // Config / White Label
 router.get('/config', TenantController.getConfig);
@@ -56,9 +69,6 @@ router.post('/products', ProductController.create);
 router.patch('/products/:id', ProductController.update);
 router.delete('/products/:id', ProductController.delete);
 
-// Public Live Routes
-router.get('/live/:token', LiveController.getLiveSession);
-
 // Camera Routes
 router.get('/cameras', CameraController.list);
 router.post('/cameras', CameraController.create);
@@ -67,8 +77,5 @@ router.delete('/cameras/:id', CameraController.delete);
 
 // Uploads
 router.post('/upload/avatar', upload.single('file'), UploadController.uploadAvatar);
-
-// Health Check
-router.get('/health', (req, res) => res.json({ status: 'ok', service: 'Banho e Tosa Backend' }));
 
 export default router;

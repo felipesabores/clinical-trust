@@ -6,10 +6,9 @@ const prisma = new PrismaClient();
 export class TransactionController {
     static async list(req: Request, res: Response) {
         try {
-            const { tenantId, type, category } = req.query;
-            if (!tenantId) return res.status(400).json({ error: 'Tenant ID required' });
+            const { type, category } = req.query;
 
-            const where: any = { tenant_id: tenantId as string };
+            const where: any = { tenant_id: req.tenantId };
             if (type) where.type = type;
             if (category) where.category = category;
 
@@ -25,11 +24,8 @@ export class TransactionController {
 
     static async getStats(req: Request, res: Response) {
         try {
-            const { tenantId } = req.query;
-            if (!tenantId) return res.status(400).json({ error: 'Tenant ID required' });
-
             const transactions = await prisma.transaction.findMany({
-                where: { tenant_id: tenantId as string }
+                where: { tenant_id: req.tenantId }
             });
 
             const income = transactions
@@ -55,7 +51,7 @@ export class TransactionController {
             const data = req.body;
             const transaction = await prisma.transaction.create({
                 data: {
-                    tenant_id: data.tenant_id,
+                    tenant_id: req.tenantId,
                     type: data.type,
                     category: data.category,
                     description: data.description,

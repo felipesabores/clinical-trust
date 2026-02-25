@@ -6,12 +6,9 @@ const prisma = new PrismaClient();
 export class CameraController {
     static async list(req: Request, res: Response) {
         try {
-            const tenantId = req.query.tenantId as string;
-            if (!tenantId) return res.status(400).json({ error: 'Tenant ID required' });
-
             const cameras = await prisma.camera.findMany({
                 where: {
-                    tenant_id: tenantId
+                    tenant_id: req.tenantId
                 },
                 orderBy: { name: 'asc' }
             });
@@ -23,12 +20,12 @@ export class CameraController {
 
     static async create(req: Request, res: Response) {
         try {
-            const { tenant_id, name, rtsp_url } = req.body;
-            if (!tenant_id || !name || !rtsp_url) {
+            const { name, rtsp_url } = req.body;
+            if (!name || !rtsp_url) {
                 return res.status(400).json({ error: 'Missing required fields' });
             }
             const camera = await prisma.camera.create({
-                data: { tenant_id, name, rtsp_url }
+                data: { tenant_id: req.tenantId, name, rtsp_url }
             });
             res.status(201).json(camera);
         } catch (error) {

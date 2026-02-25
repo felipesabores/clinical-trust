@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export class TenantController {
     static async getConfig(req: Request, res: Response) {
-        const tenantId = process.env.TENANT_ID || process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
+        const tenantId = req.tenantId;
 
         try {
             console.log(`[WhiteLabel] Fetching config for tenant: ${tenantId}`);
@@ -34,7 +34,7 @@ export class TenantController {
     }
 
     static async updateConfig(req: Request, res: Response) {
-        const tenantId = process.env.TENANT_ID || process.env.NEXT_PUBLIC_TENANT_ID || 'test-tenant-123';
+        const tenantId = req.tenantId;
         const { name, logo_url, description, primary_color, whatsapp } = req.body;
 
         try {

@@ -6,11 +6,8 @@ const prisma = new PrismaClient();
 export class StaffController {
     static async list(req: Request, res: Response) {
         try {
-            const { tenantId } = req.query;
-            if (!tenantId) return res.status(400).json({ error: 'Tenant ID required' });
-
             const staff = await prisma.staff.findMany({
-                where: { tenant_id: tenantId as string },
+                where: { tenant_id: req.tenantId },
                 orderBy: { name: 'asc' }
             });
             res.json(staff);
@@ -24,7 +21,7 @@ export class StaffController {
             const data = req.body;
             const staff = await prisma.staff.create({
                 data: {
-                    tenant_id: data.tenant_id,
+                    tenant_id: req.tenantId,
                     name: data.name,
                     role: data.role,
                     phone: data.phone,

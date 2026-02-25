@@ -6,13 +6,11 @@ const prisma = new PrismaClient();
 export class CustomerController {
     static async list(req: Request, res: Response) {
         try {
-            const tenantId = req.query.tenantId as string;
             const q = req.query.q as string;
-            if (!tenantId) return res.status(400).json({ error: 'Tenant ID required' });
 
             const customers = await prisma.customer.findMany({
                 where: {
-                    tenant_id: tenantId,
+                    tenant_id: req.tenantId,
                     OR: q ? [
                         { name: { contains: q, mode: 'insensitive' } },
                         { phone: { contains: q } }
@@ -58,13 +56,13 @@ export class CustomerController {
         try {
             const { tenant_id, name, phone, avatar_url, pets } = req.body;
 
-            if (!tenant_id || !name) {
-                return res.status(400).json({ error: 'Tenant ID and Name are required' });
+            if (!name) {
+                return res.status(400).json({ error: 'Name is required' });
             }
 
             const customer = await prisma.customer.create({
                 data: {
-                    tenant_id,
+                    tenant_id: req.tenantId,
                     name,
                     phone,
                     avatar_url,

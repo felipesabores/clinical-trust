@@ -5,10 +5,9 @@ const prisma = new PrismaClient();
 
 export class ProductController {
     static async list(req: Request, res: Response) {
-        const { tenantId } = req.query;
         try {
             const products = await prisma.product.findMany({
-                where: { tenant_id: String(tenantId) },
+                where: { tenant_id: req.tenantId },
                 orderBy: { name: 'asc' }
             });
             res.json(products);
@@ -22,7 +21,7 @@ export class ProductController {
         try {
             const product = await prisma.product.create({
                 data: {
-                    tenant_id,
+                    tenant_id: req.tenantId,
                     name,
                     category,
                     stock: Number(stock),
