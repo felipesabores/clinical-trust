@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import { X, Calendar, Clock, User, Timer, Activity, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
@@ -11,7 +11,6 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-import { API } from '@/config';
 import { useTenant } from '@/context/TenantContext';
 
 interface AppointmentModalProps {
@@ -56,18 +55,15 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, targetDat
     const [status, setStatus] = useState('SCHEDULED');
 
     useEffect(() => {
-        if (!isOpen || !tenantId) return;
+        if (!isOpen) return;
 
         const fetchData = async () => {
             try {
-                // Fetch pets for dropdown
-                const petsRes = await axios.get(`${API}/api/customers?tenantId=${tenantId}`);
-                // Customers endpoint returns customers with their pets. We need to flatten to a pet list
+                const petsRes = await apiClient.get(`/api/customers`);
                 const allPets = petsRes.data.flatMap((c: any) => c.pets.map((p: any) => ({ ...p, customerName: c.name })));
                 setPets(allPets);
 
-                // Fetch staff
-                const staffRes = await axios.get(`${API}/api/staff?tenantId=${tenantId}`);
+                const staffRes = await apiClient.get(`/api/staff`);
                 setStaff(staffRes.data);
             } catch (err) {
                 console.error("Error fetching modal data", err);
@@ -103,7 +99,7 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, targetDat
             setDateStr(baseDate.toISOString().split('T')[0] || '');
             setTimeStr('09:00');
         }
-    }, [isOpen, initialData, tenantId, targetDate]);
+    }, [isOpen, initialData, targetDate]);
 
 
     const handleSubmit = async () => {
@@ -116,7 +112,6 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, targetDat
         const scheduled_at = new Date(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes));
 
         const payload = {
-            tenant_id: tenantId,
             pet_id: petId,
             staff_id: staffId || null,
             scheduled_at: scheduled_at.toISOString(),
@@ -126,9 +121,9 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, targetDat
 
         try {
             if (initialData) {
-                await axios.patch(`${API}/api/appointments/${initialData.id}`, payload);
+                await apiClient.patch(`/api/appointments/${initialData.id}`, payload);
             } else {
-                await axios.post(`${API}/api/appointments`, payload);
+                await apiClient.post(`/api/appointments`, payload);
             }
             onSuccess();
             onClose();
