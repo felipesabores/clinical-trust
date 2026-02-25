@@ -6,6 +6,8 @@ import { X, Calendar, Clock, User, Timer, Activity, Loader2 } from 'lucide-react
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -66,7 +68,7 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, targetDat
                 const staffRes = await apiClient.get(`/api/staff`);
                 setStaff(staffRes.data);
             } catch (err) {
-                console.error("Error fetching modal data", err);
+                logger.error('AppointmentModal', 'Erro ao buscar dados do modal', err);
             }
         };
 
@@ -128,8 +130,10 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, targetDat
             onSuccess();
             onClose();
         } catch (e) {
-            console.error('Error saving appointment', e);
-            alert('Erro ao salvar agendamento');
+            logger.error('AppointmentModal', 'Erro ao salvar agendamento', e);
+            toast.error('Erro ao salvar agendamento', {
+                description: 'Verifique os dados e tente novamente.',
+            });
         } finally {
             setLoading(false);
         }

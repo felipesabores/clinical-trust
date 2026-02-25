@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 import {
     Users,
     Plus,
@@ -59,7 +61,7 @@ export default function EquipePage() {
             const res = await apiClient.get(`/api/staff`);
             setStaff(res.data);
         } catch (error) {
-            console.error('Error fetching staff:', error);
+            logger.error('Equipe', 'Erro ao buscar membros da equipe', error);
         } finally {
             setLoading(false);
         }
@@ -83,8 +85,8 @@ export default function EquipePage() {
             });
             setNewMember({ ...newMember, avatar_url: res.data.url });
         } catch (error) {
-            console.error('Upload error:', error);
-            alert('Erro ao fazer upload do avatar');
+            logger.error('Equipe', 'Erro no upload do avatar', error);
+            toast.error('Erro ao fazer upload do avatar');
         } finally {
             setUploading(false);
         }
@@ -107,7 +109,8 @@ export default function EquipePage() {
             resetForm();
             fetchStaff();
         } catch (error) {
-            alert('Erro ao salvar membro da equipe');
+            logger.error('Equipe', 'Erro ao salvar membro', error);
+            toast.error('Erro ao salvar membro da equipe');
         }
     };
 
@@ -117,7 +120,8 @@ export default function EquipePage() {
             await apiClient.delete(`/api/staff/${id}`);
             fetchStaff();
         } catch (error) {
-            alert('Erro ao excluir membro da equipe');
+            logger.error('Equipe', 'Erro ao excluir membro', error);
+            toast.error('Erro ao excluir membro da equipe');
         }
     };
 

@@ -18,6 +18,8 @@ import {
 import ProductModal from '@/components/ProductModal';
 import { useTenant } from '@/context/TenantContext';
 import { apiClient } from '@/lib/apiClient';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -54,7 +56,7 @@ export default function EstoquePage() {
             const res = await apiClient.get(`/api/products`);
             setItems(res.data || []);
         } catch (e) {
-            console.error(e);
+            logger.error('Estoque', 'Erro ao buscar produtos', e);
         } finally {
             setLoading(false);
         }
@@ -70,7 +72,8 @@ export default function EstoquePage() {
             await apiClient.delete(`/api/products/${id}`);
             fetchItems();
         } catch (e) {
-            alert('Erro ao excluir produto');
+            logger.error('Estoque', 'Erro ao excluir produto', e);
+            toast.error('Erro ao excluir produto');
         }
     };
     const lowStock = items.filter(i => i.stock <= i.min).length;

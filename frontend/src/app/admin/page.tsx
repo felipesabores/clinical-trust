@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { apiClient } from '@/lib/apiClient';
+import logger from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
 
@@ -95,7 +96,7 @@ export default function DashboardPage() {
                 { label: 'Equipe Ativa', value: staffRes.data.filter((s: any) => s.is_active).length.toString(), icon: Users },
             ]);
         } catch (error) {
-            console.error('Failed to fetch stats', error);
+            logger.error('Dashboard', 'Erro ao buscar stats', error);
         }
     };
 
@@ -104,7 +105,7 @@ export default function DashboardPage() {
             const res = await apiClient.get(`/api/appointments/kanban`);
             setKanbanData(res.data);
         } catch (error) {
-            console.error('Failed to fetch kanban', error);
+            logger.error('Dashboard', 'Erro ao buscar kanban', error);
         } finally {
             setLoading(false);
         }
@@ -115,7 +116,7 @@ export default function DashboardPage() {
             const res = await apiClient.get(`/api/cameras`);
             setCameras(res.data || []);
         } catch (error) {
-            console.error('Failed to fetch cameras', error);
+            logger.error('Dashboard', 'Erro ao buscar cameras', error);
         }
     };
 
@@ -127,7 +128,7 @@ export default function DashboardPage() {
             });
             fetchKanban();
         } catch (error) {
-            console.error('Failed to update status', error);
+            logger.error('Dashboard', 'Erro ao atualizar status', error);
             fetchKanban();
         }
     };

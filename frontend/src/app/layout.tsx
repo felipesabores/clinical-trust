@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { TenantProvider } from "@/context/TenantContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { Toaster } from "sonner";
 
 const inter = Inter({
     subsets: ["latin"],
@@ -34,6 +35,16 @@ export default function RootLayout({
                     <TenantProvider>
                         {children}
                     </TenantProvider>
+                    <Toaster
+                        position="bottom-right"
+                        richColors
+                        theme="dark"
+                        closeButton
+                        toastOptions={{
+                            duration: 4000,
+                            style: { fontFamily: 'var(--font-inter)' },
+                        }}
+                    />
                 </ThemeProvider>
             </body>
         </html>

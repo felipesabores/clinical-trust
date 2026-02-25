@@ -5,6 +5,8 @@ import { X, Dog, Cat, Rabbit, Loader2, Save, Info, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -75,8 +77,8 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
             });
             setFormData(prev => ({ ...prev, avatar_url: res.data.url }));
         } catch (error) {
-            console.error('Upload error:', error);
-            alert('Erro ao fazer upload do avatar');
+            logger.error('PetModal', 'Erro no upload do avatar', error);
+            toast.error('Erro ao fazer upload do avatar');
         } finally {
             setUploading(false);
         }
@@ -94,7 +96,8 @@ export default function PetModal({ isOpen, onClose, onSuccess, customerId, custo
             onSuccess();
             onClose();
         } catch (e) {
-            alert('Erro ao salvar pet');
+            logger.error('PetModal', 'Erro ao salvar pet', e);
+            toast.error('Erro ao salvar pet');
         } finally {
             setLoading(false);
         }

@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 
 import { useTenant } from '@/context/TenantContext';
 import { apiClient } from '@/lib/apiClient';
+import logger from '@/lib/logger';
 import { useState, useEffect } from 'react';
 
 
@@ -35,7 +36,7 @@ export default function RelatoriosPage() {
             const res = await apiClient.get(`/api/transactions/stats`);
             setStats(res.data);
         } catch (e) {
-            console.error(e);
+            logger.error('Relatórios', 'Erro ao buscar stats', e);
         } finally {
             setLoading(false);
         }
@@ -47,14 +48,13 @@ export default function RelatoriosPage() {
             const res = await apiClient.get(`/api/appointments/history?limit=50`);
             setHistory(res.data || []);
         } catch (e) {
-            console.error(e);
+            logger.error('Relatórios', 'Erro ao buscar histórico', e);
         } finally {
             setLoadingHistory(false);
         }
     };
 
-    useEffect(() => { fetchStats(); }, []);
-    useEffect(() => { fetchHistory(); }, []);
+
 
     const revenueData = stats?.monthlyRevenue || [0, 0, 0, 0, 0, 0];
     const months = ['SET', 'OUT', 'NOV', 'DEZ', 'JAN', 'FEV'];

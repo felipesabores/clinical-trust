@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { X, UserPlus, Phone, Loader2, Save, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 
 import { apiClient } from '@/lib/apiClient';
 
@@ -53,8 +55,8 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, initialData 
             });
             setFormData(prev => ({ ...prev, avatar_url: res.data.url }));
         } catch (error) {
-            console.error('Upload error:', error);
-            alert('Erro ao fazer upload do avatar');
+            logger.error('CustomerModal', 'Erro no upload do avatar', error);
+            toast.error('Erro ao fazer upload do avatar');
         } finally {
             setUploading(false);
         }
@@ -73,7 +75,8 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, initialData 
             }
             onClose();
         } catch (e) {
-            alert('Erro ao salvar tutor');
+            logger.error('CustomerModal', 'Erro ao salvar tutor', e);
+            toast.error('Erro ao salvar tutor');
         } finally {
             setLoading(false);
         }

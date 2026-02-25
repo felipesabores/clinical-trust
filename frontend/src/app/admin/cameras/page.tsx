@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 import {
     Video,
     Plus,
@@ -43,7 +45,7 @@ export default function CamerasPage() {
                 setSelected(res.data[0]);
             }
         } catch (e) {
-            console.error(e);
+            logger.error('Cameras', 'Erro ao buscar câmeras', e);
         } finally {
             setLoading(false);
         }
@@ -56,7 +58,8 @@ export default function CamerasPage() {
             if (selected?.id === id) setSelected(null);
             fetchCameras();
         } catch (e) {
-            alert('Erro ao excluir câmera');
+            logger.error('Cameras', 'Erro ao excluir câmera', e);
+            toast.error('Erro ao excluir câmera');
         }
     };
 

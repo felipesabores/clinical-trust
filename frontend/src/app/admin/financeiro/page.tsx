@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 import {
     TrendingUp,
     TrendingDown,
@@ -45,7 +47,7 @@ export default function FinanceiroPage() {
             setTransactions(transRes.data);
             setStats(statsRes.data);
         } catch (error) {
-            console.error('Error fetching financial data:', error);
+            logger.error('Financeiro', 'Erro ao buscar dados financeiros', error);
         } finally {
             setLoading(false);
         }
@@ -63,8 +65,10 @@ export default function FinanceiroPage() {
             });
             setShowModal(false);
             fetchData();
+            toast.success('Transação registrada com sucesso!');
         } catch (error) {
-            alert('Erro ao criar transação');
+            logger.error('Financeiro', 'Erro ao criar transação', error);
+            toast.error('Erro ao criar transação');
         }
     };
 

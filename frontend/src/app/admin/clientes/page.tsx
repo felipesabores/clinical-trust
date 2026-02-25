@@ -31,6 +31,8 @@ import { useTenant } from '@/context/TenantContext';
 
 import { API } from '@/config';
 import { apiClient } from '@/lib/apiClient';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 
 const petIconMap: Record<string, any> = {
     DOG: Dog,
@@ -64,7 +66,7 @@ export default function ClientesPage() {
                 fetchDetail(res.data[0].id);
             }
         } catch (e) {
-            console.error(e);
+            logger.error('Clientes', 'Erro ao buscar clientes', e);
         } finally {
             setLoading(false);
         }
@@ -75,7 +77,7 @@ export default function ClientesPage() {
             const res = await apiClient.get(`/api/customers/${id}`);
             setSelectedCustomer(res.data);
         } catch (e) {
-            console.error(e);
+            logger.error('Clientes', 'Erro ao buscar detalhe do cliente', e);
         }
     };
 
@@ -86,7 +88,10 @@ export default function ClientesPage() {
             if (selectedCustomer?.id === id) setSelectedCustomer(null);
             fetchCustomers(searchQuery);
         } catch (e: any) {
-            alert(e.response?.data?.error || 'Erro ao excluir tutor');
+            logger.error('Clientes', 'Erro ao excluir tutor', e);
+            toast.error('Erro ao excluir tutor', {
+                description: e.response?.data?.error,
+            });
         }
     };
 
@@ -97,7 +102,10 @@ export default function ClientesPage() {
             if (selectedCustomer) fetchDetail(selectedCustomer.id);
             fetchCustomers(searchQuery);
         } catch (e: any) {
-            alert(e.response?.data?.error || 'Erro ao excluir pet');
+            logger.error('Clientes', 'Erro ao excluir pet', e);
+            toast.error('Erro ao excluir pet', {
+                description: e.response?.data?.error,
+            });
         }
     };
 

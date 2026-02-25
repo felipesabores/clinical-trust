@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 import {
     Settings,
     Building2,
@@ -50,11 +52,13 @@ export default function ConfiguracoesPage() {
         try {
             setLoading(true);
             await apiClient.patch(`/api/config`, formData);
-            alert('Configurações salvas com sucesso!');
+            toast.success('Configurações salvas com sucesso!');
             window.location.reload();
         } catch (error: any) {
-            console.error(error);
-            alert('Erro ao salvar as configurações.');
+            logger.error('Configurações', 'Erro ao salvar configurações', error);
+            toast.error('Erro ao salvar as configurações.', {
+                description: error?.response?.data?.error || error?.message,
+            });
         } finally {
             setLoading(false);
         }

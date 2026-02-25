@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
 import { X, Video, Link, Loader2, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 
 
 
@@ -50,7 +52,8 @@ export default function CameraModal({ isOpen, onClose, onSuccess, initialData }:
             onSuccess();
             onClose();
         } catch (e) {
-            alert('Erro ao salvar câmera');
+            logger.error('CameraModal', 'Erro ao salvar câmera', e);
+            toast.error('Erro ao salvar câmera');
         } finally {
             setLoading(false);
         }

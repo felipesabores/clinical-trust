@@ -18,6 +18,8 @@ import { twMerge } from 'tailwind-merge';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { useTenant } from '@/context/TenantContext';
 import { apiClient } from '@/lib/apiClient';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 
 import AppointmentModal from '@/components/AppointmentModal';
 
@@ -53,7 +55,7 @@ export default function KanbanPage() {
             const res = await apiClient.get(`/api/appointments/kanban`);
             setBoard(res.data || {});
         } catch (e) {
-            console.error('Erro ao carregar kanban', e);
+            logger.error('Kanban', 'Erro ao carregar kanban', e);
         } finally {
             setLoading(false);
         }
@@ -64,7 +66,7 @@ export default function KanbanPage() {
             const res = await apiClient.get(`/api/cameras`);
             setCameras(res.data || []);
         } catch (e) {
-            console.error('Erro ao carregar câmeras', e);
+            logger.error('Kanban', 'Erro ao carregar câmeras', e);
         }
     };
 
@@ -77,7 +79,7 @@ export default function KanbanPage() {
             // Only refresh to get access_token if generated (BATHING/GROOMING transitions)
             // Not triggered by drag (onDragEnd handles optimistic update already)
         } catch (e) {
-            console.error('Erro ao atualizar status', e);
+            logger.error('Kanban', 'Erro ao atualizar status', e);
             // On error, refresh to restore correct state
             fetchKanban();
         }
@@ -91,8 +93,10 @@ export default function KanbanPage() {
                 newBoard['READY'] = (newBoard['READY'] || []).filter((a: any) => a.id !== appId);
                 setBoard(newBoard);
                 await apiClient.patch(`/api/appointments/${appId}/status`, { status: 'DONE' });
+                toast.success('Atendimento finalizado!');
             } catch (e) {
-                console.error('Erro ao finalizar agendamento', e);
+                logger.error('Kanban', 'Erro ao finalizar agendamento', e);
+                toast.error('Erro ao finalizar atendimento');
                 fetchKanban();
             }
         }

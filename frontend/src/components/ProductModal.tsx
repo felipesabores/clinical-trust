@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
 import { X, Package, Loader2, Save, Tag, Hash, Boxes, DollarSign } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from '@/lib/toast';
+import logger from '@/lib/logger';
 
 import { useTenant } from '@/context/TenantContext';
 
@@ -74,7 +76,8 @@ export default function ProductModal({ isOpen, onClose, onSuccess, initialData }
             onSuccess();
             onClose();
         } catch (e) {
-            alert('Erro ao salvar produto');
+            logger.error('ProductModal', 'Erro ao salvar produto', e);
+            toast.error('Erro ao salvar produto');
         } finally {
             setLoading(false);
         }
