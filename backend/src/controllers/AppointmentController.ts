@@ -48,7 +48,6 @@ export class AppointmentController {
     static async create(req: Request, res: Response) {
         try {
             const {
-                tenant_id,
                 customer_id,
                 customer_name,
                 customer_phone,
@@ -57,30 +56,13 @@ export class AppointmentController {
                 pet_breed,
                 scheduled_at,
                 staff_id,
-                duration_minutes
+                duration_minutes,
+                status: bodyStatus
             } = req.body;
 
-            console.log('Criando agendamento para tenant:', tenant_id);
+            const tenantId = req.tenantId!;
+            console.log('Criando agendamento para tenant:', tenantId);
 
-            // SEGURANÇA: Garantir que o Tenant existe
-            let tenantExists = await prisma.tenant.findUnique({ where: { id: tenant_id } });
-            if (!tenantExists) {
-                console.log('Criando tenant em tempo de execução:', tenant_id);
-                try {
-                    tenantExists = await prisma.tenant.create({
-                        data: {
-                            id: tenant_id,
-                            name: 'Pet Shop / Estética Pet',
-                            document: 'TEMP-' + uuidv4().substring(0, 8), // Garantir unicidade
-                        }
-                    });
-                } catch (e) {
-                    // Se falhar a criação (ex: race condition), tenta buscar novamente
-                    tenantExists = await prisma.tenant.findUnique({ where: { id: tenant_id } });
-                }
-            }
-
-            if (!tenantExists) throw new Error('Tenant could not be found or created');
 
             let finalCustomerId = customer_id;
             let finalPetId = pet_id;
@@ -90,7 +72,7 @@ export class AppointmentController {
                 if (!finalCustomerId) {
                     const customer = await prisma.customer.create({
                         data: {
-                            tenant_id,
+                            tenant_id: tenantId,
                             name: customer_name,
                             phone: customer_phone
                         }
@@ -117,9 +99,9 @@ export class AppointmentController {
 
             const appointment = await prisma.appointment.create({
                 data: {
-                    tenant_id,
+                    tenant_id: tenantId,
                     pet_id: finalPetId,
-                    status: 'SCHEDULED' as AppointmentStatus,
+                    status: (bodyStatus || 'SCHEDULED') as AppointmentStatus,
                     scheduled_at: dateToSchedule,
                     staff_id: staff_id || null,
                     end_time: endTimeToSchedule
