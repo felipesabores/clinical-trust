@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import {
     TrendingUp,
     TrendingDown,
@@ -19,8 +19,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
-
-import { API } from '@/config';
 
 export default function FinanceiroPage() {
     const { config } = useTenant();
@@ -41,8 +39,8 @@ export default function FinanceiroPage() {
         try {
             setLoading(true);
             const [transRes, statsRes] = await Promise.all([
-                axios.get(`${API}/api/transactions?tenantId=${tenantId}`),
-                axios.get(`${API}/api/transactions/stats?tenantId=${tenantId}`)
+                apiClient.get(`/api/transactions`),
+                apiClient.get(`/api/transactions/stats`)
             ]);
             setTransactions(transRes.data);
             setStats(statsRes.data);
@@ -54,14 +52,13 @@ export default function FinanceiroPage() {
     };
 
     useEffect(() => {
-        if (tenantId) fetchData();
-    }, [tenantId]);
+        fetchData();
+    }, []);
 
     const handleCreate = async () => {
         try {
-            await axios.post(`${API}/api/transactions`, {
+            await apiClient.post(`/api/transactions`, {
                 ...newTransaction,
-                tenant_id: tenantId,
                 amount: parseFloat(newTransaction.amount as any)
             });
             setShowModal(false);

@@ -17,10 +17,8 @@ import {
 } from 'lucide-react';
 import ProductModal from '@/components/ProductModal';
 import { useTenant } from '@/context/TenantContext';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import { useState, useEffect } from 'react';
-
-import { API } from '@/config';
 import { cn } from '@/lib/utils';
 
 function StockBadge({ stock, min }: { stock: number; min: number }) {
@@ -51,10 +49,9 @@ export default function EstoquePage() {
     const [editingItem, setEditingItem] = useState<any>(null);
 
     const fetchItems = async () => {
-        if (!config?.id) return;
         try {
             setLoading(true);
-            const res = await axios.get(`${API}/api/products?tenantId=${config.id}`);
+            const res = await apiClient.get(`/api/products`);
             setItems(res.data || []);
         } catch (e) {
             console.error(e);
@@ -65,12 +62,12 @@ export default function EstoquePage() {
 
     useEffect(() => {
         fetchItems();
-    }, [config?.id]);
+    }, []);
 
     const handleDelete = async (id: string, name: string) => {
         if (!confirm(`Tem certeza que deseja remover ${name} do estoque?`)) return;
         try {
-            await axios.delete(`${API}/api/products/${id}`);
+            await apiClient.delete(`/api/products/${id}`);
             fetchItems();
         } catch (e) {
             alert('Erro ao excluir produto');

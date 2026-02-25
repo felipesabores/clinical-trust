@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/apiClient';
 import {
     Users,
     Plus,
@@ -21,8 +21,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
-
-import { API } from '@/config';
 
 export default function EquipePage() {
     const { config } = useTenant();
@@ -58,7 +56,7 @@ export default function EquipePage() {
     const fetchStaff = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${API}/api/staff?tenantId=${tenantId}`);
+            const res = await apiClient.get(`/api/staff`);
             setStaff(res.data);
         } catch (error) {
             console.error('Error fetching staff:', error);
@@ -68,8 +66,8 @@ export default function EquipePage() {
     };
 
     useEffect(() => {
-        if (tenantId) fetchStaff();
-    }, [tenantId]);
+        fetchStaff();
+    }, []);
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files?.[0]) return;
@@ -80,7 +78,7 @@ export default function EquipePage() {
 
         try {
             setUploading(true);
-            const res = await axios.post(`${API}/api/upload/avatar`, formData, {
+            const res = await apiClient.post(`/api/upload/avatar`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setNewMember({ ...newMember, avatar_url: res.data.url });
@@ -95,14 +93,13 @@ export default function EquipePage() {
     const handleSave = async () => {
         try {
             if (editingMember) {
-                await axios.patch(`${API}/api/staff/${editingMember.id}`, {
+                await apiClient.patch(`/api/staff/${editingMember.id}`, {
                     ...newMember,
                     commission: parseFloat(newMember.commission as any)
                 });
             } else {
-                await axios.post(`${API}/api/staff`, {
+                await apiClient.post(`/api/staff`, {
                     ...newMember,
-                    tenant_id: tenantId,
                     commission: parseFloat(newMember.commission as any)
                 });
             }
@@ -117,7 +114,7 @@ export default function EquipePage() {
     const handleDelete = async (id: string, name: string) => {
         if (!confirm(`Tem certeza que deseja remover ${name} da equipe?`)) return;
         try {
-            await axios.delete(`${API}/api/staff/${id}`);
+            await apiClient.delete(`/api/staff/${id}`);
             fetchStaff();
         } catch (error) {
             alert('Erro ao excluir membro da equipe');

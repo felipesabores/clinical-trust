@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState, useMemo } from 'react';
+import { apiClient } from '@/lib/apiClient';
 import {
     ChevronLeft,
     ChevronRight,
@@ -18,8 +18,6 @@ import {
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/context/TenantContext';
 import AppointmentModal from '@/components/AppointmentModal';
-
-import { API } from '@/config';
 
 const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
@@ -50,15 +48,13 @@ export default function AgendaPage() {
     const [selectedDateForNewAppt, setSelectedDateForNewAppt] = useState<Date | undefined>(undefined);
 
     useEffect(() => {
-        if (tenantId) {
-            fetchStaff();
-            fetchAppointments();
-        }
-    }, [tenantId, currentDate]);
+        fetchStaff();
+        fetchAppointments();
+    }, [config?.id, currentDate]);
 
     const fetchStaff = async () => {
         try {
-            const res = await axios.get(`${API}/api/staff?tenantId=${tenantId}`);
+            const res = await apiClient.get(`/api/staff`);
             const mapped = res.data.map((s: any, i: number) => ({
                 ...s,
                 ...COLORS[i % COLORS.length]
@@ -73,7 +69,7 @@ export default function AgendaPage() {
         try {
             setLoading(true);
             const formattedDate = currentDate.toISOString().split('T')[0];
-            const res = await axios.get(`${API}/api/appointments?tenantId=${tenantId}&date=${formattedDate}`);
+            const res = await apiClient.get(`/api/appointments?date=${formattedDate}`);
             setAppointments(res.data);
         } catch (error) {
             console.error('Error fetching appointments for agenda:', error);
@@ -101,6 +97,18 @@ export default function AgendaPage() {
         month: 'long',
         year: 'numeric'
     }).format(currentDate);
+
+    // Real stats from today's appointments
+    const stats = useMemo(() => {
+        const confirmed = appointments.filter(a => ['SCHEDULED', 'RECEPTION'].includes(a.status)).length;
+        const done = appointments.filter(a => a.status === 'DONE').length;
+        const now = new Date();
+        const late = appointments.filter(a => {
+            if (!a.scheduled_at || a.status === 'DONE') return false;
+            return new Date(a.scheduled_at) < now && !['DONE', 'READY'].includes(a.status);
+        }).length;
+        return { confirmed, done, late };
+    }, [appointments]);
 
     if (loading && professionals.length === 0) return (
         <div className="p-10 flex flex-col items-center justify-center min-h-[50vh] gap-4 text-indigo-400">
@@ -290,9 +298,9 @@ export default function AgendaPage() {
                                 </h4>
                                 <div className="space-y-4">
                                     {[
-                                        { label: 'Confirmados', value: '12', color: 'text-slate-900 dark:text-white' },
-                                        { label: 'Finalizados', value: '08', color: 'text-emerald-600 dark:text-emerald-400' },
-                                        { label: 'Em Atraso', value: '02', color: 'text-rose-600 dark:text-rose-400' },
+                                        { label: 'Confirmados', value: stats.confirmed, color: 'text-slate-900 dark:text-white' },
+                                        { label: 'Finalizados', value: stats.done, color: 'text-emerald-600 dark:text-emerald-400' },
+                                        { label: 'Em Atraso', value: stats.late, color: 'text-rose-600 dark:text-rose-400' },
                                     ].map(item => (
                                         <div key={item.label} className="bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 p-4 rounded-xl flex justify-between items-center group hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-all shadow-sm">
                                             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{item.label}</span>
